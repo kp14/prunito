@@ -6,46 +6,21 @@ from ftplib import FTP
 from biocuration.utils import UNIPROT_KNOWLEDGEBASE, UNIPROT_BATCH 
 
 def current_release():
-    """Returns current UniProtKB release version.
+    """Get current public release of UniProtKB.
 
-    Args:
-        s string
+       :returns: release as string
 
-    Returns: uniProt version, string
     """
-
-    class WhichRelease(object):
-        """Helper class for storing the release string.
-
-        The callback used in the ftplib retrbinary swallows any return
-        statements. This is a workaround.
-        """
-
-        def __init__(self):
-            self.release = None
-
-        def __call__(self, s):
-            import re
-            match = re.search('2[0-9]{3}_[0,1][0-9]', s)
-            #release = None
-            if match:
-                self.release = match.group()
-
-    which_release = WhichRelease()
-
-    ftp = FTP('ftp.uniprot.org')
-    ftp.login()
-    ftp.cwd('pub/databases/uniprot/current_release')
-
-    # Uncomment to see the directroy listing
-    #ftp.retrlines('LIST')
-
-    # uncomment this to see the content of the relnotes.txt
-    #ftp.retrlines('RETR relnotes.txt')
-
-    ftp.retrbinary('RETR relnotes.txt', which_release)
-
-    return which_release.release
+    # Release number contained in request header
+    # So we retrieve a random human entry and look up the value
+    payload = {"query": "organism:9606 AND reviewed:yes",
+               "random": "yes",
+               }
+    result = requests.get(UNIPROT_KNOWLEDGEBASE, params=payload)
+    if result.ok:
+        return result.headers['x-uniprot-release'] # Returns string by default
+    else:
+        result.raise_for_status()
 
 def search_reviewed(query, format='txt', file=False):
     '''Search reviewed UniProtKB entries only (Swiss-Prot).
