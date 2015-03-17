@@ -3,7 +3,7 @@ import requests
 
 from ftplib import FTP
 
-from utils import UNIPROT_KNOWLEDGEBASE, UNIPROT_BATCH 
+from biocuration.utils import UNIPROT_KNOWLEDGEBASE, UNIPROT_BATCH 
 
 def current_release():
     """Returns current UniProtKB release version.
