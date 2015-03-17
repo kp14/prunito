@@ -78,13 +78,13 @@ def retrieve_batch(ac_list, format='txt', file=False):
     '''
     payload = {'query':' '.join(ac_list),
                'format':format}
-    result = requests.get(UNIPROT_BASE, params=payload)
+    result = requests.get(UNIPROT_BATCH, params=payload)
     if result.ok:
         if len(result.content) > 0:
             if file:
                 return _to_StringIO(result.content)
             else:
-                return result.content
+                return str(result.content, encoding="ascii")
         else:
             return None
     else:
