@@ -169,7 +169,7 @@ def _search(query, format='txt', reviewed=True, unreviewed=True, file=False):
             if file:
                 return _to_StringIO(result.content)
             else:
-                return result.content
+                return str(result.content, encoding="ascii")
         else:
             return None
     else:
