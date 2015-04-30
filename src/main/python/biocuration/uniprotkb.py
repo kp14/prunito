@@ -1,8 +1,6 @@
 import io
 import requests
 
-from ftplib import FTP
-
 from biocuration.utils import UNIPROT_KNOWLEDGEBASE, UNIPROT_BATCH 
 
 def current_release():
