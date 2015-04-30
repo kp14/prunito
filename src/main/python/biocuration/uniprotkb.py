@@ -1,7 +1,7 @@
 import io
 import requests
 
-from biocuration.utils import UNIPROT_KNOWLEDGEBASE, UNIPROT_BATCH 
+from biocuration.utils import UNIPROT_KNOWLEDGEBASE, UNIPROT_BATCH
 
 def current_release():
     """Get current public release of UniProtKB.
@@ -99,7 +99,7 @@ def interpro_signature_overlap(list_of_tuples):
         pretty printed results
     """
     if len(list_of_tuples) > 2:
-        print( "Only 2 signatures allowed!")
+        print("Only 2 signatures allowed!")
 
     results = []
     for arg in list_of_tuples:
@@ -115,15 +115,15 @@ def interpro_signature_overlap(list_of_tuples):
     diff1 = results[0].difference(results[1])
     diff2 = results[1].difference(results[0])
 
-    print( "Entries in common: {}".format(len(intersection)))
-    print( "Entries unique to {0}: {1}".format(list_of_tuples[0][1],
+    print("Entries in common: {}".format(len(intersection)))
+    print("Entries unique to {0}: {1}".format(list_of_tuples[0][1],
                                               len(diff1)))
     if diff1:
-        print( diff1)
-    print( "Entries unique to {0}: {1}".format(list_of_tuples[1][1],
+        print(diff1)
+    print("Entries unique to {0}: {1}".format(list_of_tuples[1][1],
                                               len(diff2)))
     if diff2:
-        print( diff2)
+        print(diff2)
 
 
 def _search(query, frmt='txt', reviewed=True, unreviewed=True, file=False):
@@ -153,12 +153,12 @@ def _to_StringIO(text):
     #return io.StringIO(unicode(text))
 
 if __name__ == "__main__":
-    print( 'This is uniprot_query.py.\n')
+    print('This is uniprot_query.py.\n')
     test = search_reviewed('name:tax-1 AND taxonomy:11926', file=True)
-    print( type(test))
-    print( test.getvalue())
+    print(type(test))
+    print(test.getvalue())
     AClist = ['P12344', 'P12345']
     batch = retrieve_batch(AClist, file=False)
-    print( batch)
+    print(batch)
 
 
