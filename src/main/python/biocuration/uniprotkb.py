@@ -22,46 +22,46 @@ def current_release():
     else:
         result.raise_for_status()
 
-def search_reviewed(query, format='txt', file=False):
+def search_reviewed(query, frmt='txt', file=False):
     '''Search reviewed UniProtKB entries only (Swiss-Prot).
 
     Accepts standard UniProtKB query syntax.
     Returns data as a string.
     Returns None if no results.
     '''
-    result = _search(query, format=format, reviewed=True,
+    result = _search(query, frmt=frmt, reviewed=True,
                      unreviewed=False, file=file)
     return result
 
-def search_unreviewed(query, format='txt', file=False):
+def search_unreviewed(query, frmt='txt', file=False):
     '''Search unreviewed UniProtKB entries only (TrEMBL)
 
     Accepts standard UniProtKB query syntax.
     Returns data as a string.
     Returns None if no results.
     '''
-    result = _search(query, format=format, reviewed=False,
+    result = _search(query, frmt=frmt, reviewed=False,
                      unreviewed=True, file=file)
     return result
 
-def search_all(query, format='txt', file=False):
+def search_all(query, frmt='txt', file=False):
     '''Search all of UniProtKB (Swiss-Prot + TrEMBL)
 
     Accepts standard UniProtKB query syntax.
     Returns data as a string.
     Returns None if no results.
     '''
-    result = _search(query, format=format, reviewed=True,
+    result = _search(query, frmt=frmt, reviewed=True,
                      unreviewed=True, file=file)
     return result
 
-def number_SP_hits(query, format='list', file=False):
+def number_SP_hits(query, frmt='list', file=False):
     '''Search reviewed UniProtKB entries only (Swiss-Prot).
 
     Accepts standard UniProtKB query syntax.
     Returns int, number of hits.
     '''
-    result = _search(query, format=format, reviewed=True,
+    result = _search(query, frmt=frmt, reviewed=True,
                      unreviewed=False, file=file)
     if result:
         hit_list = result.split('\n')
@@ -71,13 +71,13 @@ def number_SP_hits(query, format='list', file=False):
     return number
 
 
-def retrieve_batch(ac_list, format='txt', file=False):
+def retrieve_batch(ac_list, frmt='txt', file=False):
     '''Batch retrieval of uniProtKB entries.
 
     Returns data as a string.
     '''
     payload = {'query':' '.join(ac_list),
-               'format':format}
+               'format':frmt}
     result = requests.get(UNIPROT_BATCH, params=payload)
     if result.ok:
         if len(result.content) > 0:
@@ -106,7 +106,7 @@ def interpro_signature_overlap(list_of_tuples):
     results = []
     for arg in list_of_tuples:
         query = "database:(type:{0} {1})".format(arg[0], arg[1])
-        result = search_all(query, format="list")
+        result = search_all(query, frmt="list")
         res_list = set(result.strip().split("\n"))
         results.append(res_list)
 
@@ -128,8 +128,8 @@ def interpro_signature_overlap(list_of_tuples):
         print( diff2)
 
 
-def _search(query, format='txt', reviewed=True, unreviewed=True, file=False):
-    payload = {'query':query, 'format':format}
+def _search(query, frmt='txt', reviewed=True, unreviewed=True, file=False):
+    payload = {'query':query, 'format':frmt}
     if reviewed and unreviewed:
         pass
     elif reviewed and not unreviewed:#Swiss-Prot
