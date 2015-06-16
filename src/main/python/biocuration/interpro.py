@@ -14,6 +14,15 @@ except ImportError:
 
 
 def draw_signature_overlaps(list_of_signatures, mode='save'):
+    '''Represent overlaps in UniprotKB coverage of InterPro xrefs as Venn diagram.
+
+    Parameters:
+    list_of_signatures: list of InterPro xref identifiers
+    mode: 'save' or 'ipython'; defaults to save
+
+    Returns:
+    Rendered SVG Venn diagram; wrapped in SVG() container if mode ipython
+    '''
     res_sets = []
     for sig in list_of_signatures:
         res_set = _get_signature_hit_list(sig)
@@ -35,6 +44,14 @@ def draw_signature_overlaps(list_of_signatures, mode='save'):
 
 
 def _get_signature_hit_list(sig):
+    '''Retrieve UniProKB hits for a given siganture.
+
+    Parameters:
+    sig: InterPro (member) database identifier; string
+
+    Returns:
+    set of UniProtKB accessions
+    '''
     result = ukb.search_all(sig, frmt='list')
     if result:
         result_set = set(result.strip().split('\n'))
