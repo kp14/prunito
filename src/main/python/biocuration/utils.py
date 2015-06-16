@@ -47,6 +47,34 @@ PFAM_SIG = re.compile("Pf[0-9]{5}")
 # does not work with appended _A/B yet
 HAMAP_SIG = re.compile("MF_[0-9]{5}")
 
+# Regex for Superfam IDs
+SUPFAM_SIG = re.compile('SSF[0-9]{5}')
+
+# Regex for PIRSF IDs
+PIRSF_SIG = re.compile('PIRSF[0-9]{6}')
+
+# Regex for PRINTS IDs
+PRINTS_SIG = re.compile('PR[0-9]{5}')
+
+# Regex for TIGRFAM IDs
+TIGRFAM_SIG = re.compile('TIGR[0-9]{5}')
+
+# Regex for Panther IDs
+# does not work with appended :SF1 yet
+PANTHER_SIG = re.compile('PTHR[0-9]{5}')
+
+# Regex for Prosite IDs
+PROSITE_SIG = re.compile('PS[0-9]{5}')
+
+# Regex for Gene3D IDs
+GENE3D_SIG = re.compile('[0-9]\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
+
+# Regex for SMART IDs
+SMART_SIG = re.compile('SM[0-9]{5}')
+
+# Regex for ProDom IDs
+PRODOM_SIG = re.compile('PD[0-9]{6}')
+
 
 ##############################################################
 # General purpose classes
