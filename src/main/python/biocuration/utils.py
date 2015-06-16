@@ -37,44 +37,6 @@ QUICKGO_SEARCH = "http://http://www.ebi.ac.uk/QuickGO/GSearch"
 # Regex for UniProtKB accession numbers
 UNIPROT_ACCESSION = re.compile("[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}")
 
-# Regex for InterPro entry IDs
-INTERPRO_ID = re.compile("IP[0-9]{9}")
-
-# Regex for Pfam signature IDs
-PFAM_SIG = re.compile("Pf[0-9]{5}")
-
-# Regex for Hamap signature IDs
-# does not work with appended _A/B yet
-HAMAP_SIG = re.compile("MF_[0-9]{5}")
-
-# Regex for Superfam IDs
-SUPFAM_SIG = re.compile('SSF[0-9]{5}')
-
-# Regex for PIRSF IDs
-PIRSF_SIG = re.compile('PIRSF[0-9]{6}')
-
-# Regex for PRINTS IDs
-PRINTS_SIG = re.compile('PR[0-9]{5}')
-
-# Regex for TIGRFAM IDs
-TIGRFAM_SIG = re.compile('TIGR[0-9]{5}')
-
-# Regex for Panther IDs
-# does not work with appended :SF1 yet
-PANTHER_SIG = re.compile('PTHR[0-9]{5}')
-
-# Regex for Prosite IDs
-PROSITE_SIG = re.compile('PS[0-9]{5}')
-
-# Regex for Gene3D IDs
-GENE3D_SIG = re.compile('[0-9]\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
-
-# Regex for SMART IDs
-SMART_SIG = re.compile('SM[0-9]{5}')
-
-# Regex for ProDom IDs
-PRODOM_SIG = re.compile('PD[0-9]{6}')
-
 
 ##############################################################
 # General purpose classes
@@ -134,6 +96,9 @@ class UniProtComments(Enum):
     SEQUENCE_CAUTION = 28
     WEB_RESOURCE = 29
 
+    def __str__(self):
+        return self.name.replace('_', ' ')
+
 
 class UniProtFeatures(Enum):
     """Enumeration representing feature types used in UniProtKB.
@@ -182,16 +147,19 @@ class UniProtFeatures(Enum):
 
 class InterProXrefs(Enum):
     '''Enum representing InterPro corssrefs as found in UniProtKB.'''
-    Gene3D = 1
-    HAMAP = 2
-    InterPro = 3
-    PANTHER = 4
-    PIRSF = 5
-    PRINTS = 6
-    PROSITE = 7
-    Pfam = 8
-    ProDom = 9
-    SMART = 10
-    SUPFAM = 11
-    TIGRFAMs = 12
+    Gene3D = '[0-9]\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
+    HAMAP = 'MF_[0-9]{5}'
+    InterPro = 'IP[0-9]{9}'
+    PANTHER = 'PTHR[0-9]{5}'
+    PIRSF = 'PIRSF[0-9]{6}'
+    PRINTS = 'PR[0-9]{5}'
+    PROSITE = 'PS[0-9]{5}'
+    Pfam = 'Pf[0-9]{5}'
+    ProDom = 'PD[0-9]{6}'
+    SMART = 'SM[0-9]{5}'
+    SUPFAM = 'SSF[0-9]{5}'
+    TIGRFAMs = 'TIGR[0-9]{5}'
+
+    def __init__(self, pattern):
+        self.regex = re.compile(pattern)
 
