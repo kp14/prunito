@@ -13,7 +13,7 @@ except ImportError:
     sys.exit('Depends on the `venn` package.')
 
 
-def signature_overlaps_as_venn(list_of_signatures, mode='raw'):
+def draw_signature_overlaps(list_of_signatures, mode='save'):
     res_sets = []
     for sig in list_of_signatures:
         res_set = _get_signature_hit_list(sig)
@@ -45,4 +45,4 @@ def _get_signature_hit_list(sig):
 
 
 if __name__ == '__main__':
-    signature_overlaps_as_venn(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
+    draw_signature_overlaps(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
