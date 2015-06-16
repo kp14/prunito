@@ -14,10 +14,10 @@ use_plugin('pypi:pybuilder_header_plugin')
 use_plugin('pypi:pybuilder_release_plugin')
 
 name = "biocuration"
-version = "0.2.1"
+version = "0.3"
 
 authors = [Author("kp14", "harvardsommer@gmx.net")]
-license = 'Apache License, Version 2.0'
+license = 'Public Domain'
 url = "https://bitbucket.org/kp14/biocuration"
 description = __doc__
 summary = "Tools for biocuration."
@@ -46,4 +46,4 @@ def set_properties(project):
     project.set_property('distutils_commands', 'bdist_wheel')
     project.set_property('distutils_classifiers', [
         "Development Status :: 3 - Alpha",
-        'License :: OSI Approved :: Apache Software License'])
+        'License :: Public Domain'])
