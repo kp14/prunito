@@ -17,7 +17,7 @@ UNIPROT_KEYWORD = "http://www.uniprot.org/keywords"
 # Example: http://www.uniprot.org/taxonomy/?query=bactus
 UNIPROT_TAXONOMY = "http://www.uniprot.org/taxonomy"
 
-# Example: 
+# Example:
 UNIPROT_BATCH = "http://www.uniprot.org/batch"
 
 # Example: http://www.ebi.ac.uk/interpro/search?q=kinase
@@ -109,7 +109,7 @@ class UniProtComments(Enum):
 
 class UniProtFeatures(Enum):
     """Enumeration representing feature types used in UniProtKB.
-       
+
        Order of comments os that used in flat files.
     """
     INIT_MET = 1
@@ -141,7 +141,7 @@ class UniProtFeatures(Enum):
     DISULFID = 27
     CROSSLNK = 28
     VAR_SEQ = 29
-    VARIANT = 30 
+    VARIANT = 30
     MUTAGEN = 31
     UNSURE = 32
     CONFLICT = 33
@@ -150,3 +150,20 @@ class UniProtFeatures(Enum):
     HELIX = 36
     TURN = 37
     STRAND = 38
+
+
+class InterProXrefs(Enum):
+    '''Enum representing InterPro corssrefs as found in UniProtKB.'''
+    Gene3D = 1
+    HAMAP = 2
+    InterPro = 3
+    PANTHER = 4
+    PIRSF = 5
+    PRINTS = 6
+    PROSITE = 7
+    Pfam = 8
+    ProDom = 9
+    SMART = 10
+    SUPFAM = 11
+    TIGRFAMs = 12
+
