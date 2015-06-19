@@ -148,9 +148,9 @@ class UniProtFeatures(Enum):
 class InterProXrefs(Enum):
     '''Enum representing InterPro corssrefs as found in UniProtKB.'''
     Gene3D = '[0-9]\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
-    HAMAP = 'MF_[0-9]{5}'
+    HAMAP = 'MF_[0-9]{5}_[A,B]{1}|MF_[0-9]{5}'
     InterPro = 'IP[0-9]{9}'
-    PANTHER = 'PTHR[0-9]{5}'
+    PANTHER = 'PTHR[0-9]{5}:SF[0-9]{1,5}|PTHR[0-9]{5}' # 'PTHR[0-9]{5}(?::SF[0-9]{1,5})?'
     PIRSF = 'PIRSF[0-9]{6}'
     PRINTS = 'PR[0-9]{5}'
     PROSITE = 'PS[0-9]{5}'
