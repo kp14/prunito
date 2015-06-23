@@ -5,7 +5,7 @@ Created on Tue Jun 16 14:57:52 2015
 @author: kp14
 """
 import sys
-import biocuration.uniprotkb as ukb
+import biocuration.uniprotkb.searching as us
 from biocuration.utils import InterProXrefs
 try:
     import venn.draw as vd
@@ -52,7 +52,7 @@ def _get_signature_hit_list(sig):
     Returns:
     set of UniProtKB accessions
     '''
-    result = ukb.search_all(sig, frmt='list')
+    result = us.search_all(sig, frmt='list')
     if result:
         result_set = set(result.strip().split('\n'))
     else:
