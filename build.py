@@ -32,6 +32,15 @@ def set_properties(project):
 
     project.build_depends_on('wheel')
 
+    project.set_property("dir_source_main_python", r"src\main\python\biocuration")
+    #project.set_property("dir_source_unittest_python", r"src\unittest\python")
+    #project.set_property("unittest_module_glob", "test_*.py")
+    #project.set_property("unittest_test_method_prefix", "test_")
+    project.set_property("run_unit_tests_command",
+    "py.test %s" % project.expand_path("$dir_source_unittest_python"))
+    project.set_property("run_unit_tests_propagate_stdout", True)
+    project.set_property("run_unit_tests_propagate_stderr", True)
+
     project.set_property('copy_resources_target', '$dir_dist')
     project.get_property('copy_resources_glob').append('LICENSE.txt')
     project.get_property('copy_resources_glob').append('setup.cfg')
