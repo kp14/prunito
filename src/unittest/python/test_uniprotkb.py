@@ -23,6 +23,7 @@ TestCase.maxDiff = None
 base_dir = os.path.dirname(__file__)
 filename = 'one_sp_entry.txl'
 #filename = 'many_sp_entries.txl'
+#datafile = os.path.join('SwissProt', filename)
 datafile = os.path.join(base_dir, 'SwissProt', filename)
 
 with open(datafile, "r", encoding="ascii") as data:

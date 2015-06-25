@@ -1,10 +1,10 @@
 from pybuilder.core import Author, init, use_plugin
 
 use_plugin("python.core")
-
+use_plugin('exec')
 use_plugin('copy_resources')
 
-use_plugin("python.unittest")
+#use_plugin("python.unittest")
 use_plugin("python.install_dependencies")
 use_plugin("python.flake8")
 use_plugin("python.coverage")
@@ -32,12 +32,12 @@ def set_properties(project):
 
     project.build_depends_on('wheel')
 
-    project.set_property("dir_source_main_python", r"src\main\python\biocuration")
-    #project.set_property("dir_source_unittest_python", r"src\unittest\python")
+    #project.set_property("dir_source_main_python", r"src\main\python\biocuration")
+    project.set_property("dir_source_unittest_python", r"src/unittest/python")
     #project.set_property("unittest_module_glob", "test_*.py")
     #project.set_property("unittest_test_method_prefix", "test_")
     project.set_property("run_unit_tests_command",
-    "py.test %s" % project.expand_path("$dir_source_unittest_python"))
+    "py.test -v %s" % project.expand_path("$dir_source_unittest_python"))
     project.set_property("run_unit_tests_propagate_stdout", True)
     project.set_property("run_unit_tests_propagate_stderr", True)
 
