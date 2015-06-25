@@ -35,7 +35,6 @@ Optional parameters:
         the given callback value.
 """
 
-import requests
 import urllib
 import sys
 
@@ -81,7 +80,7 @@ def _search(query, fmt='json', resulttype='lite', page='1',
     # doesn't solve this as requests then calls again urlencode
     # which srews everything up. So we go for urllib.urlopen()
     url = '{0}{1}'.format(base_url, params)
-    print url
+    #print url
     result = urllib.urlopen(url)
     data = result.read()
     return data
