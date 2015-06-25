@@ -14,7 +14,7 @@ use_plugin('pypi:pybuilder_header_plugin')
 use_plugin('pypi:pybuilder_release_plugin')
 
 name = "biocuration"
-version = "0.5.1"
+version = "0.6.0"
 
 authors = [Author("kp14", "harvardsommer@gmx.net")]
 license = 'Public Domain'
