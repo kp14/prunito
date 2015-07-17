@@ -19,6 +19,6 @@ setup(name='biocuration',
       author='kp14',
       author_email='',
       license='Public Domain',
-      packages=['biocuration'],
+      packages=['biocuration', 'biocuration/uniprotkb'],
       install_requires=['requests'],
       include_package_data=True)
