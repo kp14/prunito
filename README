@@ -1,0 +1,15 @@
+# Biocuration
+
+A package providing tools for curation of proteins mainly.
+
+## Module: europepmc
+
+Provides access to europePMC's REST API.
+
+## Module: interpro
+
+Provides a function of comparing UniprotKB coverage of InterPro signatures.
+
+## Subpackage: uniprotkb
+
+Has modules parsing and searching for just those tasks.
