@@ -1,5 +1,6 @@
 # coding: utf-8
 import functools
+import itertools
 import logging
 import re
 from collections import defaultdict
@@ -33,7 +34,7 @@ class Record():
 
     @property
     def accessions(self):
-        return self._bag['AC'][0]
+        return list(itertools.chain(*self._bag['AC']))
 
     @property
     def primary_accession(self):
