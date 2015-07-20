@@ -46,12 +46,12 @@ def pytest_generate_tests(metafunc):
 
     This targets the metafunc `test_compare_annotations` in module
     test_uniprotkb_multi.py which just compare two objects for identity, mostly
-    strings. Each individual pience of annotation in the provided UniProt entries
+    strings. Each individual piece of annotation in the provided UniProt entries
     is used to generate its own test which makes pinpointing errors easier and
     saves having to code the test manually. We can also use an arbitray set of
     entries to test.
 
-    ALTERNATIVE PRODUCTS are right now amrked as expected failures as my parser
+    ALTERNATIVE PRODUCTS are right now marked as expected failures as my parser
     strips out some white space as opposed to the biopython one.
     '''
     if 'my_annotation' and 'biopy_annotation' in metafunc.fixturenames:
@@ -68,6 +68,14 @@ def pytest_generate_tests(metafunc):
                             tple = (my_comment, biopy_comment)
                         comments.append(tple)
                     argvalues.extend(comments)
+                # Comment out the following elif block to not check xrefs individually
+                elif prop == 'cross_references':
+                    xrefs = []
+                    for my_xref, biopy_xref in zip(getattr(my_record, prop),
+                                                         getattr(record, prop)):
+                        tple = (my_xref, biopy_xref)
+                        xrefs.append(tple)
+                    argvalues.extend(xrefs)
                 else:
                     argvalues.append((getattr(my_record, prop),
                                       getattr(record, prop)))
