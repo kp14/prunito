@@ -22,7 +22,15 @@ PROPS = ['entry_name',
          'accessions',
          'description',
          'gene_name',
+         'organism',
+         'organism_classification',
+         #'references',
          'comments',
+         'cross_references',
+         'keywords',
+         'seqinfo',
+         'features',
+         'sequence',
          ]
 
 with open(datafile, "r", encoding="ascii") as data:
