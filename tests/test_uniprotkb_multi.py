@@ -6,7 +6,7 @@ Created on Mon May 18 11:59:36 2015
 
 @author: kpichler
 """
-
+import logging
 import os
 
 from unittest import TestCase
@@ -24,6 +24,10 @@ base_dir = os.path.dirname(__file__)
 filename = 'many_sp_entries.txl'
 #datafile = os.path.join('SwissProt', filename)
 datafile = os.path.join(base_dir, 'SwissProt', filename)
+
+# logging
+logging.basicConfig(#filename=os.path.join(base_dir, 'test_uniprotkb_multiple.log'),
+                    level=logging.DEBUG)
 
 PROPS = ['entry_name',
          'data_class',
@@ -55,7 +59,7 @@ def test_many_entries():
                 assert  my_prop == biopy_prop
             except AssertionError:
                 failures += 1
-                print('\n my:{0} <-> biopy: {1}:\n{2}\n{3}'.format(my_record.accessions[0],
+                logging.warning('\n my:{0} <-> biopy: {1}:\n{2}\n{3}'.format(my_record.accessions[0],
                                                                record.accessions[0],
                                                                my_prop,
                                                                biopy_prop))
