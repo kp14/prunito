@@ -53,6 +53,13 @@ class Record():
         return self._bag['OS'][0]
 
     @property
+    def organelle(self):
+        try:
+            return self._bag['OG'][0]
+        except IndexError:
+            return ''
+
+    @property
     def organism_classification(self):
         return _flatten_lists(self._bag['OC'])
 
@@ -318,6 +325,7 @@ PARSER_MAP = {"ID": _parse_id,
               "DE": _parse_generic,
               "GN": _parse_generic,
               "OS": _parse_generic,
+              "OG": _parse_generic,
               "OC": _parse_taxonomy,
               "OH": _parse_generic,
               "OX": _parse_taxid,
