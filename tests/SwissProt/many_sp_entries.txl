@@ -6432,3 +6432,599 @@ SQ   SEQUENCE   222 AA;  23935 MW;  13D2F1627D15AFA3 CRC64;
      TLPSGSYKGV KLAKFGKENL MTRFIEEPRE NPIATSSPID FKRGRDTGGF HRREYSIGWV
      GDEVKVTEWC NPSCSPITAA ARRFECTCHQ CPVTCSECER DT
 //
+ID   3HAO_RALME              Reviewed;         174 AA.
+AC   Q1LCS4;
+DT   11-JUL-2006, integrated into UniProtKB/Swiss-Prot.
+DT   30-MAY-2006, sequence version 1.
+DT   24-JUN-2015, entry version 73.
+DE   RecName: Full=3-hydroxyanthranilate 3,4-dioxygenase {ECO:0000255|HAMAP-Rule:MF_00825};
+DE            EC=1.13.11.6 {ECO:0000255|HAMAP-Rule:MF_00825};
+DE   AltName: Full=3-hydroxyanthranilate oxygenase {ECO:0000255|HAMAP-Rule:MF_00825};
+DE            Short=3-HAO {ECO:0000255|HAMAP-Rule:MF_00825};
+DE   AltName: Full=3-hydroxyanthranilic acid dioxygenase {ECO:0000255|HAMAP-Rule:MF_00825};
+DE            Short=HAD {ECO:0000255|HAMAP-Rule:MF_00825};
+GN   Name=nbaC {ECO:0000255|HAMAP-Rule:MF_00825};
+GN   OrderedLocusNames=Rmet_5193;
+OS   Ralstonia metallidurans (strain CH34 / ATCC 43123 / DSM 2839).
+OG   Plasmid megaplasmid.
+OC   Bacteria; Proteobacteria; Betaproteobacteria; Burkholderiales;
+OC   Burkholderiaceae; Cupriavidus.
+OX   NCBI_TaxID=266264;
+RN   [1]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RC   STRAIN=CH34 / ATCC 43123 / DSM 2839;
+RG   US DOE Joint Genome Institute;
+RA   Copeland A., Lucas S., Lapidus A., Barry K., Detter J.C.,
+RA   Glavina del Rio T., Hammon N., Israni S., Dalin E., Tice H.,
+RA   Martinez M., Goltsman E., Pitluck S., Schmutz J., Larimer F., Land M.,
+RA   Hauser L., Kyrpides N., Kim E., Mergeay M., Benotmane M.A.,
+RA   Vallaeys T., Michaux A., Monchy S., Dunn J., McCorkle S., Taghavi S.,
+RA   van der Lelie D., Richardson P.;
+RT   "Complete sequence of the megaplasmid of Ralstonia metallidurans
+RT   CH34.";
+RL   Submitted (APR-2006) to the EMBL/GenBank/DDBJ databases.
+RN   [2]
+RP   FUNCTION, ENZYME REGULATION, AND IDENTIFICATION BY MASS SPECTROMETRY.
+RX   PubMed=15909977; DOI=10.1021/bi0473455;
+RA   Colabroy K.L., Zhai H., Li T., Ge Y., Zhang Y., Liu A., Ealick S.E.,
+RA   McLafferty F.W., Begley T.P.;
+RT   "The mechanism of inactivation of 3-hydroxyanthranilate-3,4-
+RT   dioxygenase by 4-chloro-3-hydroxyanthranilate.";
+RL   Biochemistry 44:7623-7631(2005).
+RN   [3]
+RP   X-RAY CRYSTALLOGRAPHY (1.9 ANGSTROMS) OF NATIVE PROTEIN AND COMPLEXES
+RP   WITH SUBSTRATES OR INHIBITOR AND IRON, COFACTOR, KINETIC PARAMETERS,
+RP   MUTAGENESIS OF ARG-47; ARG-99 AND GLU-110, SUBUNIT, AND REACTION
+RP   MECHANISM.
+RX   PubMed=15909978; DOI=10.1021/bi047353l;
+RA   Zhang Y., Colabroy K.L., Begley T.P., Ealick S.E.;
+RT   "Structural studies on 3-hydroxyanthranilate-3,4-dioxygenase: the
+RT   catalytic mechanism of a complex oxidation involved in NAD
+RT   biosynthesis.";
+RL   Biochemistry 44:7632-7643(2005).
+CC   -!- FUNCTION: Catalyzes the oxidative ring opening of 3-
+CC       hydroxyanthranilate to 2-amino-3-carboxymuconate semialdehyde,
+CC       which spontaneously cyclizes to quinolinate. {ECO:0000255|HAMAP-
+CC       Rule:MF_00825, ECO:0000269|PubMed:15909977}.
+CC   -!- CATALYTIC ACTIVITY: 3-hydroxyanthranilate + O(2) = 2-amino-3-
+CC       carboxymuconate semialdehyde. {ECO:0000255|HAMAP-Rule:MF_00825}.
+CC   -!- COFACTOR:
+CC       Name=Fe(2+); Xref=ChEBI:CHEBI:29033;
+CC         Evidence={ECO:0000255|HAMAP-Rule:MF_00825,
+CC         ECO:0000269|PubMed:15909978};
+CC       Note=Binds 2 Fe(2+) ions per subunit. {ECO:0000255|HAMAP-
+CC       Rule:MF_00825, ECO:0000269|PubMed:15909978};
+CC   -!- ENZYME REGULATION: Inhibited by 4-chloro-3-hydroxyanthranilate.
+CC       Mechanism of inactivation involves the oxidation of the catalytic
+CC       active site Fe(2+) to the catalytically inactive Fe(3+) oxidation
+CC       state, superoxide production, and formation of two disulfide bonds
+CC       between Cys-125 and Cys-128, and Cys-162 and Cys-165. Enzyme can
+CC       be reactivated under reducing conditions.
+CC       {ECO:0000269|PubMed:15909977}.
+CC   -!- BIOPHYSICOCHEMICAL PROPERTIES:
+CC       Kinetic parameters:
+CC         KM=22.4 uM for 3-hydroxyanthranilate
+CC         {ECO:0000269|PubMed:15909978};
+CC   -!- PATHWAY: Cofactor biosynthesis; NAD(+) biosynthesis; quinolinate
+CC       from L-kynurenine: step 3/3. {ECO:0000255|HAMAP-Rule:MF_00825}.
+CC   -!- SUBUNIT: Homodimer. {ECO:0000255|HAMAP-Rule:MF_00825,
+CC       ECO:0000269|PubMed:15909978}.
+CC   -!- SIMILARITY: Belongs to the 3-HAO family. {ECO:0000255|HAMAP-
+CC       Rule:MF_00825}.
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   EMBL; CP000353; ABF12052.1; -; Genomic_DNA.
+DR   RefSeq; WP_011519599.1; NC_007974.2.
+DR   RefSeq; YP_587321.1; NC_007974.2.
+DR   PDB; 1YFU; X-ray; 1.90 A; A=1-174.
+DR   PDB; 1YFW; X-ray; 2.00 A; A=1-174.
+DR   PDB; 1YFX; X-ray; 2.00 A; A=1-174.
+DR   PDB; 1YFY; X-ray; 3.20 A; A=1-174.
+DR   PDB; 4HSJ; X-ray; 1.88 A; A=1-174.
+DR   PDB; 4HSL; X-ray; 2.00 A; A=1-174.
+DR   PDB; 4HVO; X-ray; 1.75 A; A=1-174.
+DR   PDB; 4HVQ; X-ray; 2.81 A; A=1-154.
+DR   PDB; 4HVR; X-ray; 2.70 A; A=1-174.
+DR   PDB; 4I3P; X-ray; 1.96 A; A=1-174.
+DR   PDB; 4L2N; X-ray; 1.74 A; A=1-174.
+DR   PDBsum; 1YFU; -.
+DR   PDBsum; 1YFW; -.
+DR   PDBsum; 1YFX; -.
+DR   PDBsum; 1YFY; -.
+DR   PDBsum; 4HSJ; -.
+DR   PDBsum; 4HSL; -.
+DR   PDBsum; 4HVO; -.
+DR   PDBsum; 4HVQ; -.
+DR   PDBsum; 4HVR; -.
+DR   PDBsum; 4I3P; -.
+DR   PDBsum; 4L2N; -.
+DR   ProteinModelPortal; Q1LCS4; -.
+DR   SMR; Q1LCS4; 1-174.
+DR   EnsemblBacteria; ABF12052; ABF12052; Rmet_5193.
+DR   GeneID; 24153212; -.
+DR   KEGG; rme:Rmet_5193; -.
+DR   PATRIC; 20295146; VBIRalMet4734_5615.
+DR   eggNOG; NOG77058; -.
+DR   HOGENOM; HOG000218448; -.
+DR   KO; K00452; -.
+DR   OMA; KPPVGNQ; -.
+DR   OrthoDB; EOG6PW234; -.
+DR   BioCyc; CMET266264:GJ5G-5688-MONOMER; -.
+DR   SABIO-RK; Q1LCS4; -.
+DR   UniPathway; UPA00253; UER00330.
+DR   EvolutionaryTrace; Q1LCS4; -.
+DR   Proteomes; UP000002429; Plasmid megaplasmid CH34.
+DR   GO; GO:0000334; F:3-hydroxyanthranilate 3,4-dioxygenase activity; IEA:UniProtKB-HAMAP.
+DR   GO; GO:0008198; F:ferrous iron binding; IEA:UniProtKB-HAMAP.
+DR   GO; GO:0034354; P:'de novo' NAD biosynthetic process from tryptophan; IEA:UniProtKB-HAMAP.
+DR   GO; GO:0043420; P:anthranilate metabolic process; IEA:UniProtKB-HAMAP.
+DR   GO; GO:0019805; P:quinolinate biosynthetic process; IEA:UniProtKB-HAMAP.
+DR   GO; GO:0006569; P:tryptophan catabolic process; IEA:UniProtKB-HAMAP.
+DR   Gene3D; 2.60.120.10; -; 1.
+DR   HAMAP; MF_00825; 3_HAO; 1.
+DR   InterPro; IPR010329; 3hydroanth_dOase.
+DR   InterPro; IPR014710; RmlC-like_jellyroll.
+DR   InterPro; IPR011051; RmlC_Cupin.
+DR   PANTHER; PTHR15497; PTHR15497; 1.
+DR   Pfam; PF06052; 3-HAO; 1.
+DR   SUPFAM; SSF51182; SSF51182; 1.
+DR   TIGRFAMs; TIGR03037; anthran_nbaC; 1.
+PE   1: Evidence at protein level;
+KW   3D-structure; Complete proteome; Dioxygenase; Iron; Metal-binding;
+KW   Oxidoreductase; Plasmid; Pyridine nucleotide biosynthesis;
+KW   Reference proteome.
+FT   CHAIN         1    174       3-hydroxyanthranilate 3,4-dioxygenase.
+FT                                /FTId=PRO_0000245477.
+FT   METAL        51     51       Iron 1; catalytic.
+FT   METAL        57     57       Iron 1; catalytic.
+FT   METAL        95     95       Iron 1; catalytic.
+FT   METAL       125    125       Iron 2.
+FT   METAL       128    128       Iron 2.
+FT   METAL       162    162       Iron 2.
+FT   METAL       165    165       Iron 2.
+FT   BINDING      47     47       Dioxygen.
+FT   BINDING      57     57       Substrate.
+FT   BINDING      99     99       Substrate.
+FT   BINDING     110    110       Substrate.
+FT   MUTAGEN      47     47       R->A: Increases KM for 3-
+FT                                hydroxyanthranilate 7-fold. Decreases
+FT                                activity 1000-fold.
+FT                                {ECO:0000269|PubMed:15909978}.
+FT   MUTAGEN      99     99       R->A: Increases KM for 3-
+FT                                hydroxyanthranilate 40-fold. Decreases
+FT                                activity 5000-fold.
+FT                                {ECO:0000269|PubMed:15909978}.
+FT   MUTAGEN     110    110       E->A: Decreases KM for 3-
+FT                                hydroxyanthranilate 2-fold. Decreases
+FT                                activity 2000-fold.
+FT                                {ECO:0000269|PubMed:15909978}.
+FT   HELIX        10     16       {ECO:0000244|PDB:4HVO}.
+FT   HELIX        17     20       {ECO:0000244|PDB:4HVO}.
+FT   TURN         23     25       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       27     33       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       35     41       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       43     45       {ECO:0000244|PDB:4HVR}.
+FT   STRAND       50     52       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       57     64       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       66     72       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       75     81       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       86     89       {ECO:0000244|PDB:4HVO}.
+FT   STRAND       95     99       {ECO:0000244|PDB:4HVO}.
+FT   STRAND      105    111       {ECO:0000244|PDB:4HVO}.
+FT   STRAND      119    124       {ECO:0000244|PDB:4HVO}.
+FT   TURN        126    128       {ECO:0000244|PDB:4HVO}.
+FT   STRAND      131    137       {ECO:0000244|PDB:4HVO}.
+FT   HELIX       142    145       {ECO:0000244|PDB:4HVO}.
+FT   HELIX       147    155       {ECO:0000244|PDB:4HVO}.
+FT   HELIX       157    160       {ECO:0000244|PDB:4HVO}.
+FT   TURN        163    165       {ECO:0000244|PDB:4HVO}.
+FT   HELIX       171    173       {ECO:0000244|PDB:1YFW}.
+SQ   SEQUENCE   174 AA;  20028 MW;  385F2E3DEB3947B8 CRC64;
+     MLTYGAPFNF PRWIDEHAHL LKPPVGNRQV WQDSDFIVTV VGGPNHRTDY HDDPLEEFFY
+     QLRGNAYLNL WVDGRRERAD LKEGDIFLLP PHVRHSPQRP EAGSACLVIE RQRPAGMLDG
+     FEWYCDACGH LVHRVEVQLK SIVTDLPPLF ESFYASEDKR RCPHCGQVHP GRAA
+//
+ID   PA11_VESAF              Reviewed;         334 AA.
+AC   P0DMB4;
+DT   22-JAN-2014, integrated into UniProtKB/Swiss-Prot.
+DT   22-JAN-2014, sequence version 1.
+DT   07-JAN-2015, entry version 6.
+DE   RecName: Full=Phospholipase A1 1;
+DE            EC=3.1.1.32;
+DE   AltName: Full=Vespapase;
+DE   AltName: Allergen=Dol Ves a 1.01;
+DE   Flags: Precursor;
+OS   Vespa affinis (Lesser banded hornet).
+OC   Eukaryota; Metazoa; Ecdysozoa; Arthropoda; Hexapoda; Insecta;
+OC   Pterygota; Neoptera; Endopterygota; Hymenoptera; Apocrita; Aculeata;
+OC   Vespoidea; Vespidae; Vespinae; Vespa.
+OX   NCBI_TaxID=882735;
+RN   [1]
+RP   NUCLEOTIDE SEQUENCE [MRNA], CATALYTIC ACTIVITY, FUNCTION, BIOASSAY,
+RP   BIOPHYSICOCHEMICAL PROPERTIES, PARALYTIC DOSE, 3D-STRUCTURE MODELING,
+RP   PROBABLE DISULFIDE BONDS, AND MASS SPECTROMETRY.
+RC   TISSUE=Venom, and Venom gland;
+RX   PubMed=23159790; DOI=10.1016/j.toxicon.2012.10.024;
+RA   Sukprasert S., Rungsa P., Uawonggul N., Incamnoi P., Thammasirirak S.,
+RA   Daduang J., Daduang S.;
+RT   "Purification and structural characterisation of phospholipase A1
+RT   (Vespapase, Ves a 1) from Thai banded tiger wasp (Vespa affinis)
+RT   venom.";
+RL   Toxicon 61:151-164(2013).
+CC   -!- FUNCTION: Hydrolysis of phosphatidylcholine with phospholipase A1
+CC       (EC 3.1.1.32) activity. Has weak hemolytic activity (By
+CC       similarity). Shows a phospholipase A1 enzymatic activity of 3.6
+CC       U/ml. {ECO:0000250, ECO:0000269|PubMed:23159790}.
+CC   -!- CATALYTIC ACTIVITY: Phosphatidylcholine + H(2)O = 2-
+CC       acylglycerophosphocholine + a carboxylate.
+CC       {ECO:0000269|PubMed:23159790}.
+CC   -!- BIOPHYSICOCHEMICAL PROPERTIES:
+CC       Temperature dependence:
+CC         Loses its activity after heat treatment.
+CC         {ECO:0000269|PubMed:23159790};
+CC   -!- SUBCELLULAR LOCATION: Secreted.
+CC   -!- TISSUE SPECIFICITY: Expressed by the venom gland.
+CC   -!- PTM: Not glycosylated. {ECO:0000269|PubMed:23159790}.
+CC   -!- MASS SPECTROMETRY: Mass=33441.5; Method=MALDI; Range=34-334;
+CC       Evidence={ECO:0000269|PubMed:23159790};
+CC   -!- ALLERGEN: Causes an allergic reaction in human. {ECO:0000250}.
+CC   -!- TOXIC DOSE: 60 mg/kg body weight of a mixture of this protein and
+CC       Ves a 1.02 is able to paralyze 33% of the crickets.
+CC       {ECO:0000269|PubMed:23159790}.
+CC   -!- SIMILARITY: Belongs to the AB hydrolase superfamily. Lipase
+CC       family. {ECO:0000305}.
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   GO; GO:0005576; C:extracellular region; IEA:UniProtKB-SubCell.
+DR   GO; GO:0052740; F:1-acyl-2-lysophosphatidylserine acylhydrolase activity; IEA:UniProtKB-EC.
+DR   GO; GO:0008970; F:phosphatidylcholine 1-acylhydrolase activity; IEA:UniProtKB-EC.
+DR   GO; GO:0052739; F:phosphatidylserine 1-acylhydrolase activity; IEA:UniProtKB-EC.
+DR   GO; GO:0044179; P:hemolysis in other organism; IEA:UniProtKB-KW.
+DR   GO; GO:0016042; P:lipid catabolic process; IEA:UniProtKB-KW.
+DR   Gene3D; 3.40.50.1820; -; 1.
+DR   InterPro; IPR029058; AB_hydrolase.
+DR   InterPro; IPR002334; Allerg_PlipaseA1.
+DR   InterPro; IPR013818; Lipase_N.
+DR   InterPro; IPR000734; TAG_lipase.
+DR   PANTHER; PTHR11610; PTHR11610; 1.
+DR   Pfam; PF00151; Lipase; 1.
+DR   PRINTS; PR00825; DOLALLERGEN.
+DR   SUPFAM; SSF53474; SSF53474; 1.
+DR   PROSITE; PS00120; LIPASE_SER; 1.
+PE   1: Evidence at protein level;
+KW   Allergen; Cytolysis; Disulfide bond; Hemolysis; Hydrolase;
+KW   Lipid degradation; Lipid metabolism; Secreted; Signal.
+FT   SIGNAL        1     23       {ECO:0000255}.
+FT   PROPEP       24     33       {ECO:0000250}.
+FT                                /FTId=PRO_0000425192.
+FT   CHAIN        34    334       Phospholipase A1 1.
+FT                                /FTId=PRO_0000425193.
+FT   ACT_SITE    170    170       Nucleophile. {ECO:0000250}.
+FT   ACT_SITE    198    198       Charge relay system.
+FT                                {ECO:0000255|PROSITE-ProRule:PRU10037}.
+FT   ACT_SITE    263    263       Charge relay system.
+FT                                {ECO:0000255|PROSITE-ProRule:PRU10037}.
+FT   DISULFID     37    278       {ECO:0000305}.
+FT   DISULFID    120    261       {ECO:0000305}.
+FT   DISULFID    209    252       {ECO:0000305}.
+FT   DISULFID    214    295       {ECO:0000305}.
+FT   DISULFID    273    279       {ECO:0000305}.
+FT   DISULFID    302    327       {ECO:0000305}.
+SQ   SEQUENCE   334 AA;  37318 MW;  8B8712D786F38B12 CRC64;
+     MMNLKYLLFF CLVQALHYCY AYGDPSLSNE LDRFNPCPYS DDTVKMIILT RENKKHDFYT
+     LNTIKNHNEF KKSTIKHQVV FITHGFTSTA TAENFLAMAE ALLDKGNYLV ILIDWRVAAC
+     TNEMAGVKLA YYSYAASNTR LVGNYIATVT KMLVQQYNVP MANIRLIGHS LGAHTSGFAG
+     KKVQELRLGK YSEIIGLDPA GPSFKSQECS QRICETDANY VQIIHTSNHL GTLVTLGTVD
+     FYMNNGYNQP GCGLPIIGET CSHTRAVKYF TECIRHECCL IGVPQSKNPQ PVSKCTRNEC
+     VCVGLNAKTY PKTGSFYVPV ESKAPYCNNK GKII
+//
+ID   CTXL_LEIQU              Reviewed;          36 AA.
+AC   P45639;
+DT   01-NOV-1995, integrated into UniProtKB/Swiss-Prot.
+DT   01-NOV-1995, sequence version 1.
+DT   27-MAY-2015, entry version 75.
+DE   RecName: Full=Chlorotoxin;
+DE            Short=CTX;
+DE            Short=ClTx;
+OS   Leiurus quinquestriatus quinquestriatus (Egyptian scorpion)
+OS   (Deathstalker scorpion).
+OC   Eukaryota; Metazoa; Ecdysozoa; Arthropoda; Chelicerata; Arachnida;
+OC   Scorpiones; Buthida; Buthoidea; Buthidae; Leiurus.
+OX   NCBI_TaxID=6885;
+RN   [1]
+RP   PROTEIN SEQUENCE, AND FUNCTION.
+RC   TISSUE=Venom;
+RX   PubMed=8383429;
+RA   Debin J.A., Maggio J.E., Strichartz G.R.;
+RT   "Purification and characterization of chlorotoxin, a chloride channel
+RT   ligand from the venom of the scorpion.";
+RL   Am. J. Physiol. 264:C361-C369(1993).
+RN   [2]
+RP   FUNCTION AS MMP-2 BINDING TOXIN.
+RX   PubMed=12454020; DOI=10.1074/jbc.M205662200;
+RA   Deshane J., Garner C.C., Sontheimer H.;
+RT   "Chlorotoxin inhibits glioma cell invasion via matrix
+RT   metalloproteinase-2.";
+RL   J. Biol. Chem. 278:4135-4144(2003).
+RN   [3]
+RP   PROBABLE FUNCTION AS CLC3 INHIBITOR, AND REVIEW.
+RX   PubMed=16520829; DOI=10.1017/S1740925X06000044;
+RA   McFerrin M.B., Sontheimer H.;
+RT   "A role for ion channels in glioma cell invasion.";
+RL   Neuron Glia Biol. 2:39-49(2006).
+RN   [4]
+RP   BIOTECHNOLOGY.
+RX   PubMed=17638899; DOI=10.1158/0008-5472.CAN-06-3948;
+RA   Veiseh M., Gabikian P., Bahrami S.B., Veiseh O., Zhang M.,
+RA   Hackman R.C., Ravanpay A.C., Stroud M.R., Kusuma Y., Hansen S.J.,
+RA   Kwok D., Munoz N.M., Sze R.W., Grady W.M., Greenberg N.M.,
+RA   Ellenbogen R.G., Olson J.M.;
+RT   "Tumor paint: a chlorotoxin:Cy5.5 bioconjugate for intraoperative
+RT   visualization of cancer foci.";
+RL   Cancer Res. 67:6882-6888(2007).
+RN   [5]
+RP   PHARMACEUTICAL.
+RX   PubMed=9809993;
+RA   Soroceanu L., Gillespie Y., Khazaeli M.B., Sontheimer H.;
+RT   "Use of chlorotoxin for targeting of primary brain tumors.";
+RL   Cancer Res. 58:4871-4879(1998).
+RN   [6]
+RP   PHARMACEUTICAL.
+RX   PubMed=16877732; DOI=10.1200/JCO.2005.05.4569;
+RA   Mamelak A.N., Rosenfeld S., Bucholz R., Raubitschek A., Nabors L.B.,
+RA   Fiveash J.B., Shen S., Khazaeli M.B., Colcher D., Liu A., Osman M.,
+RA   Guthrie B., Schade-Bijur S., Hablitz D.M., Alvarez V.L., Gonda M.A.;
+RT   "Phase I single-dose study of intracavitary-administered iodine-131-
+RT   TM-601 in adults with recurrent high-grade glioma.";
+RL   J. Clin. Oncol. 24:3644-3650(2006).
+RN   [7]
+RP   STRUCTURE BY NMR, AND DISULFIDE BONDS.
+RX   PubMed=7819188; DOI=10.1021/bi00001a003;
+RA   Lippens G., Najib J., Wodak S.J., Tartar A.;
+RT   "NMR sequential assignments and solution structure of chlorotoxin, a
+RT   small scorpion toxin that blocks chloride channels.";
+RL   Biochemistry 34:13-21(1995).
+CC   -!- FUNCTION: This toxin binds to the surface of glioma cells, and
+CC       inhibits their proliferation without having effects on normal
+CC       brain cells. In this context, this toxin has been described as a
+CC       chloride channel inhibitor (probably ClC-3/CLCN3) by causing its
+CC       internalization via caveolae (PubMed:16520829). It has also been
+CC       described to selectively interact with MMP2 (in complex with MT1-
+CC       MMP (MMP14) and TIMP2), to inhibit its enzymatic activity and to
+CC       decrease its presence at the cell surface (PubMed:12454020).
+CC       {ECO:0000269|PubMed:12454020, ECO:0000269|PubMed:16520829,
+CC       ECO:0000269|PubMed:8383429}.
+CC   -!- SUBCELLULAR LOCATION: Secreted.
+CC   -!- TISSUE SPECIFICITY: Expressed by the venom gland.
+CC   -!- DOMAIN: The presence of a 'disulfide through disulfide knot'
+CC       structurally defines this protein as a knottin.
+CC   -!- BIOTECHNOLOGY: When bioconjugated with the fluorescent molecular
+CC       beacon Cy5.5, might be used as an optical imaging contrast agent
+CC       to enable surgeons to intraoperatively distinguish cancer foci
+CC       from adjacent normal tissue. {ECO:0000269|PubMed:17638899}.
+CC   -!- PHARMACEUTICAL: Is under phase II clinical trial by Sinai Medical
+CC       Center and TransMolecular under the name TM-601. It crosses blood-
+CC       brain and tissue barriers and binds to malignant brain tumor cells
+CC       without affecting healthy tissue. Radioiodinated TM-601 is used to
+CC       treat malignant glioma.
+CC   -!- MISCELLANEOUS: Does not interact with MMP-1, MMP-3 and MMP-9.
+CC       {ECO:0000305|PubMed:12454020}.
+CC   -!- SIMILARITY: Belongs to the short scorpion toxin superfamily.
+CC       Chloride channel inhibitor family. {ECO:0000255|PROSITE-
+CC       ProRule:PRU00545}.
+CC   -!- WEB RESOURCE: Name=Wikipedia; Note=Chlorotoxin entry;
+CC       URL="http://en.wikipedia.org/wiki/Chlorotoxin";
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   PIR; A48850; A48850.
+DR   PDB; 1CHL; NMR; -; A=1-36.
+DR   PDBsum; 1CHL; -.
+DR   ProteinModelPortal; P45639; -.
+DR   SMR; P45639; 1-36.
+DR   EvolutionaryTrace; P45639; -.
+DR   GO; GO:0005576; C:extracellular region; IEA:UniProtKB-SubCell.
+DR   GO; GO:0008191; F:metalloendopeptidase inhibitor activity; IEA:UniProtKB-KW.
+DR   GO; GO:0006952; P:defense response; IEA:InterPro.
+DR   GO; GO:0009405; P:pathogenesis; IEA:InterPro.
+DR   InterPro; IPR003614; Scorpion_toxin-like.
+DR   InterPro; IPR007958; Scorpion_toxinS_Cl_inh.
+DR   Pfam; PF05294; Toxin_5; 1.
+DR   SUPFAM; SSF57095; SSF57095; 1.
+DR   PROSITE; PS51200; SHORT_SCORPION_CHLORIDE; 1.
+PE   1: Evidence at protein level;
+KW   3D-structure; Chloride channel impairing toxin;
+KW   Direct protein sequencing; Disulfide bond;
+KW   Ion channel impairing toxin; Knottin; Metalloenzyme inhibitor;
+KW   Metalloprotease inhibitor; Neurotoxin; Pharmaceutical;
+KW   Protease inhibitor; Secreted; Toxin;
+KW   Voltage-gated chloride channel impairing toxin.
+FT   PEPTIDE       1     36       Chlorotoxin.
+FT                                /FTId=PRO_0000044941.
+FT   DISULFID      2     19       {ECO:0000255|PROSITE-ProRule:PRU00545,
+FT                                ECO:0000269|PubMed:7819188}.
+FT   DISULFID      5     28       {ECO:0000255|PROSITE-ProRule:PRU00545,
+FT                                ECO:0000269|PubMed:7819188}.
+FT   DISULFID     16     33       {ECO:0000255|PROSITE-ProRule:PRU00545,
+FT                                ECO:0000269|PubMed:7819188}.
+FT   DISULFID     20     35       {ECO:0000255|PROSITE-ProRule:PRU00545,
+FT                                ECO:0000269|PubMed:7819188}.
+FT   STRAND        9     12       {ECO:0000244|PDB:1CHL}.
+FT   HELIX        13     20       {ECO:0000244|PDB:1CHL}.
+FT   STRAND       22     25       {ECO:0000244|PDB:1CHL}.
+FT   STRAND       27     29       {ECO:0000244|PDB:1CHL}.
+FT   STRAND       32     34       {ECO:0000244|PDB:1CHL}.
+SQ   SEQUENCE   36 AA;  4005 MW;  14A9F57559C6E92A CRC64;
+     MCMPCFTTDH QMARKCDDCC GGKGRGKCYG PQCLCR
+//
+ID   MOKC_ECOLI              Reviewed;          69 AA.
+AC   P33236;
+DT   01-FEB-1994, integrated into UniProtKB/Swiss-Prot.
+DT   11-JUL-2006, sequence version 2.
+DT   24-JUN-2015, entry version 82.
+DE   RecName: Full=Regulatory protein MokC;
+GN   Name=mokC; Synonyms=gefL; OrderedLocusNames=b0018, JW5879;
+OS   Escherichia coli (strain K12).
+OC   Bacteria; Proteobacteria; Gammaproteobacteria; Enterobacteriales;
+OC   Enterobacteriaceae; Escherichia.
+OX   NCBI_TaxID=83333;
+RN   [1]
+RP   NUCLEOTIDE SEQUENCE [GENOMIC DNA].
+RX   PubMed=1943701; DOI=10.1111/j.1365-2958.1991.tb01911.x;
+RA   Poulsen L.K., Refn A., Molin S., Andersson P.;
+RT   "The gef gene from Escherichia coli is regulated at the level of
+RT   translation.";
+RL   Mol. Microbiol. 5:1639-1648(1991).
+RN   [2]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RC   STRAIN=K12 / MG1655 / ATCC 47076;
+RX   PubMed=9278503; DOI=10.1126/science.277.5331.1453;
+RA   Blattner F.R., Plunkett G. III, Bloch C.A., Perna N.T., Burland V.,
+RA   Riley M., Collado-Vides J., Glasner J.D., Rode C.K., Mayhew G.F.,
+RA   Gregor J., Davis N.W., Kirkpatrick H.A., Goeden M.A., Rose D.J.,
+RA   Mau B., Shao Y.;
+RT   "The complete genome sequence of Escherichia coli K-12.";
+RL   Science 277:1453-1462(1997).
+RN   [3]
+RP   NUCLEOTIDE SEQUENCE [LARGE SCALE GENOMIC DNA].
+RC   STRAIN=K12 / W3110 / ATCC 27325 / DSM 5911;
+RX   PubMed=16738553; DOI=10.1038/msb4100049;
+RA   Hayashi K., Morooka N., Yamamoto Y., Fujita K., Isono K., Choi S.,
+RA   Ohtsubo E., Baba T., Wanner B.L., Mori H., Horiuchi T.;
+RT   "Highly accurate genome sequences of Escherichia coli K-12 strains
+RT   MG1655 and W3110.";
+RL   Mol. Syst. Biol. 2:E1-E5(2006).
+RN   [4]
+RP   PROBABLE FUNCTION.
+RX   PubMed=10361310; DOI=10.1046/j.1365-2958.1999.01431.x;
+RA   Pedersen K., Gerdes K.;
+RT   "Multiple hok genes on the chromosome of Escherichia coli.";
+RL   Mol. Microbiol. 32:1090-1102(1999).
+CC   -!- FUNCTION: Overlapping regulatory peptide whose translation enables
+CC       hokC expression. {ECO:0000305}.
+CC   -!- SUBCELLULAR LOCATION: Membrane {ECO:0000305}; Single-pass membrane
+CC       protein {ECO:0000305}.
+CC   -!- SIMILARITY: Belongs to the hok/gef family. {ECO:0000305}.
+CC   -!- CAUTION: Was originally described as a gef leader peptide.
+CC       {ECO:0000305|PubMed:1943701}.
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   EMBL; U00096; AAC73129.1; -; Genomic_DNA.
+DR   EMBL; AP009048; BAB96591.1; -; Genomic_DNA.
+DR   RefSeq; NP_414559.1; NC_000913.3.
+DR   ProteinModelPortal; P33236; -.
+DR   STRING; 511145.b0018; -.
+DR   EnsemblBacteria; AAC73129; AAC73129; b0018.
+DR   EnsemblBacteria; BAB96591; BAB96591; BAB96591.
+DR   GeneID; 944756; -.
+DR   KEGG; ecj:Y75_p0017; -.
+DR   KEGG; eco:b0018; -.
+DR   PATRIC; 32115127; VBIEscCol129921_0015.
+DR   EchoBASE; EB1999; -.
+DR   EcoGene; EG12074; mokC.
+DR   eggNOG; NOG12921; -.
+DR   HOGENOM; HOG000041219; -.
+DR   KO; K18919; -.
+DR   OMA; HKVMIVA; -.
+DR   OrthoDB; EOG6WT8MM; -.
+DR   PhylomeDB; P33236; -.
+DR   BioCyc; EcoCyc:EG10373-MONOMER; -.
+DR   BioCyc; ECOL316407:JW5879-MONOMER; -.
+DR   PRO; PR:P33236; -.
+DR   Proteomes; UP000000318; Chromosome.
+DR   Proteomes; UP000000625; Chromosome.
+DR   GO; GO:0016021; C:integral component of membrane; IEA:UniProtKB-KW.
+DR   InterPro; IPR000021; Hok/gef_toxin.
+DR   InterPro; IPR018084; Hok/gef_toxin_CS.
+DR   Pfam; PF01848; HOK_GEF; 1.
+DR   PRINTS; PR00281; HOKGEFTOXIC.
+DR   ProDom; PD005979; Hok/gef_toxin; 1.
+DR   PROSITE; PS00556; HOK_GEF; 1.
+PE   3: Inferred from homology;
+KW   Complete proteome; Membrane; Reference proteome; Transmembrane;
+KW   Transmembrane helix.
+FT   CHAIN         1     69       Regulatory protein MokC.
+FT                                /FTId=PRO_0000044031.
+FT   TRANSMEM     24     44       Helical. {ECO:0000255}.
+SQ   SEQUENCE   69 AA;  7742 MW;  ED07A98BE0F165B4 CRC64;
+     MLNTCRVPLT DRKVKEKRAM KQHKAMIVAL IVICITAVVA ALVTRKDLCE VHIRTGQTEV
+     AVFTAYESE
+//
+ID   ALL7_OLEEU              Reviewed;          21 AA.
+AC   P81430;
+DT   30-MAY-2000, integrated into UniProtKB/Swiss-Prot.
+DT   26-JUL-2002, sequence version 2.
+DT   01-OCT-2014, entry version 31.
+DE   RecName: Full=Pollen allergen Ole e 7;
+DE   AltName: Full=Allergen Ole e VII;
+DE   AltName: Allergen=Ole e 7;
+DE   Flags: Fragment;
+OS   Olea europaea (Common olive).
+OC   Eukaryota; Viridiplantae; Streptophyta; Embryophyta; Tracheophyta;
+OC   Spermatophyta; Magnoliophyta; eudicotyledons; Gunneridae;
+OC   Pentapetalae; asterids; lamiids; Lamiales; Oleaceae; Oleeae; Olea.
+OX   NCBI_TaxID=4146;
+RN   [1]
+RP   PROTEIN SEQUENCE (VARIANTS A AND B), AND IDENTIFICATION BY MASS
+RP   SPECTROMETRY.
+RC   TISSUE=Pollen;
+RX   PubMed=10518824; DOI=10.1016/S0091-6749(99)70290-3;
+RA   Tejera M.L., Villalba M., Batanero E., Rodriguez R.;
+RT   "Identification, isolation, and characterization of Ole e 7, a new
+RT   allergen of olive tree pollen.";
+RL   J. Allergy Clin. Immunol. 104:797-802(1999).
+RN   [2]
+RP   ALLERGEN.
+RX   PubMed=12173271; DOI=10.1034/j.1398-9995.2002.057s71053.x;
+RA   Florido Lopez J.F., Quiralte Enriquez J.,
+RA   Arias de Saavedra Alias J.M., Saenz de San Pedro B.,
+RA   Martin Casanez E.;
+RT   "An allergen from Olea europaea pollen (Ole e 7) is associated with
+RT   plant-derived food anaphylaxis.";
+RL   Allergy 57:53-59(2002).
+RN   [3]
+RP   IDENTIFICATION BY MASS SPECTROMETRY, AND VARIANTS.
+RX   PubMed=16689547; DOI=10.1021/ac0600508;
+RA   Napoli A., Aiello D., Di Donna L., Sajjad A., Perri E., Sindona G.;
+RT   "Profiling of hydrophilic proteins from Olea europaea olive pollen by
+RT   MALDI TOF mass spectrometry.";
+RL   Anal. Chem. 78:3434-3443(2006).
+RN   [4]
+RP   REVIEW, AND NOMENCLATURE.
+RX   PubMed=22385802; DOI=10.1016/j.talanta.2012.01.016;
+RA   Esteve C., Montealegre C., Marina M.L., Garcia M.C.;
+RT   "Analysis of olive allergens.";
+RL   Talanta 92:1-14(2012).
+CC   -!- POLYMORPHISM: Many isoforms of the allergen exist due to
+CC       polymorphism. They can be classified as isoforms of type A (shown
+CC       here) and isoforms of type B. A microheterogeneity is detected at
+CC       positions 4 and 11 of isoforms of type A and at positions 4, 5, 10
+CC       and 11 of isoforms of type B.
+CC   -!- ALLERGEN: Causes an allergic reaction in human. Allergen from
+CC       olive pollen. Important in Mediterranean countries and California.
+CC       Its prevalence is related to the geographic area.
+CC       {ECO:0000269|PubMed:12173271}.
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   Allergome; 3388; Ole e 7.0101.
+DR   Allergome; 495; Ole e 7.
+PE   1: Evidence at protein level;
+KW   Allergen; Direct protein sequencing; Polymorphism.
+FT   CHAIN         1    >21       Pollen allergen Ole e 7.
+FT                                /FTId=PRO_0000064563.
+FT   VARIANT       5      5       S -> G (in type B).
+FT   VARIANT      10     10       L -> K (in type B).
+FT   VARIANT      18     18       I -> K (in type B).
+FT   NON_TER      21     21
+SQ   SEQUENCE   21 AA;  2199 MW;  F0E9B99FEB079400 CRC64;
+     APSQSTVTAL LTSCVSYIDD Q
+//
