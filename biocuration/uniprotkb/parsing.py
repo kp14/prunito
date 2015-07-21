@@ -29,12 +29,28 @@ class Record():
         return self._bag['ID'][0][1].strip(';')
 
     @property
+    def molecule_type(self):
+        pass
+
+    @property
     def sequence_length(self):
         return int(self._bag['ID'][0][2])
 
     @property
     def accessions(self):
         return list(itertools.chain(*self._bag['AC']))
+
+    @property
+    def created(self):
+        pass
+
+    @property
+    def sequence_update(self):
+        pass
+
+    @property
+    def annotation_update(self):
+        pass
 
     @property
     def primary_accession(self):
@@ -62,6 +78,18 @@ class Record():
     @property
     def organism_classification(self):
         return _flatten_lists(self._bag['OC'])
+
+    @property
+    def taxonomy_id(self):
+        pass
+
+    @property
+    def host_organism(self):
+        pass
+
+    @property
+    def host_taxonomy_id(self):
+        pass
 
     @property
     def references(self):
