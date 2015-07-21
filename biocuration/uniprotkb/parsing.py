@@ -30,7 +30,7 @@ class Record():
 
     @property
     def molecule_type(self):
-        pass
+        return None
 
     @property
     def sequence_length(self):
