@@ -6243,3 +6243,192 @@ SQ   SEQUENCE   536 AA;  62632 MW;  6F33089CB7E6BAC9 CRC64;
      LILSSDLEDS SPRNSQELSL PQDLEEDAQL SDKGVLADRE SPEQPFVVLN KKHLSQTHDT
      VPSSSEPPEK ERRRLKESFE NYRRKRALRK MQNSWRQGEG DHGNTTGSDN TDTEGS
 //
+ID   V_SV5                   Reviewed;         222 AA.
+AC   P11207;
+DT   01-JUL-1989, integrated into UniProtKB/Swiss-Prot.
+DT   01-JUL-1989, sequence version 1.
+DT   24-JUN-2015, entry version 80.
+DE   RecName: Full=Non-structural protein V;
+GN   Name=P/V;
+OS   Simian virus 5 (strain W3) (SV5).
+OC   Viruses; ssRNA viruses; ssRNA negative-strand viruses;
+OC   Mononegavirales; Paramyxoviridae; Paramyxovirinae; Rubulavirus.
+OX   NCBI_TaxID=11208;
+OH   NCBI_TaxID=9615; Canis familiaris (Dog) (Canis lupus familiaris).
+OH   NCBI_TaxID=9606; Homo sapiens (Human).
+RN   [1]
+RP   NUCLEOTIDE SEQUENCE [MRNA], AND RNA EDITING.
+RX   PubMed=3044614; DOI=10.1016/S0092-8674(88)91285-8;
+RA   Thomas S.M., Lamb R.A., Paterson R.G.;
+RT   "Two mRNAs that differ by two nontemplated nucleotides encode the
+RT   amino coterminal proteins P and V of the paramyxovirus SV5.";
+RL   Cell 54:891-902(1988).
+RN   [2]
+RP   INTERACTION WITH PROTEIN NP.
+RX   PubMed=8862406; DOI=10.1006/viro.1996.0513;
+RA   Randall R.E., Bermingham A.;
+RT   "NP:P and NP:V interactions of the paramyxovirus simian virus 5
+RT   examined using a novel protein:protein capture assay.";
+RL   Virology 224:121-129(1996).
+RN   [3]
+RP   RNA-BINDING.
+RX   PubMed=9400618; DOI=10.1006/viro.1997.8866;
+RA   Lin G.Y., Paterson R.G., Lamb R.A.;
+RT   "The RNA binding region of the paramyxovirus SV5 V and P proteins.";
+RL   Virology 238:460-469(1997).
+RN   [4]
+RP   INTERACTION WITH HUMAN IFIH1/MDA5, AND INTERFERON EVASION.
+RX   PubMed=15563593; DOI=10.1073/pnas.0407639101;
+RA   Andrejeva J., Childs K.S., Young D.F., Carlos T.S., Stock N.,
+RA   Goodbourn S., Randall R.E.;
+RT   "The V proteins of paramyxoviruses bind the IFN-inducible RNA
+RT   helicase, mda-5, and inhibit its activation of the IFN-beta
+RT   promoter.";
+RL   Proc. Natl. Acad. Sci. U.S.A. 101:17264-17269(2004).
+RN   [5]
+RP   UBIQUITINATION OF HUMAN STAT1 AND HUMAN STAT2.
+RX   PubMed=15604442; DOI=10.1099/vir.0.80263-0;
+RA   Precious B., Young D.F., Andrejeva L., Goodbourn S., Randall R.E.;
+RT   "In vitro and in vivo specificity of ubiquitination and degradation of
+RT   STAT1 and STAT2 by the V proteins of the paramyxoviruses simian virus
+RT   5 and human parainfluenza virus type 2.";
+RL   J. Gen. Virol. 86:151-158(2005).
+RN   [6]
+RP   FUNCTION.
+RX   PubMed=15950997; DOI=10.1016/j.virol.2005.05.014;
+RA   Lin Y., Horvath F., Aligo J.A., Wilson R., He B.;
+RT   "The role of simian virus 5 V protein on viral RNA synthesis.";
+RL   Virology 338:270-280(2005).
+RN   [7]
+RP   INTERACTION WITH HUMAN DDB1 AND HUMAN STAT2.
+RX   PubMed=16227264; DOI=10.1128/JVI.79.21.13434-13441.2005;
+RA   Precious B., Childs K., Fitzpatrick-Swallow V., Goodbourn S.,
+RA   Randall R.E.;
+RT   "Simian virus 5 V protein acts as an adaptor, linking DDB1 to STAT2,
+RT   to facilitate the ubiquitination of STAT1.";
+RL   J. Virol. 79:13434-13441(2005).
+RN   [8]
+RP   FUNCTION, AND INTERACTION WITH HOST DHX58.
+RX   PubMed=22301134; DOI=10.1128/JVI.06405-11;
+RA   Childs K., Randall R., Goodbourn S.;
+RT   "Paramyxovirus V proteins interact with the RNA Helicase LGP2 to
+RT   inhibit RIG-I-dependent interferon induction.";
+RL   J. Virol. 86:3411-3421(2012).
+RN   [9]
+RP   X-RAY CRYSTALLOGRAPHY (2.85 ANGSTROMS) OF 1-222, AND FUNCTION.
+RX   PubMed=16413485; DOI=10.1016/j.cell.2005.10.033;
+RA   Li T., Chen X., Garbutt K.C., Zhou P., Zheng N.;
+RT   "Structure of DDB1 in complex with a paramyxovirus V protein: viral
+RT   hijack of a propeller cluster in ubiquitin ligase.";
+RL   Cell 124:105-117(2006).
+RN   [10]
+RP   X-RAY CRYSTALLOGRAPHY (3.1 ANGSTROMS) IN COMPLEX WITH HUMAN CUL4A;
+RP   DDB1 AND ROC1, AND FUNCTION.
+RX   PubMed=16964240; DOI=10.1038/nature05175;
+RA   Angers S., Li T., Yi X., MacCoss M.J., Moon R.T., Zheng N.;
+RT   "Molecular architecture and assembly of the DDB1-CUL4A ubiquitin
+RT   ligase machinery.";
+RL   Nature 443:590-593(2006).
+CC   -!- FUNCTION: Plays an essential role in the inhibition of host immune
+CC       response. Prevents the establishment of cellular antiviral state
+CC       by blocking interferon-alpha/beta (IFN-alpha/beta) production and
+CC       signaling pathway. Interacts with host IFIH1/MDA5 and DHX58/LGP2
+CC       to inhibit the transduction pathway involved in the activation of
+CC       IFN-beta promoter, thus protecting the virus against cell
+CC       antiviral state. Efficiently blocks type I IFN signaling following
+CC       infection by behaving as a substrate receptor for CUL4-DDB1 E3
+CC       ligase complex and targeting host STAT1 for proteasomal
+CC       degradation. {ECO:0000269|PubMed:15950997,
+CC       ECO:0000269|PubMed:16413485, ECO:0000269|PubMed:16964240,
+CC       ECO:0000269|PubMed:22301134}.
+CC   -!- SUBUNIT: Interacts with host DDB1, STAT2 and IFIH1/MDA5.
+CC       {ECO:0000269|PubMed:15563593, ECO:0000269|PubMed:16227264,
+CC       ECO:0000269|PubMed:16964240, ECO:0000269|PubMed:22301134,
+CC       ECO:0000269|PubMed:8862406}.
+CC   -!- INTERACTION:
+CC       Q16531:DDB1 (xeno); NbExp=3; IntAct=EBI-6148694, EBI-350322;
+CC       Q96C10:DHX58 (xeno); NbExp=2; IntAct=EBI-6148694, EBI-744193;
+CC       Q9BYX4:IFIH1 (xeno); NbExp=2; IntAct=EBI-6148694, EBI-6115771;
+CC       P52630:STAT2 (xeno); NbExp=2; IntAct=EBI-6148694, EBI-1546963;
+CC   -!- SUBCELLULAR LOCATION: Host cytoplasm {ECO:0000250}.
+CC   -!- RNA EDITING: Modified_positions=164 {ECO:0000269|PubMed:3044614};
+CC       Note=Partially edited. RNA editing at this position consists of an
+CC       insertion of two guanine nucleotides. The sequence displayed here
+CC       is the V protein, derived from the unedited RNA. The edited RNA
+CC       gives rise to the P protein (AC P11208).;
+CC   -!- SIMILARITY: Belongs to the paramyxoviruses V protein family.
+CC       {ECO:0000305}.
+CC   -----------------------------------------------------------------------
+CC   Copyrighted by the UniProt Consortium, see http://www.uniprot.org/terms
+CC   Distributed under the Creative Commons Attribution-NoDerivs License
+CC   -----------------------------------------------------------------------
+DR   EMBL; J03142; AAA47882.1; -; mRNA.
+DR   EMBL; AF052755; AAC95512.1; -; Genomic_RNA.
+DR   PIR; A31594; MNNZSP.
+DR   RefSeq; YP_138513.1; NC_006430.1.
+DR   PDB; 2B5L; X-ray; 2.85 A; C/D=1-222.
+DR   PDB; 2HYE; X-ray; 3.10 A; B=1-222.
+DR   PDB; 2K48; NMR; -; A=95-108.
+DR   PDB; 4I1S; X-ray; 2.29 A; B=168-219.
+DR   PDBsum; 2B5L; -.
+DR   PDBsum; 2HYE; -.
+DR   PDBsum; 2K48; -.
+DR   PDBsum; 4I1S; -.
+DR   ProteinModelPortal; P11207; -.
+DR   SMR; P11207; 10-222.
+DR   DIP; DIP-48759N; -.
+DR   IntAct; P11207; 6.
+DR   MINT; MINT-6623137; -.
+DR   GeneID; 3160800; -.
+DR   KEGG; vg:3160800; -.
+DR   EvolutionaryTrace; P11207; -.
+DR   Proteomes; UP000007232; Genome.
+DR   GO; GO:0030430; C:host cell cytoplasm; IEA:UniProtKB-SubCell.
+DR   GO; GO:0046872; F:metal ion binding; IEA:UniProtKB-KW.
+DR   GO; GO:0003723; F:RNA binding; IEA:UniProtKB-KW.
+DR   GO; GO:0039554; P:suppression by virus of host MDA-5 activity; IDA:CACAO.
+DR   GO; GO:0039563; P:suppression by virus of host STAT1 activity; IEA:UniProtKB-KW.
+DR   GO; GO:0039502; P:suppression by virus of host type I interferon-mediated signaling pathway; IEA:UniProtKB-KW.
+DR   InterPro; IPR024279; Paramyx_V_Zn-bd.
+DR   InterPro; IPR025909; Soyouz_module.
+DR   Pfam; PF14313; Soyouz_module; 1.
+DR   Pfam; PF13008; zf-Paramyx-P; 1.
+PE   1: Evidence at protein level;
+KW   3D-structure; Complete proteome; Host cytoplasm;
+KW   Host-virus interaction;
+KW   Inhibition of host innate immune response by virus;
+KW   Inhibition of host interferon signaling pathway by virus;
+KW   Inhibition of host MDA5 by virus;
+KW   Inhibition of host RLR pathway by virus;
+KW   Inhibition of host STAT1 by virus;
+KW   Interferon antiviral system evasion; Metal-binding; RNA editing;
+KW   RNA-binding; Ubl conjugation pathway; Viral immunoevasion; Zinc.
+FT   CHAIN         1    222       Non-structural protein V.
+FT                                /FTId=PRO_0000142830.
+FT   METAL       171    171       Zinc 1.
+FT   METAL       190    190       Zinc 1.
+FT   METAL       194    194       Zinc 2.
+FT   METAL       206    206       Zinc 2.
+FT   METAL       208    208       Zinc 2.
+FT   METAL       211    211       Zinc 2.
+FT   METAL       215    215       Zinc 1.
+FT   METAL       218    218       Zinc 1.
+FT   HELIX        23     32       {ECO:0000244|PDB:2B5L}.
+FT   STRAND       95     97       {ECO:0000244|PDB:2B5L}.
+FT   TURN        101    104       {ECO:0000244|PDB:2B5L}.
+FT   STRAND      109    116       {ECO:0000244|PDB:2B5L}.
+FT   STRAND      119    121       {ECO:0000244|PDB:2B5L}.
+FT   HELIX       127    138       {ECO:0000244|PDB:2B5L}.
+FT   STRAND      143    146       {ECO:0000244|PDB:2B5L}.
+FT   STRAND      164    167       {ECO:0000244|PDB:2B5L}.
+FT   STRAND      170    180       {ECO:0000244|PDB:4I1S}.
+FT   STRAND      183    192       {ECO:0000244|PDB:4I1S}.
+FT   STRAND      202    204       {ECO:0000244|PDB:2B5L}.
+FT   STRAND      207    209       {ECO:0000244|PDB:4I1S}.
+FT   HELIX       216    218       {ECO:0000244|PDB:4I1S}.
+SQ   SEQUENCE   222 AA;  23935 MW;  13D2F1627D15AFA3 CRC64;
+     MDPTDLSFSP DEINKLIETG LNTVEYFTSQ QVTGTSSLGK NTIPPGVTGL LTNAAEAKIQ
+     ESTNHQKGSV GGGAKPKKPR PKIAIVPADD KTVPGKPIPN PLLGLDSTPS TQTVLDLSGK
+     TLPSGSYKGV KLAKFGKENL MTRFIEEPRE NPIATSSPID FKRGRDTGGF HRREYSIGWV
+     GDEVKVTEWC NPSCSPITAA ARRFECTCHQ CPVTCSECER DT
+//
