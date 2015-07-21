@@ -348,7 +348,7 @@ def _parse_ft(line):
     # split on two or more white spaces
     delim = re.compile('  +')
     tokens = re.split(delim, line)
-    if len(tokens) == 4:
+    if len(tokens) >= 3 and len(tokens) <= 4:
         try:
             tokens[1] = int(tokens[1])
         except ValueError:
