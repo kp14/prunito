@@ -90,11 +90,20 @@ class Record():
 
     @property
     def host_organism(self):
-        pass
+        orgs = []
+        for oh_line in self._bag['OH']:
+            _, org = oh_line.strip('.').split('; ')
+            orgs.append(org)
+        return orgs
 
     @property
     def host_taxonomy_id(self):
-        pass
+        ids = []
+        for oh_line in self._bag['OH']:
+            id_string, _ = oh_line.strip('.').split('; ')
+            _, taxid = id_string.split('=')
+            ids.append(taxid)
+        return ids
 
     @property
     def references(self):
