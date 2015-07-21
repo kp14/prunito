@@ -42,18 +42,18 @@ class Record():
 
     @property
     def created(self):
-        date, _ = self._bag['DT'][0].split(', ')
+        date, _ = self._bag['DT'][0].strip('.').split(', ')
         return (date, 0) # Version is always zero here
 
     @property
     def sequence_update(self):
-        date, version_string = self._bag['DT'][1].split(', ')
+        date, version_string = self._bag['DT'][1].strip('.').split(', ')
         version_split = version_string.split()
         return (date, int(version_split[2]))
 
     @property
     def annotation_update(self):
-        date, version_string = self._bag['DT'][2].split(', ')
+        date, version_string = self._bag['DT'][2].strip('.').split(', ')
         version_split = version_string.split()
         return (date, int(version_split[2]))
 

@@ -19,8 +19,12 @@ datafile = os.path.join(base_dir, 'SwissProt', filename)
 
 PROPS = ['entry_name',
          'data_class',
+         'molecule_type',
          'sequence_length',
          'accessions',
+         'created',
+         'sequence_update',
+         'annotation_update',
          'description',
          'gene_name',
          'organism',
