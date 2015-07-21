@@ -86,7 +86,7 @@ class Record():
 
     @property
     def taxonomy_id(self):
-        pass
+        return self._bag['OX']
 
     @property
     def host_organism(self):
@@ -314,7 +314,7 @@ def _parse_taxid(line):
 
     """
     tokens = line.split('=')
-    taxid = tokens[-1].strip(LINE_ENDINGS)
+    taxid = tokens[1].strip(';')
     return taxid
 
 
