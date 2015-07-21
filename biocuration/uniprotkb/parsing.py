@@ -71,7 +71,7 @@ class Record():
 
     @property
     def organism(self):
-        return self._bag['OS'][0]
+        return ' '.join(self._bag['OS'])
 
     @property
     def organelle(self):
