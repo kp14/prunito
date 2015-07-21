@@ -59,7 +59,8 @@ def pytest_generate_tests(metafunc):
     saves having to code the test manually. We can also use an arbitray set of
     entries to test.
 
-    ALTERNATIVE PRODUCTS are right now marked as expected failures as my parser
+    ALTERNATIVE PRODUCTS, COFACTOR and BIOPHYSICOCHEMICAL PROPS are right now
+    marked as expected failures as my parser
     strips out some white space as opposed to the biopython one.
     '''
     if 'my_annotation' and 'biopy_annotation' in metafunc.fixturenames:
