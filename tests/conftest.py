@@ -70,8 +70,18 @@ def pytest_generate_tests(metafunc):
                     comments = []
                     for my_comment, biopy_comment in zip(getattr(my_record, prop),
                                                          getattr(record, prop)):
-                        if my_comment.startswith('ALTERNATIVE PRODUCTS'):
+                        if my_comment[:8] in ('COFACTOR',
+                                              'ALTERNAT',
+                                              'BIOPHYSI'):
+                            # There is less white space here vs. the biopython
+                            # parser, so we expect these comparisons to fail.
                             tple = pytest.mark.xfail((my_comment, biopy_comment))
+                            # Add this to the list right away
+                            comments.append(tple)
+                            # Then go on to construct new tuples with the white
+                            # space stripped out which should pass tests.
+                            tple = (my_comment.replace(' ', ''),
+                                    biopy_comment.replace(' ', ''))
                         else:
                             tple = (my_comment, biopy_comment)
                         comments.append(tple)
