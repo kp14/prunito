@@ -6,7 +6,7 @@ def readme():
         return f.read()
 
 setup(name='biocuration',
-      version='0.6.2',
+      version='0.6.3',
       description='A collection of tools for protein biocuration.',
       long_description=readme(),
       classifiers=[
