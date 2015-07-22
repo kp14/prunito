@@ -1,5 +1,5 @@
 # coding: utf-8
-import functools
+#import functools
 import itertools
 import logging
 import re
@@ -113,7 +113,7 @@ class Record():
         return ref_list
 
     @property
-    @functools.lru_cache(maxsize=1)
+    #@functools.lru_cache(maxsize=1)
     def comments(self):
         concat = ' '.join(self._bag['CC'])
         topics = concat.split('-!- ')
@@ -129,7 +129,7 @@ class Record():
         return _flatten_lists(self._bag['KW'])
 
     @property
-    @functools.lru_cache(maxsize=1)
+    #@functools.lru_cache(maxsize=1)
     def seqinfo(self):
         tokens = self._bag['SQ'][0].split()
         length = int(tokens[1])
@@ -138,7 +138,7 @@ class Record():
         return (length, mol_weight, crc64)
 
     @property
-    @functools.lru_cache(maxsize=1)
+    #@functools.lru_cache(maxsize=1)
     def features(self):
         feature_list = []
         for item in self._bag['FT']:
