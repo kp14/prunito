@@ -140,39 +140,43 @@ class Record():
     @property
     #@functools.lru_cache(maxsize=1)
     def features(self):
-        feature_list = []
-        for item in self._bag['FT']:
-            logging.info('Looking at feature: {}'.format(item))
-            item_length = len(item)
-            if item_length == 4:
-                feature_list.append(item)
-            elif item_length == 1:
-                if item[0].startswith('/FTId='):
-                    stripped = item[0].strip('.;')
-                    try:
-                        feature_list[-1].append(stripped[6:])
-                    except IndexError:
-                        print(feature_list, item, stripped)
-                        raise Exception
+        try:
+            return self._features
+        except AttributeError:
+            feature_list = []
+            for item in self._bag['FT']:
+                logging.info('Looking at feature: {}'.format(item))
+                item_length = len(item)
+                if item_length == 4:
+                    feature_list.append(item)
+                elif item_length == 1:
+                    if item[0].startswith('/FTId='):
+                        stripped = item[0].strip('.;')
+                        try:
+                            feature_list[-1].append(stripped[6:])
+                        except IndexError:
+                            print(feature_list, item, stripped)
+                            raise Exception
+                    else:
+                        last_item = feature_list[-1].pop()
+                        extended_item = ' '.join([last_item, item[0]])
+                        try:
+                            feature_list[-1].append(extended_item)
+                        except IndexError:
+                            print(feature_list, item, extended_item, last_item)
+                            raise Exception
+                elif item_length == 3:
+                    item.append('')
+                    feature_list.append(item)
                 else:
-                    last_item = feature_list[-1].pop()
-                    extended_item = ' '.join([last_item, item[0]])
-                    try:
-                        feature_list[-1].append(extended_item)
-                    except IndexError:
-                        print(feature_list, item, extended_item, last_item)
-                        raise Exception
-            elif item_length == 3:
-                item.append('')
-                feature_list.append(item)
-            else:
-                logging.ERROR('Feature of wrong length: {}'.format(item))
-                raise ValueError('ERROR in feature: {}'.format(item_length))
-        for item in feature_list:
-            if len(item) == 4:
-                item.append('')
-        tuple_list = [tuple(item) for item in feature_list]
-        return tuple_list
+                    logging.error('Feature of wrong length: {}'.format(item))
+                    raise ValueError('ERROR in feature: {}'.format(item_length))
+            for item in feature_list:
+                if len(item) == 4:
+                    item.append('')
+            tuple_list = [tuple(item) for item in feature_list]
+            self._features = tuple_list
+            return self._features
 
     @property
     def sequence(self):
@@ -359,6 +363,7 @@ def _parse_ft(line):
             tokens[2] = int(tokens[2])
         except ValueError:
             pass
+    logging.info('Parsed FT: {}'.format(tokens))
     return tokens
 
 
