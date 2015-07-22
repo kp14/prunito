@@ -142,6 +142,7 @@ class Record():
     def features(self):
         feature_list = []
         for item in self._bag['FT']:
+            logging.info('Looking at feature: {}'.format(item))
             item_length = len(item)
             if item_length == 4:
                 feature_list.append(item)
@@ -165,7 +166,7 @@ class Record():
                 item.append('')
                 feature_list.append(item)
             else:
-                print(item)
+                logging.ERROR('Feature of wrong length: {}'.format(item))
                 raise ValueError('ERROR in feature: {}'.format(item_length))
         for item in feature_list:
             if len(item) == 4:
