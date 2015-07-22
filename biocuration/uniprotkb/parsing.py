@@ -165,7 +165,8 @@ class Record():
                 item.append('')
                 feature_list.append(item)
             else:
-                raise Exception
+                print(item)
+                raise ValueError('ERROR in feature: {}'.format(item_length))
         for item in feature_list:
             if len(item) == 4:
                 item.append('')
@@ -322,8 +323,8 @@ def _parse_taxid(line):
     :returns: TODO
 
     """
-    tokens = line.split('=')
-    taxid = tokens[1].strip(';')
+    _, id_string = line.strip(';').split('=')
+    taxid = id_string.split()[0]
     return taxid
 
 
