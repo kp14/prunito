@@ -34,6 +34,14 @@ QUICKGO_SEARCH = "http://http://www.ebi.ac.uk/QuickGO/GSearch"
 
 
 ##############################################################
+# General purpose functions
+##############################################################
+
+def is_value_in_iterable(val, iterable):
+    '''Test whther values is contained in iterable like list or set'''
+    return val in iterable
+
+##############################################################
 # General purpose regular expressions
 ##############################################################
 
