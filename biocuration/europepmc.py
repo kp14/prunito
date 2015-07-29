@@ -19,8 +19,7 @@ Optional parameters:
             lite: returns key metadata for the given search terms (default).
             core: returns full metadata for a given
                 publication ID; including abstract, full text
-                links, and MeSH terms.dataset: metadata,
-                fulltext (default=metadata)
+                links, and MeSH terms.
 
 `page`: Specify the results page you wish to retrieve, where
         applicable. Page length of 25 and page numbers start
@@ -40,35 +39,53 @@ import urllib
 from collections import OrderedDict
 
 
-def search(query, fmt='json', resulttype='lite', page='1',
-           dataset='metadata', callback=None):
+def search(query,
+           fmt='json',
+           resulttype='lite',
+           page='1',
+           callback=None):
     """Search with default values for all parameters.
     Returns JSON data.
     """
-    result = _search(query, fmt=fmt, resulttype=resulttype,
-                     page=page, dataset=dataset, callback=callback)
+    result = _search(query,
+                     fmt=fmt,
+                     resulttype=resulttype,
+                     page=page,
+                     callback=callback)
     return result
 
 
-def search_fulltext(query, fmt='json', resulttype='',
-                    dataset='fulltext', page='1', callback=None):
+def search_fulltext(query,
+                    fmt='json',
+                    resulttype='',
+                    page='1',
+                    callback=None):
     """Search fulltext articles only.
     Returns JSON data.
     """
-    result = _search(query, fmt=fmt, resulttype=resulttype,
-                     page=page, dataset=dataset, callback=callback)
+    result = _search(query,
+                     fmt=fmt,
+                     resulttype=resulttype,
+                     page=page,
+                     callback=callback)
     return result
 
 
 def retrieve_pmid(pmid):
     query = 'ext_id:{}'.format(str(pmid))
-    result = _search(query, fmt='json', resulttype='core',
-                     page='1', dataset='metadata', callback=None)
+    result = _search(query,
+                     fmt='json',
+                     resulttype='core',
+                     page='1',
+                     callback=None)
     return result
 
 
-def _search(query, fmt='json', resulttype='lite', page='1',
-            dataset='metadata', callback=None):
+def _search(query,
+            fmt='json',
+            resulttype='lite',
+            page='1',
+            callback=None):
     """Does all the heavy lifting.
 
     JSON is always returned.
@@ -81,7 +98,6 @@ def _search(query, fmt='json', resulttype='lite', page='1',
     payload['format'] = fmt
     payload['resulttype'] = resulttype
     payload['page'] = page
-    payload['dataset'] = dataset
 
     if callback is not None:
         payload['callback'] = callback
