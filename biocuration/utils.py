@@ -8,17 +8,20 @@ from enum import Enum
 # Base URLs for various resources
 ##############################################################
 
+UNIPROT_BASE = 'http://www.uniprot.org'
+
 # Example: http://www.uniprot.org/uniprot/?query=name%3Dtest&sort=score
-UNIPROT_KNOWLEDGEBASE = "http://www.uniprot.org/uniprot"
+UNIPROT_KNOWLEDGEBASE = '/'.join([UNIPROT_BASE, 'uniprot'])
 
 # Example: http://www.uniprot.org/keywords/?query=antibiotic
-UNIPROT_KEYWORD = "http://www.uniprot.org/keywords"
+UNIPROT_KEYWORD = '/'.join([UNIPROT_BASE, 'keywords'])
 
 # Example: http://www.uniprot.org/taxonomy/?query=bactus
-UNIPROT_TAXONOMY = "http://www.uniprot.org/taxonomy"
+UNIPROT_TAXONOMY = '/'.join([UNIPROT_BASE, 'taxonomy'])
 
-# Example:
-UNIPROT_BATCH = "http://www.uniprot.org/batch"
+UNIPROT_BATCH = '/'.join([UNIPROT_BASE, 'batch'])
+
+UNIPROT_CONVERT = '/'.join([UNIPROT_BASE, 'convert'])
 
 # Example: http://www.ebi.ac.uk/interpro/search?q=kinase
 INTERPRO_SEARCH = "http://www.ebi.ac.uk/interpro/search"
