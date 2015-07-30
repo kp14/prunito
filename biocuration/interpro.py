@@ -4,13 +4,30 @@ Created on Tue Jun 16 14:57:52 2015
 
 @author: kp14
 """
+import requests
 import sys
 import biocuration.uniprotkb.searching as us
-from biocuration.utils import InterProXrefs
+from biocuration.utils import InterProXrefs, EBI_HMMER
 try:
     import venn.draw as vd
 except ImportError:
     sys.exit('Depends on the `venn` package.')
+
+
+def search_phmmer(seq=None, seqdb=None, fmt='json'):
+    return _search_hmmer(seq=seq, seqdb=seqdb, fmt=fmt )
+
+
+def _search_hmmer(seq=None, seqdb=None, tool='phmmer', fmt='json'):
+    session = requests.Session()
+    payload = {'seqdb': seqdb,
+               'seq': seq,
+              }
+    url = '/'.join([EBI_HMMER, tool])
+    posted = session.post(url, data=payload)
+    if posted.ok:
+        results = session.get(posted.headers['location'], headers={'Accept': 'application/json'})
+        return results.json()
 
 
 def draw_signature_overlaps(list_of_signatures, mode='save'):
@@ -62,4 +79,7 @@ def _get_signature_hit_list(sig):
 
 
 if __name__ == '__main__':
-    draw_signature_overlaps(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
+    res = search_phmmer(seq='>Seq\nKLRVLGYHNGEWCEAQTKNGQGWVPSNYITPVNSLENSIDKHSWYHGPVSRNAAEY',
+                        seqdb='pdb')
+    print(res)
+    #draw_signature_overlaps(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
