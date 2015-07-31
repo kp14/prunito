@@ -51,7 +51,7 @@ def search_phmmer(seq=None, seqdb=None, output='json', **kwargs):
 def _search_hmmer(tool='phmmer',
                   seq=None,
                   seqdb=None,
-                  output='json',
+                  output=None,
                   hits=None,
                   return_alignments=False,
                   e=None,
@@ -70,14 +70,17 @@ def _search_hmmer(tool='phmmer',
     url = '/'.join([EBI_HMMER, tool])
     posted = session.post(url, data=payload, allow_redirects=False)
     if posted.ok:
-        time.sleep(5)
+        time.sleep(3)
         output_values = {'output': output,
                          }
         if hits:
             output_values['range'] = str(hits[0]) + ',' + str(hits[1])
         results = session.get(posted.headers['location'], data=output_values)
         #results = session.get(posted.headers['location'], headers={'Accept': 'application/json'})
-        return results.json()
+        if output == 'json':
+            return results.json()
+        else:
+            return results.content.decode('utf-8')
 
 
 def draw_signature_overlaps(list_of_signatures, mode='save'):
@@ -160,6 +163,7 @@ _HMMER_PARAMS = {'seqdb': ('pdb',
 if __name__ == '__main__':
     import json
     res = search_phmmer(seq='>Seq\nKLRVLGYHNGEWCEAQTKNGQGWVPSNYITPVNSLENSIDKHSWYHGPVSRNAAEY',
-                        seqdb='swissprot', hits=(1,1))
-    print(json.dumps(res, sort_keys=True, indent=4))
+                        seqdb='swissprot', hits=(1,1), output='text')
+    print(res)
+    #print(json.dumps(res, sort_keys=True, indent=4))
     #draw_signature_overlaps(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
