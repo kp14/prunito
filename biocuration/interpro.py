@@ -6,6 +6,8 @@ Created on Tue Jun 16 14:57:52 2015
 """
 import requests
 import sys
+import time
+
 import biocuration.uniprotkb.searching as us
 from biocuration.utils import InterProXrefs, EBI_HMMER
 try:
@@ -24,9 +26,14 @@ def _search_hmmer(seq=None, seqdb=None, tool='phmmer', fmt='json'):
                'seq': seq,
               }
     url = '/'.join([EBI_HMMER, tool])
-    posted = session.post(url, data=payload)
+    posted = session.post(url, data=payload, allow_redirects=False)
     if posted.ok:
-        results = session.get(posted.headers['location'], headers={'Accept': 'application/json'})
+        time.sleep(5)
+        output_values = {'output': 'json',
+                         'range': '1,10', # return only 10 hits
+                         }
+        results = session.get(posted.headers['location'], data=output_values)
+        #results = session.get(posted.headers['location'], headers={'Accept': 'application/json'})
         return results.json()
 
 
@@ -38,7 +45,8 @@ def draw_signature_overlaps(list_of_signatures, mode='save'):
     mode: 'save' or 'ipython'; defaults to save
 
     Returns:
-    Rendered SVG Venn diagram; wrapped in SVG() container if mode ipython
+    Saved rendered SVG Venn diagram; wrapped in SVG() container if mode ipython
+    Outputfile name: sig1_sig2_..._sigN.svg
     '''
     res_sets = []
     for sig in list_of_signatures:
@@ -79,7 +87,8 @@ def _get_signature_hit_list(sig):
 
 
 if __name__ == '__main__':
+    import json
     res = search_phmmer(seq='>Seq\nKLRVLGYHNGEWCEAQTKNGQGWVPSNYITPVNSLENSIDKHSWYHGPVSRNAAEY',
-                        seqdb='pdb')
-    print(res)
+                        seqdb='swissprot')
+    print(json.dumps(res, sort_keys=True, indent=4))
     #draw_signature_overlaps(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
