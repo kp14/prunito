@@ -9,18 +9,30 @@ import sys
 import time
 
 import biocuration.uniprotkb.searching as us
-from biocuration.utils import InterProXrefs, EBI_HMMER
+from biocuration.utils import InterProXrefs, EBI_HMMER, validate_param
 try:
     import venn.draw as vd
 except ImportError:
     sys.exit('Depends on the `venn` package.')
 
 
-def search_phmmer(seq=None, seqdb=None, fmt='json'):
-    return _search_hmmer(seq=seq, seqdb=seqdb, fmt=fmt )
+def search_phmmer(seq=None, seqdb=None, output='json', **kwargs):
+    return _search_hmmer(seq=seq, seqdb=seqdb, output=output, **kwargs )
 
 
-def _search_hmmer(seq=None, seqdb=None, tool='phmmer', fmt='json'):
+def _search_hmmer(tool='phmmer',
+                  seq=None,
+                  seqdb=None,
+                  output='json',
+                  hits=None,
+                  return_alignments=False,
+                  e=None,
+                  domE=None,
+                  incE=None,
+                  incdomE=None):
+    validate_param('seqdb', seqdb, _HMMER_PARAMS['seqdb'])
+    validate_param('tool', tool, _HMMER_PARAMS['tool'])
+    validate_param('output', output, _HMMER_PARAMS['output'])
     session = requests.Session()
     payload = {'seqdb': seqdb,
                'seq': seq,
@@ -29,9 +41,10 @@ def _search_hmmer(seq=None, seqdb=None, tool='phmmer', fmt='json'):
     posted = session.post(url, data=payload, allow_redirects=False)
     if posted.ok:
         time.sleep(5)
-        output_values = {'output': 'json',
-                         'range': '1,10', # return only 10 hits
+        output_values = {'output': output,
                          }
+        if hits:
+            output_values['range'] = str(hits[0]) + ',' + str(hits[1])
         results = session.get(posted.headers['location'], data=output_values)
         #results = session.get(posted.headers['location'], headers={'Accept': 'application/json'})
         return results.json()
@@ -86,9 +99,37 @@ def _get_signature_hit_list(sig):
     return result_set
 
 
+_HMMER_PARAMS = {'seqdb': ('pdb',
+                           'swissprot',
+                           'uniprotkb',
+                           'rp15',
+                           'rp35',
+                           'rp55',
+                           'rp75',
+                           'uniprotrefprot',
+                           'pfamseq',
+                           'qfo'
+                           ),
+                'hmmdb': ('pfam',
+                          'gene3d',
+                          'tigrfam',
+                          'superfam',
+                          ),
+                'tool': ('phmmer',
+                         'hmmsearch',
+                         'jackhmmer',
+                         'hmmscan',
+                         ),
+                'output': ('json',
+                           'xml',
+                           'text',
+                           'yaml',
+                          ),
+                }
+
 if __name__ == '__main__':
     import json
     res = search_phmmer(seq='>Seq\nKLRVLGYHNGEWCEAQTKNGQGWVPSNYITPVNSLENSIDKHSWYHGPVSRNAAEY',
-                        seqdb='swissprot')
+                        seqdb='swissprot', hits=(1,1))
     print(json.dumps(res, sort_keys=True, indent=4))
     #draw_signature_overlaps(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
