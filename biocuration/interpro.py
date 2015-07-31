@@ -17,6 +17,34 @@ except ImportError:
 
 
 def search_phmmer(seq=None, seqdb=None, output='json', **kwargs):
+    '''Run a protein sequence against a sequence DB using phmmer.
+
+    The input sequence can either be provided in FASTA format or alternatively
+    as a retrievable accession number, e.g. a UniprotKB accession.
+
+    Parameters:
+
+    seq: input sequence in FASTA format; string; cannot be used together with `acc`
+
+    acc: accession of sequence to run; cannot be used together with `seq`
+
+    seqdb: sequence database to run search against;
+           Possible values: uniprotkb, swissprot, pdb, rp15, rp35, rp55, rp75,
+                            uniprotrefprot, pfamseq, qfo
+
+    output: format of output; default: json
+            Possible values: json, text, xml, yaml
+
+    hits: humber of results to retrieve; has to be specified as tuple if ints
+
+    return_alignments: set to True of alignments should be retrieved
+
+    e: E value cutoff for returned hits
+    ...
+
+    Returns:
+    string in chosen format
+    '''
     return _search_hmmer(seq=seq, seqdb=seqdb, output=output, **kwargs )
 
 
@@ -30,6 +58,8 @@ def _search_hmmer(tool='phmmer',
                   domE=None,
                   incE=None,
                   incdomE=None):
+    '''Some docs
+    '''
     validate_param('seqdb', seqdb, _HMMER_PARAMS['seqdb'])
     validate_param('tool', tool, _HMMER_PARAMS['tool'])
     validate_param('output', output, _HMMER_PARAMS['output'])
