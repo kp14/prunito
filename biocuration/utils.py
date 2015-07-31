@@ -27,7 +27,7 @@ UNIPROT_CONVERT = '/'.join([UNIPROT_BASE, 'convert'])
 INTERPRO_SEARCH = "http://www.ebi.ac.uk/interpro/search"
 
 # EBI HMMER
-EBI_HMMER = 'http://www.ebi.ac.uk/Tools/hmmer/search/'
+EBI_HMMER = 'http://www.ebi.ac.uk/Tools/hmmer/search'
 
 # Example: http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0006915
 QUICKGO_ID = "http://http://www.ebi.ac.uk/QuickGO/GTerm"
