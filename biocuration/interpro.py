@@ -88,7 +88,7 @@ def draw_signature_overlaps(list_of_signatures, mode='save'):
 
     Parameters:
     list_of_signatures: list of InterPro xref identifiers
-    mode: 'save' or 'ipython'; defaults to save
+    mode: 'save', 'ipython', 'raw'; defaults to save
 
     Returns:
     Saved rendered SVG Venn diagram; wrapped in SVG() container if mode ipython
@@ -108,10 +108,13 @@ def draw_signature_overlaps(list_of_signatures, mode='save'):
         except ImportError:
             sys.exit('Drawing depends on IPython.')
 
-    if mode == 'save':
+    elif mode == 'save':
         name = '_'.join(list_of_signatures) + '.svg'
         with open(name, 'w') as svg:
             svg.write(rendered_diagram)
+
+    elif mode == 'raw':
+        return rendered_diagram
 
 
 def _get_signature_hit_list(sig):
