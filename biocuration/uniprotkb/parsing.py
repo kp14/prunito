@@ -250,7 +250,7 @@ def parse_txt(handle):
     bag, context = _set_up()
     for line in handle:
         line_type, line = line[:2], line[5:]
-        stripped_line = line.strip(LINE_ENDINGS)
+        stripped_line = line.rstrip(LINE_ENDINGS)
 #        stripped_line = line
         try:
             if line_type.startswith('R'):
@@ -351,21 +351,51 @@ def _parse_kw(line):
 
 
 def _parse_ft(line):
-    # split on two or more white spaces
-    delim = re.compile('  +')
-    tokens = re.split(delim, line)
-    if len(tokens) >= 3 and len(tokens) <= 4:
-        try:
-            tokens[1] = int(tokens[1])
-        except ValueError:
-            pass
-        try:
-            tokens[2] = int(tokens[2])
-        except ValueError:
-            pass
-    logging.info('Parsed FT: {}'.format(tokens))
-    return tokens
+    '''Parses components of a UniProt flatfile FT line.
 
+    FT lines follow the following format:
+    [FT   ]KEY      x      y       Description.
+    Assuming a maximum value for x or y of 99999, which seems OK as
+    the longest sequences are about 35000 amino acids, there will
+    always be at least a 2-space gap between KEY-x and x-y. The gap
+    between y-description will always be a 7-space one. X and y can
+    be numbers or of format >123 etc.
+
+    Returns:
+    list
+    '''
+    separator_description_from_end_pos = ' {7}'
+    separator_key_and_positions = '  +'
+    feature = []
+    rest = None
+
+    if line.startswith(' '):
+        description = line.strip()
+    else:
+        try:
+            rest, description = re.split(separator_description_from_end_pos, line)
+        except ValueError:
+            tokens = re.split(separator_description_from_end_pos, line)
+            description = tokens[-1]
+            rest = '       '.join(tokens[:-1])
+
+    if rest:
+        try:
+            key, start, end = re.split(separator_key_and_positions, rest)
+            try:
+                start = int(start)
+            except ValueError:
+                pass
+            try:
+                end = int(end)
+            except ValueError:
+                pass
+            feature = [key, start, end]
+        except ValueError:
+            raise
+    feature.append(description)
+    logging.info('Parsed FT: {}'.format(feature))
+    return feature
 
 
 PARSER_MAP = {"ID": _parse_id,
