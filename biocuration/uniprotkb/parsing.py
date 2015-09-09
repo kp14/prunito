@@ -356,44 +356,37 @@ def _parse_ft(line):
     FT lines follow the following format:
     [FT   ]KEY      x      y       Description.
     Assuming a maximum value for x or y of 99999, which seems OK as
-    the longest sequences are about 35000 amino acids, there will
-    always be at least a 2-space gap between KEY-x and x-y. The gap
-    between y-description will always be a 7-space one. X and y can
+    the longest sequences are about 35000 amino acids. X and y can
     be numbers or of format >123 etc.
 
     Returns:
     list
     '''
-    separator_description_from_end_pos = ' {7}'
-    separator_key_and_positions = '  +'
+
     feature = []
-    rest = None
 
-    if line.startswith(' '):
-        description = line.strip()
-    else:
-        try:
-            rest, description = re.split(separator_description_from_end_pos, line)
-        except ValueError:
-            tokens = re.split(separator_description_from_end_pos, line)
-            description = tokens[-1]
-            rest = '       '.join(tokens[:-1])
+    key = line[0:8].strip()
+    start = line[10:15].strip()
+    end = line[17:22].strip()
+    description = line[30:].strip()
 
-    if rest:
+    if not key == '':
+        feature.append(key)
+    if not start == '':
         try:
-            key, start, end = re.split(separator_key_and_positions, rest)
-            try:
-                start = int(start)
-            except ValueError:
-                pass
-            try:
-                end = int(end)
-            except ValueError:
-                pass
-            feature = [key, start, end]
+            start = int(start)
         except ValueError:
-            raise
-    feature.append(description)
+            pass
+        feature.append(start)
+    if not end == '':
+        try:
+            end = int(end)
+        except ValueError:
+            pass
+        feature.append(end)
+    if not description == '':
+        feature.append(description)
+    assert len(feature) in [1, 3, 4]
     logging.info('Parsed FT: {}'.format(feature))
     return feature
 
