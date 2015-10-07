@@ -145,7 +145,7 @@ class Record():
         except AttributeError:
             feature_list = []
             for item in self._bag['FT']:
-                logging.info('Looking at feature: {}'.format(item))
+                logging.debug('Looking at feature: {}'.format(item))
                 item_length = len(item)
                 if item_length == 4:
                     feature_list.append(item)
@@ -268,7 +268,7 @@ def parse_txt(handle):
                 yield bag
                 bag, context = _set_up()
             else:
-                logging.info("Unknown line type: {}".format(line_type))
+                logging.debug("Unknown line type: {}".format(line_type))
 
 
 def parse_txt_compatible(handle):
@@ -387,7 +387,7 @@ def _parse_ft(line):
     if not description == '':
         feature.append(description)
     assert len(feature) in [1, 3, 4]
-    logging.info('Parsed FT: {}'.format(feature))
+    logging.debug('Parsed FT: {}'.format(feature))
     return feature
 
 
