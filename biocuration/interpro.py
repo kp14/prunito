@@ -8,8 +8,8 @@ import requests
 import sys
 import time
 
-import biocuration.uniprotkb.searching as us
-from biocuration.utils import InterProXrefs, EBI_HMMER, validate_param
+from .uniprot.rest import search_all
+from .utils import InterProXrefs, EBI_HMMER, validate_param
 try:
     import venn.draw as vd
 except ImportError:
@@ -126,7 +126,7 @@ def _get_signature_hit_list(sig):
     Returns:
     set of UniProtKB accessions
     '''
-    result = us.search_all(sig, frmt='list')
+    result = search_all(sig, frmt='list')
     if result:
         result_set = set(result.strip().split('\n'))
     else:
