@@ -1,7 +1,10 @@
 import io
 import requests
 
-from biocuration.utils import UNIPROT_KNOWLEDGEBASE, UNIPROT_BATCH, is_value_in_iterable
+from biocuration.utils import (UNIPROT_KNOWLEDGEBASE,
+                               UNIPROT_BATCH,
+                               UNIPROT_CONVERT,
+                               is_value_in_iterable)
 
 def current_release():
     """Get current public release of UniProtKB.
@@ -87,6 +90,34 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
             return None
     else:
         result.raise_for_status()
+
+
+def convert(path, typ='uniprot', from_='txt', to='xml', encoding='ascii'):
+    '''Convert between different data formats using UniProt service.
+
+    Parameters:
+        path: path to file containing entry to be converted
+        typ: type of the format; default: uniprot
+        from: source format
+        to: target format
+        encding: encoding of the files to be sent; default: ascii
+
+    Returns:
+        string
+    '''
+    payload = {'type': typ,
+               'from': from_,
+               'to': to
+               }
+    files = {'data': open(path, 'r', encoding=encoding)}
+    response = requests.post(UNIPROT_CONVERT,
+                             data=payload,
+                             files=files
+                             )
+    if response.ok:
+        return response.text
+    else:
+        response.raise_for_status()
 
 
 def _search(query, frmt='txt', reviewed=True, unreviewed=True, file=False):
