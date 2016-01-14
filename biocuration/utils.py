@@ -23,6 +23,8 @@ UNIPROT_BATCH = '/'.join([UNIPROT_BASE, 'batch'])
 
 UNIPROT_CONVERT = '/'.join([UNIPROT_BASE, 'convert'])
 
+UNIPROT_UNIRULE = '/'.join([UNIPROT_BASE, 'unirule'])
+
 # Example: http://www.ebi.ac.uk/interpro/search?q=kinase
 INTERPRO_SEARCH = "http://www.ebi.ac.uk/interpro/search"
 
