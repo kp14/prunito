@@ -13,8 +13,8 @@ from nose.tools import assert_equal, assert_true
 from unittest import TestCase
 
 from Bio import SwissProt
-import biocuration.uniprotkb.parsing as up
-import biocuration.uniprotkb.searching as us
+import biocuration.uniprot as up
+
 
 # Some diffs are very long here if tests fail so we set this
 # to None to display the whole diff
@@ -37,13 +37,13 @@ with open(datafile, "r", encoding="ascii") as data:
 
 def test_wrong_format_paramater_for_search():
     with pytest.raises(ValueError):
-        us.search_all('test', frmt='xsd')
+        up.search_all('test', frmt='xsd')
 
 def test_uppercase_format_parameter_works_for_search():
     pass
 
 def test_object_is_record_instance():
-    assert_true(isinstance(seq_record[0], up.Record))
+    assert_true(isinstance(seq_record[0], up.parser.Record))
 
 def test_data_class():
     assert_equal(seq_record[0].data_class, 'Reviewed')

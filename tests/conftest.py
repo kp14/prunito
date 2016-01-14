@@ -8,7 +8,7 @@ import os
 import pytest
 
 from Bio import SwissProt
-import biocuration.uniprotkb.parsing as up
+from biocuration.uniprot import parse_txt_compatible
 
 # Import paths for data files
 base_dir = os.path.dirname(__file__)
@@ -43,7 +43,7 @@ PROPS = ['entry_name',
          ]
 
 with open(datafile, "r", encoding="ascii") as data:
-    my_records = list(up.parse_txt_compatible(data))
+    my_records = list(parse_txt_compatible(data))
 
 
 with open(datafile, "r", encoding="ascii") as data:
