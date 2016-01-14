@@ -43,7 +43,7 @@ def test_uppercase_format_parameter_works_for_search():
     pass
 
 def test_object_is_record_instance():
-    assert_true(isinstance(seq_record[0], up.parser.Record))
+    assert_true(isinstance(seq_record[0], up.parser_knowledgebase_txt.Record))
 
 def test_data_class():
     assert_equal(seq_record[0].data_class, 'Reviewed')
