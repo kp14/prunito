@@ -6,6 +6,7 @@ Created on Tue Jun 23 15:45:49 2015
 """
 
 from .parser_knowledgebase_txt import parse_txt, parse_txt_compatible
+from .parser_unirule import parse_rules
 from .rest_api import (current_release,
                        search_reviewed,
                        search_unreviewed,
