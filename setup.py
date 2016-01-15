@@ -39,6 +39,6 @@ setup(name='biocuration',
       author='kp14',
       author_email='',
       license='Public Domain',
-      packages=['biocuration', 'biocuration/uniprot'],
+      packages=['biocuration', 'biocuration/uniprot', 'biocuration/distil'],
       install_requires=['requests'],
       include_package_data=True)
