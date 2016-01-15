@@ -7,7 +7,7 @@ from IPython.display import HTML, display
 from jinja2 import Template
 import networkx as nx
 
-import distil.pointcloud as pointcloud
+import pointcloud
 from .UniProtGraph import TaxGraph
 
 
