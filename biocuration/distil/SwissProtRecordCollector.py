@@ -15,6 +15,35 @@ from .UniProtGraph import TaxGraph
 from ..utils import UNIPROT_KNOWLEDGEBASE
 
 
+report_template = Template("""
+<body>
+    <table>
+    <tr>
+        <td>Class</td>
+        <td>Type </td>
+        <td>Value</td>
+        <td>Total</td>
+        <td>Euk</td>
+        <td>Bac</td>
+        <td>Arc</td>
+        <td>Vir</td>
+        </tr>
+    {% for item in data %}
+        <tr>
+        <td>{{ item[0] }}</td>
+        <td>{{ item[1] }} </td>
+        <td>{{ item[2] }}</td>
+        <td>{{ item[3] }}</td>
+        <td>{{ item[4] }}</td>
+        <td>{{ item[5] }}</td>
+        <td>{{ item[6] }}</td>
+        <td>{{ item[7] }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+""")
+
 class SwissProtRecordCollector(object):
     """Class to collect and count annotations from SwissProt entries.
 
@@ -44,23 +73,7 @@ class SwissProtRecordCollector(object):
         self.current_entry = None
         self.context = None
         self.sequences = []
-        self.template = Template("""
-<head>
-    <title>Test</title>
-</head>
-<body>
-    <table>
-    {% for item in data %}
-        <tr>
-        <td>{{ item[0] }}</td>
-        <td>{{ item[1] }} </td>
-        <td>{{ item[2] }}</td>
-        <td>{{ item[3] }}</td>
-        </tr>
-    {% endfor %}
-    </table>
-</body>
-""")
+        self.template = report_template
 
     def collect_record(self, sp_record):
         """The main work function that collects the parsed annotation from
@@ -174,10 +187,16 @@ class SwissProtRecordCollector(object):
         for n in data_nodes:
             actual_ratio = self.graph.node[n]['freq'] / float(self.get_number_of_entries())
             if actual_ratio > cutoff:
+                linked_accs = self._get_linked_accessions(n)
                 report.append([self.graph.node[n]['class'],
                                self.graph.node[n]['typ'],
                                self._construct_url(n, self.graph.node[n]),
-                               self._construct_entry_url(self._get_linked_accessions(n))])
+                               self._construct_entry_url(linked_accs),
+                               self._construct_taxo_url(n, 'Eukaryota', linked_accs),
+                               self._construct_taxo_url(n, 'Bacteria', linked_accs),
+                               self._construct_taxo_url(n, 'Archaea', linked_accs),
+                               self._construct_taxo_url(n, 'Viruses', linked_accs),
+                               ])
         # sort on first item in lists, i.e. node class
         report_sorted = sorted(report)
         display(HTML(self.template.render(data=report_sorted)))
@@ -193,6 +212,13 @@ class SwissProtRecordCollector(object):
             self._make_3D_point_cloud()
         if plot_it and plot_it == '2d':
             self._make_2D_point_cloud()
+
+    def _construct_taxo_url(self, node, taxon, acc_list):
+        accs_for_taxon = [acc for acc in acc_list if taxon in self._get_neighbors_by_class(acc, 'taxon')]
+        if accs_for_taxon:
+            return self._construct_entry_url(accs_for_taxon)
+        else:
+            return str(len(accs_for_taxon))
 
     def _construct_entry_url(self, acc_list):
         query = ' OR '.join('accession:{}'.format(acc) for acc in acc_list)
