@@ -7,8 +7,8 @@ from IPython.display import HTML, display
 from jinja2 import Template
 import networkx as nx
 
-import distil.pointcloud
-from distil.UniProtGraph import TaxGraph
+import distil.pointcloud as pointcloud
+from .UniProtGraph import TaxGraph
 
 
 class SwissProtRecordCollector(object):

@@ -6,10 +6,10 @@ from IPython.display import clear_output, display
 from ipywidgets import widgets
 
 # import from own modules/packages
-from distil.SwissProtRecordCollector import SwissProtRecordCollector
-import biocuration.uniprotkb.parsing as SwissProt
-import biocuration.uniprotkb.searching as uniprot
-from biocuration.utils import Borg
+from .SwissProtRecordCollector import SwissProtRecordCollector
+from .uniprot import parse_txt_compatible
+from .uniprot import search_all, search_reviewed
+from .utils import Borg
 
 TELL = 'own parser'
 
@@ -29,7 +29,7 @@ def run_analysis(in_file, ratio):
 
     """
     borg_qc = Borg.QueryComparator()
-    entries = SwissProt.parse_txt_compatible(in_file)
+    entries = parse_txt_compatible(in_file)
     record_collector = SwissProtRecordCollector()
     for entry in entries:
         record_collector.collect_record(entry)
@@ -85,14 +85,14 @@ class SPAnalysis(Borg):
     def _run_first_time(self, query, reviewed, ratio):
         """Run an analysis for the first time, i.e., results are not cached."""
         if reviewed:
-            search_mode = getattr(uniprot, 'search_reviewed')
+            results = search_reviewed(query, frmt='txt', file=True)
         else:
-            search_mode = getattr(uniprot, 'search_all')
+            results = search_all(query, frmt='txt', file=True)
 
         #query_final = query.encode('ascii', 'ignore')
 
-        results = search_mode(query, frmt='txt', file=True)
-        entries = SwissProt.parse_txt_compatible(results)
+        #results = search_mode(query, frmt='txt', file=True)
+        entries = parse_txt_compatible(results)
         collector = SwissProtRecordCollector()
         for entry in entries:
             collector.collect_record(entry)
@@ -104,7 +104,7 @@ class SPAnalysis(Borg):
         collector.summarize_all(cutoff=ratio, save_it=False, plot_it=None)
 
 
-def start_interface():
+def run_distil():
     """Create the GUI controls and any control logic."""
 
     #Create Borg for others to communicate with
@@ -194,7 +194,7 @@ if __name__ == '__main__':
         for query in options.query:
             print('\nRunning query... {0} with ratio: {1}\n'.format(query, options.ratio))
             query_final = query.encode('ascii', 'ignore')
-            results = uniprot.search_reviewed(query_final,
+            results = search_reviewed(query_final,
                                               format=options.format,
                                               file=True)
             print('Results retrieved, running analysis.')
