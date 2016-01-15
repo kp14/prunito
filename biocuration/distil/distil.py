@@ -7,9 +7,9 @@ from ipywidgets import widgets
 
 # import from own modules/packages
 from .SwissProtRecordCollector import SwissProtRecordCollector
-from .uniprot import parse_txt_compatible
-from .uniprot import search_all, search_reviewed
-from .utils import Borg
+from ..uniprot import parse_txt_compatible
+from ..uniprot import search_all, search_reviewed
+from ..utils import Borg
 
 TELL = 'own parser'
 
