@@ -8,7 +8,7 @@ import requests
 import sys
 import time
 
-from .uniprot.rest import search_all
+from .uniprot import search_all
 from .utils import InterProXrefs, EBI_HMMER, validate_param
 try:
     import venn.draw as vd
