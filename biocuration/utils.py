@@ -184,5 +184,10 @@ class InterProXrefs(Enum):
     TIGRFAMs = 'TIGR[0-9]{5}'
 
     def __init__(self, pattern):
+        '''Get precompiled regexes as well:
+
+        hamap_re = InterProXrefs.HAMAP.regex
+        match = hamap_re.match('some string')
+        '''
         self.regex = re.compile(pattern)
 
