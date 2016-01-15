@@ -133,8 +133,8 @@ def run_distil():
     display(interface)
 
     # Create the buttons...
-    run_button = widgets.Button(description="Run")
-    clear_cache_button = widgets.Button(description="Clear cache")
+    run_button = widgets.Button(description="Run", button_style='primary')
+    clear_cache_button = widgets.Button(description="Clear cache", button_style='warning')
     button_container = widgets.Box(children=[run_button, clear_cache_button])
 
     #... and display them; CSS changes have to be run after the display() function
