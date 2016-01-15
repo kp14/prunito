@@ -7,9 +7,42 @@ from IPython.display import HTML, display
 from jinja2 import Template
 import networkx as nx
 
-import pointcloud
+from .pointcloud import (get_points_equiangularly_distanced_on_sphere,
+                         cartesian_to_spherical,
+                         spherical_to_cartesian,
+                         scalar_vector_product)
 from .UniProtGraph import TaxGraph
+from ..utils import UNIPROT_KNOWLEDGEBASE
 
+
+report_template = Template("""
+<body>
+    <table>
+    <tr>
+        <td>Class</td>
+        <td>Type </td>
+        <td>Value</td>
+        <td>Total</td>
+        <td>Euk</td>
+        <td>Bac</td>
+        <td>Arc</td>
+        <td>Vir</td>
+        </tr>
+    {% for item in data %}
+        <tr>
+        <td>{{ item[0] }}</td>
+        <td>{{ item[1] }} </td>
+        <td>{{ item[2] }}</td>
+        <td>{{ item[3] }}</td>
+        <td>{{ item[4] }}</td>
+        <td>{{ item[5] }}</td>
+        <td>{{ item[6] }}</td>
+        <td>{{ item[7] }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+""")
 
 class SwissProtRecordCollector(object):
     """Class to collect and count annotations from SwissProt entries.
@@ -40,23 +73,7 @@ class SwissProtRecordCollector(object):
         self.current_entry = None
         self.context = None
         self.sequences = []
-        self.template = Template("""
-<head>
-    <title>Test</title>
-</head>
-<body>
-    <table>
-    {% for item in data %}
-        <tr>
-        <td>{{ item[0] }}</td>
-        <td>{{ item[1] }} </td>
-        <td>{{ item[2] }}</td>
-        <td>{{ item[3] }}</td>
-        </tr>
-    {% endfor %}
-    </table>
-</body>
-""")
+        self.template = report_template
 
     def collect_record(self, sp_record):
         """The main work function that collects the parsed annotation from
@@ -170,10 +187,16 @@ class SwissProtRecordCollector(object):
         for n in data_nodes:
             actual_ratio = self.graph.node[n]['freq'] / float(self.get_number_of_entries())
             if actual_ratio > cutoff:
+                linked_accs = self._get_linked_accessions(n)
                 report.append([self.graph.node[n]['class'],
                                self.graph.node[n]['typ'],
                                self._construct_url(n, self.graph.node[n]),
-                               str(self.graph.node[n]['freq'])])
+                               self._construct_entry_url(linked_accs),
+                               self._construct_taxo_url(n, 'Eukaryota', linked_accs),
+                               self._construct_taxo_url(n, 'Bacteria', linked_accs),
+                               self._construct_taxo_url(n, 'Archaea', linked_accs),
+                               self._construct_taxo_url(n, 'Viruses', linked_accs),
+                               ])
         # sort on first item in lists, i.e. node class
         report_sorted = sorted(report)
         display(HTML(self.template.render(data=report_sorted)))
@@ -189,6 +212,19 @@ class SwissProtRecordCollector(object):
             self._make_3D_point_cloud()
         if plot_it and plot_it == '2d':
             self._make_2D_point_cloud()
+
+    def _construct_taxo_url(self, node, taxon, acc_list):
+        accs_for_taxon = [acc for acc in acc_list if taxon in self._get_neighbors_by_class(acc, 'taxon')]
+        if accs_for_taxon:
+            return self._construct_entry_url(accs_for_taxon)
+        else:
+            return str(len(accs_for_taxon))
+
+    def _construct_entry_url(self, acc_list):
+        query = ' OR '.join('accession:{}'.format(acc) for acc in acc_list)
+        url = UNIPROT_KNOWLEDGEBASE + '/?query=' + query
+        return "<a href=\"{0}\">{1}<a>".format(url, str(len(acc_list)))
+
 
     def _construct_url(self, node_text, node):
         url_mapping = {"comment": None,
@@ -212,10 +248,15 @@ class SwissProtRecordCollector(object):
             url = node_text
         return url
 
-    def _wrap_link(self, node_text, node_class):
-        target = "".join([node_class, node_text])
+    def _wrap_link(self, node_text, node_url):
+        target = "".join([node_url, node_text])
         return "<a href=\"{0}\">{1}<a>".format(target, node_text)
 
+    def _get_neighbors_by_class(self, node_of_interest, class_):
+        return [n for n in self.graph[node_of_interest].keys() if self.graph.node[n]['class'] == class_]
+
+    def _get_linked_accessions(self, node_of_interest):
+        return self._get_neighbors_by_class(node_of_interest, 'ac')
 
     def summarize_web(self, cutoff=0.0, save_it=False, plot_it=None):
         #print "\n{0} entries were analyzed\n".format(self.get_number_of_entries())
@@ -283,19 +324,19 @@ class SwissProtRecordCollector(object):
         number_of_vectors = len(data_nodes)
 
         #calculate one vector for each node
-        cart_vectors = pointcloud.get_points_equiangularly_distanced_on_sphere(numberOfPoints=number_of_vectors)
+        cart_vectors = get_points_equiangularly_distanced_on_sphere(numberOfPoints=number_of_vectors)
 
         spher_vectors = []
 
         for cvec in cart_vectors:
-            spher_vectors.append(pointcloud.cartesian_to_spherical(cvec))
+            spher_vectors.append(cartesian_to_spherical(cvec))
 
         maximum = self.get_number_of_entries()
 
         for name, coord in itertools.izip(data_nodes, spher_vectors):
             #coord[0] *= pointcloud.remap(self.graph.node[name]['freq'], maximum, slope=0.3)
             coord[0] *= self.graph.node[name]['freq']
-            self.graph.node[name]['vector'] = pointcloud.spherical_to_cartesian(coord)
+            self.graph.node[name]['vector'] = spherical_to_cartesian(coord)
 
         #get accessions
         acc_nodes = [n for n in self.graph.nodes() if self.graph.node[n]['class'] == 'ac']
@@ -306,7 +347,7 @@ class SwissProtRecordCollector(object):
             neighbors = self.graph.neighbors(acc)
             coord_product = [0, 0, 0]
             for neighbor in neighbors:
-                coord_product = pointcloud.scalar_vector_product(coord_product, self.graph.node[neighbor]['vector'])
+                coord_product = scalar_vector_product(coord_product, self.graph.node[neighbor]['vector'])
             self.graph.node[acc]['vector'] = coord_product
             final_coord.append(coord_product)
 
