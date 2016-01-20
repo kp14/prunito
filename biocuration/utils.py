@@ -10,6 +10,8 @@ from enum import Enum
 
 UNIPROT_BASE = 'http://www.uniprot.org'
 
+EBI_BASE = 'http://www.ebi.ac.uk'
+
 # Example: http://www.uniprot.org/uniprot/?query=name%3Dtest&sort=score
 UNIPROT_KNOWLEDGEBASE = '/'.join([UNIPROT_BASE, 'uniprot'])
 
@@ -26,16 +28,19 @@ UNIPROT_CONVERT = '/'.join([UNIPROT_BASE, 'convert'])
 UNIPROT_UNIRULE = '/'.join([UNIPROT_BASE, 'unirule'])
 
 # Example: http://www.ebi.ac.uk/interpro/search?q=kinase
-INTERPRO_SEARCH = "http://www.ebi.ac.uk/interpro/search"
+INTERPRO_SEARCH = '/'.join([EBI_BASE, 'interpro/search'])
 
 # EBI HMMER
-EBI_HMMER = 'http://www.ebi.ac.uk/Tools/hmmer/search'
+EBI_HMMER = '/'.join([EBI_BASE, 'Tools/hmmer/search'])
 
 # Example: http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0006915
-QUICKGO_ID = "http://http://www.ebi.ac.uk/QuickGO/GTerm"
+QUICKGO_ID = '/'.join([EBI_BASE, 'QuickGO/GTerm'])
 
 # Example: http://www.ebi.ac.uk/QuickGO/GSearch?q=GO:0006915
-QUICKGO_SEARCH = "http://http://www.ebi.ac.uk/QuickGO/GSearch"
+QUICKGO_SEARCH = '/'.join([EBI_BASE, 'QuickGO/GSearch'])
+
+# Example: http://www.ebi.ac.uk/ena/data/view/AB107287&display=fasta
+ENA_DATA = '/'.join([EBI_BASE, 'ena/data/view'])
 
 
 ##############################################################

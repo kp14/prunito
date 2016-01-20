@@ -6,4 +6,4 @@ Created on Wed Jul 15 16:17:52 2015
 """
 
 # The version as used in the setup.py
-__version__ = "0.9.0"
+__version__ = "0.9.1"
