@@ -236,7 +236,7 @@ def _extract_conditions(rule_element):
     for child in rule_element.getchildren():
         cond = Condition()
         cond.type = child.attrib['type']
-        cond.negative = child.attrib['negative']
+        cond.negative = child.attrib['negative'] == 'true'
         try:
             cond.value = child.value.text
             if child.value.attrib:
