@@ -6,6 +6,10 @@ Created on Wed Jan 20 10:26:06 2016
 """
 
 import requests
+try:
+    from Bio import SeqIO
+except ImportError:
+    print('No Bio.SeqIO module - functionality relying on parsing EMBL files will be unavailable.')
 
 from . import utils
 
@@ -40,3 +44,20 @@ def _retrieve_data(identifier, fmt='text'):
         return decoded_result
     else:
         result.raise_for_status()
+
+def embl_cds2fasta(embl_entry, gene_name):
+#from Bio import SeqIO
+#
+#
+#with open('embl.tmp', 'r') as ghandle, open('gluclalpha.fasta', 'w') as out:
+#    cds_count = 0
+#    for record in SeqIO.parse(ghandle, 'embl'):
+#        for ft in record.features:
+#            if ft.type == 'CDS':
+#                cds_count += 1
+#                if 'GluClalpha' in ft.qualifiers['gene']:
+#                    out.write('>{0}\n{1}\n'.format(ft.qualifiers['product'], ft.qualifiers['translation'][0]))
+
+def embl2fasta(embl_entry):
+#with open('embl.tmp', 'r') as ghandle, open('embl.fasta', 'w') as out:
+#    SeqIO.write(SeqIO.parse(ghandle, 'embl'), out, 'fasta')
