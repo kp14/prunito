@@ -14,3 +14,4 @@ from .rest_api import (current_release,
                        number_SP_hits,
                        retrieve_batch,
                        convert)
+from .scraping import get_lineage
