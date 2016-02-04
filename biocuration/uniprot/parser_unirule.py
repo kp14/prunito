@@ -289,7 +289,7 @@ def _extract_annotations(annotation_element):
         attribs = class_element.attrib
         if attribs['type'] not in ['subcellular location', 'cofactor']:
             attribs['value'] = class_element.getchildren()[0].text
-            attribs['class'] = class_
+            attribs['class_'] = class_
             annotation_list.append(_create_annotation(attribs))
         elif attribs['type'] == 'subcellular location':
             for location in class_element.getchildren():
