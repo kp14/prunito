@@ -1,0 +1,179 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<unirules xmlns="http://uniprot.org/unirule" xmlns:uniprot="http://uniprot.org/uniprot">
+  <unirule status="TEST" id="UR000150961" creator="kpichler" created="2015-05-26+01:00" modifiedBy="kpichler" modified="2015-05-26+01:00">
+    <information>
+      <version>0</version>
+    </information>
+    <main>
+      <conditionSets>
+        <conditionSet>
+          <condition type="taxon" negative="false">
+            <value cvId="33208">Metazoa</value>
+            <value cvId="6231">Nematoda</value>
+          </condition>
+          <condition type="sequence length" negative="false">
+            <range start="800.0" end="900.0"/>
+          </condition>
+        </conditionSet>
+        <conditionSet>
+          <condition type="Pfam id" negative="false">
+            <value>PF00052</value>
+          </condition>
+          <condition type="Pfam hits" negative="false">
+            <value>PF00052</value>
+            <range start="2.0" end="0.0"/>
+          </condition>
+          <condition type="sequence length" negative="false">
+            <range start="800.0" end="900.0"/>
+          </condition>
+        </conditionSet>
+        <conditionSet>
+          <condition type="gene location" negative="false">
+            <value>Plastid</value>
+            <value>Cyanelle</value>
+          </condition>
+          <condition type="scientific organism" negative="false">
+            <value>Arabidopsis thaliana</value>
+          </condition>
+        </conditionSet>
+      </conditionSets>
+      <annotations>
+        <annotation>
+          <protein>
+            <recommendedName>
+              <fullName>Kinase</fullName>
+              <ecNumber>2.-.-.-</ecNumber>
+            </recommendedName>
+          </protein>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0418">Kinase</keyword>
+        </annotation>
+        <annotation>
+          <comment type="subcellular location">
+            <uniprot:subcellularLocation>
+              <uniprot:location>Secreted</uniprot:location>
+              <uniprot:topology>Multi-pass membrane protein</uniprot:topology>
+          </uniprot:subcellularLocation>
+          <uniprot:subcellularLocation>
+              <uniprot:location>Nucleus</uniprot:location>
+              <uniprot:topology>Nucleolus</uniprot:topology>
+            </uniprot:subcellularLocation>
+          </comment>
+        </annotation>
+    </annotations>
+    </main>
+    <cases>
+       <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="Pfam id" negative="true">
+              <value>PF00052</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <protein>
+              <recommendedName/>
+              <alternativeName>
+                <fullName>Another</fullName>
+              </alternativeName>
+            </protein>
+          </annotation>
+          <annotation>
+            <comment type="cofactor">
+              <uniprot:cofactor>
+                <uniprot:name>2-hydroxy-3-oxopropanoic acid</uniprot:name>
+                <uniprot:dbReference type="ChEBI" id="CHEBI:1123"/>
+              </uniprot:cofactor>
+              <uniprot:cofactor>
+                 <uniprot:name>2-methoxy-6-(all-trans-octaprenyl)phenol</uniprot:name>
+                <uniprot:dbReference type="ChEBI" id="CHEBI:1235"/>
+            </uniprot:cofactor>
+              <uniprot:text>Some text in note.</uniprot:text>
+            </comment>
+          </annotation>
+        </annotations>
+      </case>
+<case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="false">
+              <value cvId="33090">Viridiplantae</value>
+            </condition>
+          </conditionSet>
+          <conditionSet>
+            <condition type="proteome property" negative="false">
+              <value>Photosynthesis=Yes</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <keyword id="KW-0479">Metal-binding</keyword>
+          </annotation>
+          <annotation>
+            <gene>
+              <uniprot:name type="primary">plntA</uniprot:name>
+            </gene>
+          </annotation>
+        </annotations>
+      </case>
+         </cases>
+    <samFeatureSet>
+      <conditionSet>
+        <condition type="taxon" negative="false">
+          <value cvId="33208">Metazoa</value>
+        </condition>
+      </conditionSet>
+      <annotations>
+        <annotation>
+          <keyword id="KW-0106">Calcium</keyword>
+        </annotation>
+      </annotations>
+      <samTrigger>
+        <transmembrane>
+          <expectedHits start="0" end="12"/>
+        </transmembrane>
+      </samTrigger>
+    </samFeatureSet>
+    <samFeatureSet>
+      <conditionSet>
+        <condition type="taxon" negative="false">
+          <value cvId="33208">Metazoa</value>
+        </condition>
+      </conditionSet>
+      <annotations>
+        <annotation>
+          <comment type="subcellular location">
+            <uniprot:subcellularLocation>
+              <uniprot:location>Secreted</uniprot:location>
+            </uniprot:subcellularLocation>
+          </comment>
+        </annotation>
+      </annotations>
+      <samTrigger>
+        <signal>
+          <expectedHits start="0" end="1"/>
+        </signal>
+      </samTrigger>
+    </samFeatureSet>
+    <samFeatureSet>
+      <conditionSet>
+        <condition type="Pfam id" negative="false">
+          <value>PF00053</value>
+        </condition>
+      </conditionSet>
+      <annotations>
+        <annotation>
+          <keyword id="KW-0378">Hydrolase</keyword>
+        </annotation>
+      </annotations>
+      <samTrigger>
+        <coiledCoil>
+          <expectedHits start="0" end="unlimited"/>
+        </coiledCoil>
+      </samTrigger>
+    </samFeatureSet>
+  </unirule></unirules>

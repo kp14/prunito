@@ -1,0 +1,145 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<unirules xmlns="http://uniprot.org/unirule" xmlns:uniprot="http://uniprot.org/uniprot">
+  <unirule status="APPLY" id="UR000000668" creator="john" created="2011-05-23" modifiedBy="joanna" modified="2013-02-21">
+    <information>
+      <version>0</version>
+      <oldRuleNum>RU003779</oldRuleNum>
+    </information>
+    <main>
+      <conditionSets>
+        <conditionSet>
+          <condition type="Pfam id" negative="false">
+            <value>PF01786</value>
+          </condition>
+          <condition type="taxon" negative="false">
+            <value>Euglenozoa</value>
+            <value>Fungi</value>
+            <value>Viridiplantae</value>
+          </condition>
+        </conditionSet>
+      </conditionSets>
+      <annotations>
+        <annotation>
+          <comment type="cofactor">
+            <uniprot:text>Binds 2 iron ions per subunit.</uniprot:text>
+          </comment>
+        </annotation>
+        <annotation>
+          <comment type="similarity">
+            <uniprot:text>Belongs to the alternative oxidase family.</uniprot:text>
+          </comment>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0249">Electron transport</keyword>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0408">Iron</keyword>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0479">Metal-binding</keyword>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0679">Respiratory chain</keyword>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0812">Transmembrane</keyword>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0560">Oxidoreductase</keyword>
+        </annotation>
+        <annotation>
+          <keyword id="KW-0472">Membrane</keyword>
+        </annotation>
+        <annotation>
+          <dbReference type="GO" id="GO:0070469"/>
+        </annotation>
+        <annotation>
+          <dbReference type="GO" id="GO:0046872"/>
+        </annotation>
+        <annotation>
+          <dbReference type="GO" id="GO:0022900"/>
+        </annotation>
+        <annotation>
+          <dbReference type="GO" id="GO:0016021"/>
+        </annotation>
+        <annotation>
+          <dbReference type="GO" id="GO:0007585"/>
+        </annotation>
+      </annotations>
+    </main>
+    <cases>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="false">
+              <value>Viridiplantae</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <protein>
+              <recommendedName>
+                <fullName>Ubiquinol oxidase</fullName>
+                <ecNumber>1.10.3.11</ecNumber>
+              </recommendedName>
+            </protein>
+          </annotation>
+          <annotation>
+            <comment type="catalytic activity">
+              <uniprot:text>2 ubiquinol + O(2) = 2 ubiquinone + 2 H(2)O.</uniprot:text>
+            </comment>
+          </annotation>
+        </annotations>
+        <ruleExceptions>
+          <ruleException>
+            <category>Maps to existing more specific comment in Entry</category>
+            <annotation>
+              <protein>
+                <recommendedName>
+                  <fullName>Ubiquinol oxidase</fullName>
+                </recommendedName>
+              </protein>
+            </annotation>
+            <accession>O03376</accession>
+          </ruleException>
+        </ruleExceptions>
+      </case>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="false">
+              <value>Euglenozoa</value>
+              <value>Fungi</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <protein>
+              <recommendedName>
+                <fullName>Alternative oxidase</fullName>
+                <ecNumber>1.-.-.-</ecNumber>
+              </recommendedName>
+            </protein>
+          </annotation>
+        </annotations>
+        <ruleExceptions>
+          <ruleException>
+            <category>Maps to existing more specific comment in Entry</category>
+            <annotation>
+              <protein>
+                <recommendedName>
+                  <fullName>Alternative oxidase</fullName>
+                </recommendedName>
+              </protein>
+            </annotation>
+            <accession>F4P6T0</accession>
+            <accession>D5JAJ1</accession>
+          </ruleException>
+        </ruleExceptions>
+      </case>
+    </cases>
+  </unirule>
+</unirules>
+
