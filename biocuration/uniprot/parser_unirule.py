@@ -181,8 +181,23 @@ class Annotation():
 
 def parse_rules(filename):
     '''Extract rule information from UniRules in a file.'''
+    logging.info('Starting work on file: {}'.format(filename))
+    for _, unirule in etree.iterparse(filename, tag='unirule'):
+        ur = UniRule()
+        ur.meta.update(unirule.attrib)
+        logging.info('Parsing rule: {}'.format(ur.meta['id']))
+        for child in unirule:
+            mapper_toplevel[child.tag](child, ur)
+        unirule.clear()
+
+
+
+mapper_toplevel = {'information': _extract_info_tag,
+                   'main': _extract_main_tag,
+                   }
+
     with open(filename, 'rb') as data:
-        logging.info('Starting work on file: {}'.format(filename))
+
         xml = data.read()
         root = objectify.fromstring(xml)
         objectify.deannotate(root, cleanup_namespaces=True)
@@ -207,30 +222,36 @@ def parse_rules(filename):
                 logging.info('Rule appears to have no cases: {}'.format(rule_id))
             yield uni
 
-def extract_meta(rule, uni):
-    uni.meta.update(rule.attrib)
-    for info in rule.information.getchildren():
+def _extract_info_tag(ele, ur_obj):
+    '''Extract info from <information> tag'''
+    for info in ele.getchildren():
         try:
             key = info.tag.replace(NS, '')
             val = info.text
-            uni.meta[key] = val
+            ur_obj.meta[key] = val
         except:
-            print('Error in: {}'.format(info))
+            logging.warn('Error in: {}'.format(info))
 
 
-def extract_main_conditions(rule, uni):
-    for c_set in rule.main.conditionSets.conditionSet:
-        condition_list = _extract_conditions(c_set)
-        uni.main.conditions.append(condition_list)
-
-
-def extract_case_conditions(case, uni):
-    for c_set in case.conditionSets.conditionSet:
-        condition_list = _extract_conditions(c_set)
-        logging.info('Extracted condition list from case: {}'.format(condition_list))
-        uni.cases[-1].conditions.append(condition_list)
-
-
+def _extract_main_tag(ele, ur_obj):
+    for child in ele.getchildren():
+        if child.tag == 'conditionSets':
+            for c_set in child.getchildren():
+                condition_list = _extract_conditions(c_set)
+                ur_obj.main.conditions.append(condition_list)
+        if child.tag == 'annotations':
+            for annotation in child.getchildren():
+                ur_obj.main.annotations.extend(_extract_annotations(annot))
+                logging.info('Extracting annotations from main in rule: {}'.format(rule.attrib['id']))
+#
+#
+#def extract_case_conditions(case, uni):
+#    for c_set in case.conditionSets.conditionSet:
+#        condition_list = _extract_conditions(c_set)
+#        logging.info('Extracted condition list from case: {}'.format(condition_list))
+#        uni.cases[-1].conditions.append(condition_list)
+#
+#
 def _extract_conditions(rule_element):
     c_list = []
     for child in rule_element.getchildren():
@@ -259,27 +280,27 @@ def _extract_conditions(rule_element):
             pass
         c_list.append(cond)
     return c_list
-
-
-def extract_main_annotations(rule, uni):
-    try:
-        for annot in rule.main.annotations.annotation:
-            uni.main.annotations.extend(_extract_annotations(annot))
-            logging.info('Extracting annotations from main in rule: {}'.format(rule.attrib['id']))
-    except AttributeError:
-        logging.warn('Rule appears to have no annotations in main: {}'.format(rule.attrib['id']))
-
-
-def extract_case_annotations(case, uni):
-    annotation_list = []
-    try:
-        for annot in case.annotations.annotation:
-            annotation_list.extend(_extract_annotations(annot))
-    except AttributeError:
-        logging.warn('Case appears to have no annotations: {}'.format(rule.attrib['id']))
-    uni.cases[-1].annotations.extend(annotation_list)
-
-
+#
+#
+#def extract_main_annotations(rule, uni):
+#    try:
+#        for annot in rule.main.annotations.annotation:
+#            uni.main.annotations.extend(_extract_annotations(annot))
+#            logging.info('Extracting annotations from main in rule: {}'.format(rule.attrib['id']))
+#    except AttributeError:
+#        logging.warn('Rule appears to have no annotations in main: {}'.format(rule.attrib['id']))
+#
+#
+#def extract_case_annotations(case, uni):
+#    annotation_list = []
+#    try:
+#        for annot in case.annotations.annotation:
+#            annotation_list.extend(_extract_annotations(annot))
+#    except AttributeError:
+#        logging.warn('Case appears to have no annotations: {}'.format(rule.attrib['id']))
+#    uni.cases[-1].annotations.extend(annotation_list)
+#
+#
 def _extract_annotations(annotation_element):
     annotation_list = []
     class_element = annotation_element.getchildren()[0] # Only one toplevel element
@@ -357,9 +378,9 @@ def _extract_annotations(annotation_element):
                     attribs['class_'] = class_
                     annotation_list.append(_create_annotation(attribs))
     return annotation_list
-
-
-def _create_annotation(adict):
-    annotation = Annotation()
-    annotation.__dict__.update(**adict)
-    return annotation
+#
+#
+#def _create_annotation(adict):
+#    annotation = Annotation()
+#    annotation.__dict__.update(**adict)
+#    return annotation
