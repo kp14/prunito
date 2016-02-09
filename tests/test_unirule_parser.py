@@ -63,6 +63,7 @@ def test_main_cond_iter_negative():
 def test_main_cond_taxon():
     assert(rule.main.conditions[0][2].type, 'taxon')
     assert(rule.main.conditions[0][2].value, 'Eukaryota')
+    assert(rule.main.conditions[0][2].cvId, '2759')
 
 def test_main_cond_mito():
     assert(rule.main.conditions[0][3].type, 'gene_location')
