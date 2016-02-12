@@ -327,11 +327,11 @@ def _extract_annotations(annotation_element):
         attribs['class_'] = class_
         annotation_list.append(_create_annotation(attribs))
     elif class_ == 'gene':
-        gene_ele = class_element.getchildren()[0]
-        attribs = gene_ele.attrib
-        attribs['value'] = gene_ele.text
-        attribs['class_'] = class_
-        annotation_list.append(_create_annotation(attribs))
+        for gene_ele in class_element.getchildren():
+            attribs = gene_ele.attrib
+            attribs['value'] = gene_ele.text
+            attribs['class_'] = class_
+            annotation_list.append(_create_annotation(attribs))
     elif class_ == 'protein':
         for typ in class_element.getchildren():
             typ_ = typ.tag.replace(NS, '')
