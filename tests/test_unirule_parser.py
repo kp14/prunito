@@ -114,3 +114,20 @@ def test_case_3_annotation():
         assert(a.class_, 'protein')
         assert a.type in ['recommendedName', 'alternativeName']
         assert a.subtype in ['fullName', 'ecNumber']
+
+def test_sam_numbers():
+    assert(len(rule.sam_features), 3)
+
+def test_sam_triggers():
+    map_ = {0: 'transmembrane',
+            1: 'signal',
+            2: 'coiledCoil'}
+    for idx, sam in enumerate(rule.sam_features):
+        assert(sam.trigger, map_[idx])
+
+def test_sam_0_str():
+    expected = ('Number of conditions: 1\n'
+                'Number of annotations: 0\n'
+                'Trigger: transmembrane\n'
+                'Range: 1-12\n')
+    assert(rule.sam_features[0].__str__(), expected)

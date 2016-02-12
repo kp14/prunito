@@ -24,6 +24,7 @@ class UniRule():
         self.meta = {}
         self.main = BasicRule()
         self.cases = []
+        self.sam_features = []
 
     def has_cases(self):
         '''Return whether rule has cases.'''
@@ -137,11 +138,35 @@ class BasicRule():
 
     def __str__(self):
         template = ('Number of condition sets: {0}\n'
-                    'Number of annotations {1}\n')
+                    'Number of annotations: {1}\n')
         string = template.format(len(self.conditions),
                                  len(self.annotations))
         return string
 
+
+class SamFeature(BasicRule):
+    '''Represents a SAM feature.
+
+    SAM features are predictors for transmembrane domains, signal peptides
+    and coiled-coil domains.
+    '''
+
+    def __init__(self):
+        super(SamFeature, self).__init__()
+        self.trigger = None
+        self.min_hits = None
+        self.max_hits = None
+
+    def __str__(self):
+        template = ('Number of conditions: {0}\n'
+                    'Number of annotations: {1}\n'
+                    'Trigger: {2}\n'
+                    'Range: {3}\n')
+        string = template.format(len(self.conditions),
+                                 len(self.annotations),
+                                 self.trigger,
+                                 '-'.join([self.min_hits, self.max_hits]))
+        return string
 
 class Condition():
     '''Represents conditions as used in UniRule.
@@ -205,6 +230,28 @@ def parse_rules(filename):
                     extract_case_annotations(case, uni)
             except AttributeError:
                 logging.info('Rule appears to have no cases: {}'.format(rule_id))
+            try:
+                for sam_ft in rule.samFeatureSet:
+                    sam = SamFeature()
+                    for trig in rule.samFeatureSet.samTrigger.getchildren():
+                        sam.trigger = trig.tag.replace(NS, '')
+                        sam.min_hits = trig.expectedHits.attrib['start']
+                        sam.max_hits = trig.expectedHits.attrib['end']
+                    try:
+                        for c_set in rule.samFeatureSet.conditionSet:
+                            condition_list = _extract_conditions(c_set)
+                            sam.conditions.extend(condition_list)
+                    except AttributeError:
+                        logging.info('SamFeature appears to have no extra conditions.')
+                    try:
+                        for a in rule.samFeatureSet.annotations.annotation:
+                            anno_list = _extract_annotations(a)
+                            sam.annotations.extend(anno_list)
+                    except AttributeError:
+                        logging.info('SamFeature appears to have no extra annotations.')
+                    uni.sam_features.append(sam)
+            except AttributeError:
+                logging.info('Ruel appears to have no SAM features.')
             yield uni
 
 def extract_meta(rule, uni):
