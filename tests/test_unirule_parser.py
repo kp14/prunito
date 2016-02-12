@@ -70,14 +70,47 @@ def test_main_cond_mito():
     assert(rule.main.conditions[0][3].value, 'Mitochondrion')
     assert(rule.main.conditions[0][3].negative, False)
 
-
 def test_number_annotations_main():
     assert(len(rule.main.annotations), 13)
-
 
 def test_type_annotations_main():
     assert(rule.main.annotations[0].type, 'recommendedName')
 
-
 def test_class_annotations_main():
     assert(rule.main.annotations[0].class_, 'protein')
+
+def test_number_of_cases():
+    assert(len(rule.cases), 6)
+
+def test_all_case_conditions_values():
+    expected = ['Fungi', 'Vertebrata', 'Fungi', 'Saccheromyces',
+                'Saccheromyces', 'Fungi', 'Saccheromyces',]
+    parsed = [c.value for c in rule.iter_case_conditions()]
+    assert(parsed, expected)
+
+def test_all_case_conditions_negativity():
+    expected = [False, False, True, False, True, False, True]
+    parsed = [c.negative for c in rule.iter_case_conditions()]
+    assert(parsed, expected)
+
+def test_case_1_annotation():
+    parsed = rule.cases[0].annotations[0]
+    assert(parsed.value, 'TRM5')
+    assert(parsed.type, 'primary')
+    assert(parsed.class_, 'gene')
+
+def test_case_2_annotation():
+    parsed = rule.cases[1].annotations[0]
+    assert(parsed.value, 'TRMT5')
+    assert(parsed.type, 'primary')
+    assert(parsed.class_, 'gene')
+    parsed = rule.cases[1].annotations[1]
+    assert(parsed.value, 'TRM5')
+    assert(parsed.type, 'synonym')
+    assert(parsed.class_, 'gene')
+
+def test_case_3_annotation():
+    for a in rule.cases[2].annotations:
+        assert(a.class_, 'protein')
+        assert a.type in ['recommendedName', 'alternativeName']
+        assert a.subtype in ['fullName', 'ecNumber']
