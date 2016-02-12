@@ -247,10 +247,36 @@
       </case>
     </cases>
     <samFeatureSet>
+      <conditionSet>
+        <condition type="taxon" negative="false">
+          <value cvId="2759">Eukaryota</value>
+        </condition>
+      </conditionSet>
       <samTrigger>
         <transmembrane>
-          <expectedHits start="2" end="unlimited"/>
+          <expectedHits start="1" end="12"/>
         </transmembrane>
+      </samTrigger>
+    </samFeatureSet>
+    <samFeatureSet>
+      <annotations>
+        <annotation>
+          <comment type="miscellaneous">
+            <uniprot:text>Miscellaneous.</uniprot:text>
+          </comment>
+        </annotation>
+      </annotations>
+      <samTrigger>
+        <signal>
+          <expectedHits start="0" end="1"/>
+        </signal>
+      </samTrigger>
+    </samFeatureSet>
+    <samFeatureSet>
+      <samTrigger>
+        <coiledCoil>
+          <expectedHits start="1" end="unlimited"/>
+        </coiledCoil>
       </samTrigger>
     </samFeatureSet>
     <positionalFeatureSet template="P38793" alignmentSignature="MF_03152">
