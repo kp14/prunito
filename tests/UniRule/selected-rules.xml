@@ -97,6 +97,155 @@
         </ruleException>
       </ruleExceptions>
     </main>
+    <cases>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="false">
+              <value cvId="4751">Fungi</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <gene>
+              <uniprot:name type="primary">TRM5</uniprot:name>
+            </gene>
+          </annotation>
+        </annotations>
+      </case>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="false">
+              <value cvId="1261581">Vertebrata</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <gene>
+              <uniprot:name type="primary">TRMT5</uniprot:name>
+              <uniprot:name type="synonym">TRM5</uniprot:name>
+            </gene>
+          </annotation>
+        </annotations>
+      </case>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="true">
+              <value cvId="4751">Fungi</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <protein>
+              <recommendedName>
+                <fullName>tRNA (guanine(37)-N1)-methyltransferase</fullName>
+                <ecNumber>2.1.1.228</ecNumber>
+              </recommendedName>
+              <alternativeName>
+                <fullName>M1G-methyltransferase</fullName>
+              </alternativeName>
+              <alternativeName>
+                <fullName>tRNA [GM37] methyltransferase</fullName>
+              </alternativeName>
+              <alternativeName>
+                <fullName>tRNA methyltransferase 5 homolog</fullName>
+              </alternativeName>
+            </protein>
+          </annotation>
+        </annotations>
+      </case>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="false">
+              <value cvId="4930">Saccharomyces</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <protein>
+              <recommendedName>
+                <fullName>tRNA (guanine(37)-N1)-methyltransferase</fullName>
+                <ecNumber>2.1.1.228</ecNumber>
+              </recommendedName>
+              <alternativeName>
+                <fullName>M1G-methyltransferase</fullName>
+              </alternativeName>
+              <alternativeName>
+                <fullName>tRNA [GM37] methyltransferase</fullName>
+              </alternativeName>
+              <alternativeName>
+                <fullName>tRNA methyltransferase 5</fullName>
+              </alternativeName>
+              <flag>
+                <value>Precursor</value>
+              </flag>
+            </protein>
+          </annotation>
+          <annotation>
+            <comment type="function">
+              <uniprot:text>Specifically methylates the N1 position of guanosine-37 in various cytoplasmic and mitochondrial tRNAs. Methylation is not dependent on the nature of the nucleoside 5' of the target nucleoside. This is the first step in the biosynthesis of wybutosine (yW), a modified base adjacent to the anticodon of tRNAs and required for accurate decoding. Postspliced cytoplasmic tRNAs are imported into the nucleus, where this first step seems to take place, after which they are reexported to the cytoplasm, where the yW sythesis is completed by cytoplasmic enzymes.</uniprot:text>
+            </comment>
+          </annotation>
+          <annotation>
+            <keyword id="KW-0809">Transit peptide</keyword>
+          </annotation>
+        </annotations>
+      </case>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="true">
+              <value cvId="4930">Saccharomyces</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <comment type="function">
+              <uniprot:text>Specifically methylates the N1 position of guanosine-37 in various cytoplasmic and mitochondrial tRNAs. Methylation is not dependent on the nature of the nucleoside 5' of the target nucleoside. This is the first step in the biosynthesis of wybutosine (yW), a modified base adjacent to the anticodon of tRNAs and required for accurate decoding.</uniprot:text>
+            </comment>
+          </annotation>
+        </annotations>
+      </case>
+      <case>
+        <conditionSets>
+          <conditionSet>
+            <condition type="taxon" negative="false">
+              <value cvId="4751">Fungi</value>
+            </condition>
+            <condition type="taxon" negative="true">
+              <value cvId="4930">Saccharomyces</value>
+            </condition>
+          </conditionSet>
+        </conditionSets>
+        <annotations>
+          <annotation>
+            <protein>
+              <recommendedName>
+                <fullName>tRNA (guanine(37)-N1)-methyltransferase</fullName>
+                <ecNumber>2.1.1.228</ecNumber>
+              </recommendedName>
+              <alternativeName>
+                <fullName>M1G-methyltransferase</fullName>
+              </alternativeName>
+              <alternativeName>
+                <fullName>tRNA [GM37] methyltransferase</fullName>
+              </alternativeName>
+              <alternativeName>
+                <fullName>tRNA methyltransferase 5</fullName>
+              </alternativeName>
+            </protein>
+          </annotation>
+        </annotations>
+      </case>
+    </cases>
     <samFeatureSet>
       <samTrigger>
         <transmembrane>
@@ -104,4 +253,53 @@
         </transmembrane>
       </samTrigger>
     </samFeatureSet>
+    <positionalFeatureSet template="P38793" alignmentSignature="MF_03152">
+      <positionalFeature inGroup="false">
+        <positionalCondition>
+          <position start="268" end="268"/>
+          <pattern>[HKR]</pattern>
+        </positionalCondition>
+        <positionalAnnotation type="binding site">S-adenosyl-L-methionine</positionalAnnotation>
+      </positionalFeature>
+      <positionalFeature inGroup="false">
+        <positionalCondition>
+          <position start="307" end="308"/>
+          <pattern>[DE]-[ILM]</pattern>
+        </positionalCondition>
+        <positionalAnnotation type="region of interest">S-adenosyl-L-methionine binding</positionalAnnotation>
+      </positionalFeature>
+      <positionalFeature inGroup="false">
+        <positionalCondition>
+          <position start="335" end="336"/>
+          <pattern>[DE]-[AGNSV]</pattern>
+        </positionalCondition>
+        <positionalAnnotation type="region of interest">S-adenosyl-L-methionine binding</positionalAnnotation>
+      </positionalFeature>
+      <positionalFeature inGroup="false">
+        <positionalCondition>
+          <position start="399" end="399"/>
+          <pattern>N</pattern>
+        </positionalCondition>
+        <positionalAnnotation type="binding site">S-adenosyl-L-methionine</positionalAnnotation>
+      </positionalFeature>
+    </positionalFeatureSet>
+    <positionalFeatureSet template="P38793" alignmentSignature="MF_03152">
+      <conditionSet>
+        <condition type="taxon" negative="false">
+          <value cvId="4930">Saccharomyces</value>
+        </condition>
+      </conditionSet>
+      <positionalFeature inGroup="false">
+        <positionalCondition>
+          <position start="45" end="@CTER@"/>
+        </positionalCondition>
+        <positionalAnnotation type="chain">@PROTEIN_NAME@</positionalAnnotation>
+      </positionalFeature>
+      <positionalFeature inGroup="false">
+        <positionalCondition>
+          <position start="@NTER@" end="44"/>
+        </positionalCondition>
+        <positionalAnnotation type="transit peptide">Mitochondrion</positionalAnnotation>
+      </positionalFeature>
+    </positionalFeatureSet>
   </unirule></unirules>
