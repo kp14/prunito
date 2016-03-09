@@ -197,7 +197,8 @@ class Reference():
 
     @property
     def positions(self):
-        return self._data['RP']
+        pos = ' '.join(self._data['RP'])
+        return pos.strip('.')
 
     @property
     def comments(self):
