@@ -4,6 +4,7 @@ Created on Fri May 22 15:09:22 2015
 
 @author: kp14
 """
+import datetime
 import logging
 
 from lxml import etree
@@ -48,7 +49,6 @@ class UniRule():
         returns:
         Datetime object
         '''
-        import datetime
         return datetime.datetime.strptime(self.meta['created'][:10], '%Y-%m-%d')
 
     @property
@@ -58,7 +58,6 @@ class UniRule():
         returns:
         Datetime object
         '''
-        import datetime
         return datetime.datetime.strptime(self.meta['modified'][:10], '%Y-%m-%d')
 
     @property
@@ -71,8 +70,19 @@ class UniRule():
         '''
         return self.meta['oldRuleNum']
 
-#    def created_after(self, date):
+    def created_after(self, date):
+        try:
+            dto = datetime.datetime.strptime(date, '%Y-%m-%d')
+            return self.date_created > dto
+        except ValueError:
+            print('Date has to be given in format: YYYY-MM-DD')
 
+    def created_before(self, date):
+        try:
+            dto = datetime.datetime.strptime(date, '%Y-%m-%d')
+            return self.date_created < dto
+        except ValueError:
+            print('Date has to be given in format: YYYY-MM-DD')
 
     def has_cases(self):
         '''Return whether rule has cases.'''
