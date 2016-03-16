@@ -127,12 +127,12 @@ class UniRule():
         for cond in self.iter_main_conditions():
             if cond.type == 'taxon':
                 tx.add(cond)
-        must_have = set([c.value for c in tx if not c.negative])
+        must_have = [c.value for c in tx if not c.negative]
         if must_have:
             must_have_txt = ', '.join(must_have)
         else:
             must_have_txt = '-'
-        must_not_have = set([c.value for c in tx if c.negative])
+        must_not_have = [c.value for c in tx if c.negative]
         if must_not_have:
             must_not_have_txt = ', '.join(must_not_have)
         else:
@@ -261,6 +261,16 @@ class Condition():
     def __str__(self):
         return '{0}, {1}, {2}'.format(self.type, self.value, self.negative)
 
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__)
+            and self.__dict__ == other.__dict__)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.type, self.value, self.negative))
+
 
 class Annotation():
     '''Annotations as used in UniRule.
@@ -279,6 +289,16 @@ class Annotation():
 
     def __str__(self):
         return self.__dict__.__str__()
+
+    def __eq__(self, other):
+        return (isinstance(other, self.__class__)
+            and self.__dict__ == other.__dict__)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return hash((self.class_, self.type, self.subtype, self.value))
 
 
 def parse_rules(filename):
