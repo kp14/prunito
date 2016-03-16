@@ -121,6 +121,25 @@ class UniRule():
                 ec_list.append(ann.value)
         return ec_list
 
+    def get_taxonomic_space(self):
+        '''Return a set of taxonomic contstraints used in the main rule.'''
+        tx = set()
+        for cond in self.iter_main_conditions():
+            if cond.type == 'taxon':
+                tx.add(cond)
+        must_have = set([c.value for c in tx if not c.negative])
+        if must_have:
+            must_have_txt = ', '.join(must_have)
+        else:
+            must_have_txt = '-'
+        must_not_have = set([c.value for c in tx if c.negative])
+        if must_not_have:
+            must_not_have_txt = ', '.join(must_not_have)
+        else:
+            must_not_have_txt = '-'
+        return 'Must be (OR): {0}\nMust not be: {1}'.format(must_have_txt,
+                                                            must_not_have_txt)
+
     def iter_conditions(self):
         '''Iterate over all conditions in main and cases.'''
         yield from self.iter_main_conditions()
