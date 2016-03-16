@@ -26,6 +26,54 @@ class UniRule():
         self.cases = []
         self.sam_features = []
 
+    @property
+    def status(self):
+        '''Return status of a UniRule - apply, test, disused.'''
+        return self.meta['status']
+
+    @property
+    def id(self):
+        '''Return UniRule ID, e.g. UR000000001.'''
+        return self.meta['id']
+
+    @property
+    def creator(self):
+        '''Return creator of UniRule.'''
+        return self.meta['creator']
+
+    @property
+    def date_created(self):
+        '''Date when rule was created.
+
+        returns:
+        Datetime object
+        '''
+        import datetime
+        return datetime.datetime.strptime(self.meta['created'][:10], '%Y-%m-%d')
+
+    @property
+    def date_last_modified(self):
+        '''Date when rule was last modified.
+
+        returns:
+        Datetime object
+        '''
+        import datetime
+        return datetime.datetime.strptime(self.meta['modified'][:10], '%Y-%m-%d')
+
+    @property
+    def id_pipeline(self):
+        '''Returns the ID by pipeline.
+
+        Next to the UniRule ID, almost evey rule has a second identifier
+        based on the the pipeline it is coming from, e.g. RU362000 for
+        RuleBase.
+        '''
+        return self.meta['oldRuleNum']
+
+#    def created_after(self, date):
+
+
     def has_cases(self):
         '''Return whether rule has cases.'''
         return bool(self.cases)
