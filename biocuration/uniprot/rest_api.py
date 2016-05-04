@@ -4,6 +4,7 @@ import requests
 from biocuration.utils import (UNIPROT_KNOWLEDGEBASE,
                                UNIPROT_BATCH,
                                UNIPROT_CONVERT,
+                               UNIPROT_MAP,
                                is_value_in_iterable)
 
 def current_release():
@@ -114,6 +115,25 @@ def convert(path, typ='uniprot', from_='txt', to='xml', encoding='ascii'):
                              data=payload,
                              files=files
                              )
+    if response.ok:
+        return response.text
+    else:
+        response.raise_for_status()
+
+
+def map(query, source_fmt, target_fmt, output_fmt='tab'):
+    '''Map one set of idenfifiers to another.
+
+    See http://www.uniprot.org/help/programmatic_access#conversion for details.
+    Note: The response.url filed contains the URL from which to download
+    the mapping, e.g. http://www.uniprot.org/mapping/M20160504763V34ZKX0.tab
+    '''
+    payload = {'from': source_fmt,
+               'to': target_fmt,
+               'format': output_fmt,
+               'query': query,
+               }
+    response = requests.get(UNIPROT_MAP, params=payload)
     if response.ok:
         return response.text
     else:

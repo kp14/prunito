@@ -13,5 +13,7 @@ from .rest_api import (current_release,
                        search_all,
                        number_SP_hits,
                        retrieve_batch,
-                       convert)
+                       convert,
+                       map,
+                       )
 from .scraping import get_lineage
