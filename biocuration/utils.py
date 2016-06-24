@@ -65,7 +65,12 @@ def validate_param(param, val, allowed_vals):
 ##############################################################
 
 # Regex for UniProtKB accession numbers
-UNIPROT_ACCESSION = re.compile("[OPQ][0-9][A-Z0-9]{3}[0-9]|[A-NR-Z][0-9]([A-Z][A-Z0-9]{2}[0-9]){1,2}")
+# This was slightly modified based on test on regex101.com
+# Original: [O,P,Q][0-9][A-Z, 0-9]{3}[0-9] | [A-N,R-Z]([0-9][A-Z][A-Z, 0-9]{2}){1,2}[0-9]
+
+UNIPROT_ACCESSION = re.compile(r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]')
+UNIPROT_ACCESSION_REGEX = UNIPROT_ACCESSION
+UNIPROT_ACCESSION_REGEX_STRING = r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]'
 
 
 ##############################################################
