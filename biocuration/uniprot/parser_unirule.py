@@ -6,6 +6,7 @@ Created on Fri May 22 15:09:22 2015
 """
 import datetime
 import logging
+import re
 
 from lxml import etree
 from lxml import objectify
@@ -14,7 +15,8 @@ from lxml import objectify
 logging.basicConfig(level=logging.WARN)
 
 
-NS = '{http://uniprot.org/unirule-1.0}'
+NS = re.compile('\{http\:\/\/uniprot\.org\/unirule-[0-9]\.[0-9]\}')
+#NS = '{http://uniprot.org/unirule-1.0}'
 NS_uniprot = '{http://uniprot.org/uniprot}'
 
 
@@ -331,7 +333,8 @@ def parse_rules(filename):
                 for sam_ft in rule.samFeatureSet:
                     sam = SamFeature()
                     for trig in rule.samFeatureSet.samTrigger.getchildren():
-                        sam.trigger = trig.tag.replace(NS, '')
+                        sam.trigger = NS.sub('', trig.tag)
+#                        sam.trigger = trig.tag.replace(NS, '')
                         sam.min_hits = trig.expectedHits.attrib['start']
                         sam.max_hits = trig.expectedHits.attrib['end']
                     try:
@@ -355,7 +358,8 @@ def extract_meta(rule, uni):
     uni.meta.update(rule.attrib)
     for info in rule.information.getchildren():
         try:
-            key = info.tag.replace(NS, '')
+            key = NS.sub('', info.tag)
+#            key = info.tag.replace(NS, '')
             val = info.text
             uni.meta[key] = val
         except:
@@ -427,7 +431,8 @@ def extract_case_annotations(case, uni):
 def _extract_annotations(annotation_element):
     annotation_list = []
     class_element = annotation_element.getchildren()[0] # Only one toplevel element
-    class_ = class_element.tag.replace(NS, '')
+    class_ = NS.sub('', class_element.tag)
+#    class_ = class_element.tag.replace(NS, '')
     logging.info('Parsing class: {}'.format(class_))
     if class_ == 'comment':
         attribs = class_element.attrib
@@ -478,7 +483,8 @@ def _extract_annotations(annotation_element):
             annotation_list.append(_create_annotation(attribs))
     elif class_ == 'protein':
         for typ in class_element.getchildren():
-            typ_ = typ.tag.replace(NS, '')
+            typ_ = NS.sub('', typ.tag)
+#            typ_ = typ.tag.replace(NS, '')
             if typ_ == 'alternativeName':
                 attribs = {}
                 attribs['type'] = typ_
@@ -496,7 +502,8 @@ def _extract_annotations(annotation_element):
                 for subtyp in typ.getchildren():
                     attribs = {}
                     attribs['type'] = typ_
-                    attribs['subtype'] = subtyp.tag.replace(NS, '')
+                    attribs['subtype'] = NS.sub('', subtyp.tag)
+#                    attribs['subtype'] = subtyp.tag.replace(NS, '')
                     attribs['value'] = subtyp.text
                     attribs['class_'] = class_
                     annotation_list.append(_create_annotation(attribs))
