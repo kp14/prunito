@@ -143,39 +143,20 @@ class Record():
         try:
             return self._features
         except AttributeError:
-            feature_list = []
-            for item in self._bag['FT']:
-                logging.debug('Looking at feature: {}'.format(item))
-                item_length = len(item)
-                if item_length == 4:
-                    feature_list.append(item)
-                elif item_length == 1:
-                    if item[0].startswith('/FTId='):
-                        stripped = item[0].strip('.;')
-                        try:
-                            feature_list[-1].append(stripped[6:])
-                        except IndexError:
-                            print(feature_list, item, stripped)
-                            raise Exception
-                    else:
-                        last_item = feature_list[-1].pop()
-                        extended_item = ' '.join([last_item, item[0]])
-                        try:
-                            feature_list[-1].append(extended_item)
-                        except IndexError:
-                            print(feature_list, item, extended_item, last_item)
-                            raise Exception
-                elif item_length == 3:
-                    item.append('')
-                    feature_list.append(item)
+            self._features = []
+            current = None
+            for featureline in self._bag['FT'][1:]:
+                logging.debug('Looking at featureline: {}'.format(featureline))
+                if featureline[0]:
+                    if current:
+                        self._features.append(tuple(current))
+                        current = None
+                    current  = featureline
                 else:
-                    logging.error('Feature of wrong length: {}'.format(item))
-                    raise ValueError('ERROR in feature: {}'.format(item_length))
-            for item in feature_list:
-                if len(item) == 4:
-                    item.append('')
-            tuple_list = [tuple(item) for item in feature_list]
-            self._features = tuple_list
+                    if featureline[3].startswith('/FTId'):
+                        current[4] = featureline[3]
+                    else:
+                        current[3] += featureline[3]
             return self._features
 
     @property
@@ -251,7 +232,7 @@ def parse_txt(handle):
     bag, context = _set_up()
     for line in handle:
         line_type, line = line[:2], line[5:]
-        stripped_line = line.rstrip(LINE_ENDINGS)
+        stripped_line = line.strip()
 #        stripped_line = line
         try:
             if line_type.startswith('R'):
@@ -363,33 +344,18 @@ def _parse_ft(line):
     Returns:
     list
     '''
-
-    feature = []
-
     key = line[0:8].strip()
     start = line[10:15].strip()
     end = line[17:22].strip()
-    description = line[30:].strip()
-
-    if not key == '':
-        feature.append(key)
-    if not start == '':
-        try:
-            start = int(start)
-        except ValueError:
-            pass
-        feature.append(start)
-    if not end == '':
-        try:
-            end = int(end)
-        except ValueError:
-            pass
-        feature.append(end)
-    if not description == '':
-        feature.append(description)
-    assert len(feature) in [1, 3, 4]
-    logging.debug('Parsed FT: {}'.format(feature))
-    return feature
+    description = line[29:].strip()
+    # if not key:
+    #     if description.startswith('/FT'):
+    #         _parse_ft.previous[-1] = description[6:-1]
+    #     else:
+    #         _parse_ft.previous[3] += new_desc
+    featureline = [key, start, end, description, '']
+    logging.debug('Parsed FT: {}'.format(featureline))
+    return featureline
 
 
 PARSER_MAP = {"ID": _parse_id,
@@ -418,7 +384,7 @@ if __name__ == '__main__':
 
     from Bio import SwissProt
 
-    datafile = 'uniprot_sprot.dat'
+    datafile = 'C:/Users/kpichler/Documents/Python/biocuration_pc/tests/SwissProt/many_sp_entries.txl'
     start = datetime.datetime.now()
 
     with open(datafile, 'r', encoding='ascii') as data:
