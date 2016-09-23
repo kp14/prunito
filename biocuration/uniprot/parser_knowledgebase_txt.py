@@ -145,13 +145,14 @@ class Record():
         except AttributeError:
             self._features = []
             current = None
-            for featureline in self._bag['FT'][1:]:
+            for featureline in self._bag['FT']:
                 logging.debug('Looking at featureline: {}'.format(featureline))
                 if featureline[0]:
                     if current:
                         self._features.append(tuple(current))
                         current = None
-                    current  = featureline
+                    else:
+                        current  = featureline
                 else:
                     if featureline[3].startswith('/FTId'):
                         current[4] = featureline[3]
