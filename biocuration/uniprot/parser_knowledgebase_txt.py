@@ -11,7 +11,7 @@ logging.basicConfig(level=logging.WARN)
 LINE_ENDINGS = ' \n\r'
 
 
-class Record():
+class Record:
     '''Class emulating biopython.SwissProt.Record.
 
     All fields biopython.SwissProt.Record provides are provided, too.
@@ -320,6 +320,7 @@ def _parse_cc(line):
     if not line[0:3] in ['---', 'Cop', 'Dis']:
         return line
 
+
 def _parse_dr(line):
     stripped_line = line.strip(';.')
     tokens = stripped_line.split('; ')
@@ -346,15 +347,15 @@ def _parse_ft(line):
     list
     '''
     key = line[0:8].strip()
-    start = line[10:15].strip()
-    end = line[17:22].strip()
+    start_ft = line[10:15].strip()
+    end_ft = line[17:22].strip()
     description = line[29:].strip()
     # if not key:
     #     if description.startswith('/FT'):
     #         _parse_ft.previous[-1] = description[6:-1]
     #     else:
     #         _parse_ft.previous[3] += new_desc
-    featureline = [key, start, end, description, '']
+    featureline = [key, start_ft, end_ft, description, '']
     logging.debug('Parsed FT: {}'.format(featureline))
     return featureline
 
@@ -382,16 +383,10 @@ PARSER_MAP = {"ID": _parse_id,
 if __name__ == '__main__':
 
     import datetime
-
-    from Bio import SwissProt
-
     datafile = 'C:/Users/kpichler/Documents/Python/biocuration_pc/tests/SwissProt/many_sp_entries.txl'
     start = datetime.datetime.now()
 
     with open(datafile, 'r', encoding='ascii') as data:
-#        for entry in SwissProt.parse(data):
-#            print(entry.keywords)
-#        data.seek(0)
         for entry in parse_txt_compatible(data):
             for feat in entry.features:
                 if feat[0] == 'REGION' and 'Necessary for binding' in feat[3]:
