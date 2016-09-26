@@ -19,6 +19,7 @@ class Record:
     '''
     def __init__(self, bag):
         self._bag = bag
+        self._features = []
 
     @property
     def entry_name(self):
@@ -140,24 +141,26 @@ class Record:
     @property
     #@functools.lru_cache(maxsize=1)
     def features(self):
-        try:
+        if self._features:
             return self._features
-        except AttributeError:
-            self._features = []
+        else:
             current = None
-            for featureline in self._bag['FT']:
+            ft_bag_len = len(self._bag['FT'])
+            for idx, featureline in enumerate(self._bag['FT']):
                 logging.debug('Looking at featureline: {}'.format(featureline))
                 if featureline[0]:
                     if current:
                         self._features.append(tuple(current))
-                        current = None
+                        current = featureline.copy()
                     else:
-                        current  = featureline
+                        current  = featureline.copy()
                 else:
                     if featureline[3].startswith('/FTId'):
-                        current[4] = featureline[3]
+                        current[4] = featureline[3][6:-1]
                     else:
-                        current[3] += featureline[3]
+                        current[3] += ' {}'.format(featureline[3])
+                if idx == ft_bag_len - 1:
+                    self._features.append(tuple(current))
             return self._features
 
     @property
@@ -233,7 +236,7 @@ def parse_txt(handle):
     bag, context = _set_up()
     for line in handle:
         line_type, line = line[:2], line[5:]
-        stripped_line = line.strip()
+        stripped_line = line.rstrip()
 #        stripped_line = line
         try:
             if line_type.startswith('R'):
@@ -286,6 +289,9 @@ def _parse_accessions(line):
     return accs
 
 
+def _parse_cc(line):
+    return line.strip()
+
 def _parse_species(line):
     """Extract species information from OS line
 
@@ -317,8 +323,9 @@ def _parse_taxid(line):
 
 
 def _parse_cc(line):
-    if not line[0:3] in ['---', 'Cop', 'Dis']:
-        return line
+    stripped_line = line.strip()
+    if not stripped_line[0:3] in ['---', 'Cop', 'Dis']:
+        return stripped_line
 
 
 def _parse_dr(line):
@@ -347,8 +354,8 @@ def _parse_ft(line):
     list
     '''
     key = line[0:8].strip()
-    start_ft = line[10:15].strip()
-    end_ft = line[17:22].strip()
+    start_ft = _try_parsing_as_int(line[10:15].strip())
+    end_ft = _try_parsing_as_int(line[17:22].strip())
     description = line[29:].strip()
     # if not key:
     #     if description.startswith('/FT'):
@@ -360,10 +367,17 @@ def _parse_ft(line):
     return featureline
 
 
+def _try_parsing_as_int(token):
+    try:
+        return int(token.strip())
+    except ValueError:
+        return token.strip()
+
+
 PARSER_MAP = {"ID": _parse_id,
               "AC": _parse_accessions,
               "DT": _parse_generic,
-              "DE": _parse_generic,
+              "DE": _parse_cc,
               "GN": _parse_generic,
               "OS": _parse_generic,
               "OG": _parse_generic,
@@ -381,15 +395,7 @@ PARSER_MAP = {"ID": _parse_id,
               "  ": _parse_generic}
 
 if __name__ == '__main__':
-
-    import datetime
-    datafile = 'C:/Users/kpichler/Documents/Python/biocuration_pc/tests/SwissProt/many_sp_entries.txl'
-    start = datetime.datetime.now()
-
+    datafile = 'C:/Users/kpichler/Documents/Python/biocuration_pc/tests/SwissProt/one_sp_entry.txl'
     with open(datafile, 'r', encoding='ascii') as data:
-        for entry in parse_txt_compatible(data):
-            for feat in entry.features:
-                if feat[0] == 'REGION' and 'Necessary for binding' in feat[3]:
-                    print(feat)
-    end = datetime.datetime.now()
-    print(end-start)
+        e = list(parse_txt_compatible(data))
+        e[0].features
