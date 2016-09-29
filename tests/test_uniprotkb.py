@@ -9,15 +9,9 @@ Created on Mon May 18 11:59:36 2015
 import pytest
 import os
 
-from unittest import TestCase
-
 from Bio import SwissProt
 import biocuration.uniprot as up
 
-
-# Some diffs are very long here if tests fail so we set this
-# to None to display the whole diff
-TestCase.maxDiff = None
 
 # Import paths for data files
 base_dir = os.path.dirname(__file__)
