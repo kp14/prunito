@@ -67,6 +67,20 @@ class Record:
         return ' '.join(self._bag['DE'])
 
     @property
+    def recommended_full_name(self):
+        """Full name of protein as annotated in UniProtKB.
+
+        In the TXT format, this corresponds to the value of line:
+        DE   RecName: Full= ...;
+        Evidence tags are stripped out.
+        """
+        rec_line =  self._bag['FT'][0].strip(' ;')
+        assert rec_line.startswith('RecName')
+        name_part = rec_line.split(' {')[0]
+        rec_name = name_part[14:]
+        return rec_name
+
+    @property
     def gene_name(self):
         return ' '.join(self._bag['GN'])
 
