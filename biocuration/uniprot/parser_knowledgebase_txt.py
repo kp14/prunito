@@ -74,7 +74,7 @@ class Record:
         DE   RecName: Full= ...;
         Evidence tags are stripped out.
         """
-        rec_line =  self._bag['FT'][0].strip(' ;')
+        rec_line =  self._bag['DE'][0].strip(' ;')
         assert rec_line.startswith('RecName')
         name_part = rec_line.split(' {')[0]
         rec_name = name_part[14:]

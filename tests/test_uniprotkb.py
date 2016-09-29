@@ -53,6 +53,9 @@ def test_primary_accession():
 def test_description():
     assert seq_record[0].description == "RecName: Full=Nucleotide-binding oligomerization domain-containing protein 2; AltName: Full=Caspase recruitment domain-containing protein 15;"
 
+def test_recommended_full_name():
+    assert seq_record[0].recommended_full_name == 'Nucleotide-binding oligomerization domain-containing protein 2'
+
 def test_gene_name():
     assert seq_record[0].gene_name == 'Name=NOD2; Synonyms=CARD15;'
 
