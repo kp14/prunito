@@ -128,6 +128,17 @@ class Record:
         return ref_list
 
     @property
+    def all_pubmed_ids(self):
+        """Return all PMIDs found in the references of an entry."""
+        id_list = []
+        for ref in self.references:
+          for source in ref.references:
+              name, identifier = source
+              if name == 'PubMed':
+                  id_list.append(identifier)
+        return id_list
+
+    @property
     #@functools.lru_cache(maxsize=1)
     def comments(self):
         concat = ' '.join(self._bag['CC'])

@@ -88,6 +88,9 @@ def test_reference_title():
 def test_reference_location():
     assert seq_record[0].references[0].location == 'Mamm. Genome 17:892-901(2006).'
 
+def test_list_of_pmids():
+    assert seq_record[0].all_pubmed_ids == ['16897345', '20698950', '16203728', '18511561', '19592251', '21887730']
+
 def test_comments_number_of():
     assert len(seq_record[0].comments) == 9
 

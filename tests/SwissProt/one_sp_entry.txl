@@ -19,6 +19,48 @@ RA   Taylor K.H., Taylor J.F., White S.N., Womack J.E.;
 RT   "Identification of genetic variation and putative regulatory regions
 RT   in bovine CARD15.";
 RL   Mamm. Genome 17:892-901(2006).
+RN   [2]
+RP   NUCLEOTIDE SEQUENCE [MRNA] (ISOFORM 3).
+RX   PubMed=20698950; DOI=10.1186/1756-0500-3-224;
+RA   Kramer M., Boeck J., Reichenbach D., Kaether C., Schreiber S.,
+RA   Platzer M., Rosenstiel P., Huse K.;
+RT   "NOD2-C2 - a novel NOD2 isoform activating NF-kappaB in a muramyl
+RT   dipeptide-independent manner.";
+RL   BMC Res. Notes 3:224-224(2010).
+RN   [3]
+RP   INTERACTION WITH ERBBI2P, AND SUBCELLULAR LOCATION.
+RX   PubMed=16203728; DOI=10.1074/jbc.M508538200;
+RA   McDonald C., Chen F.F., Ollendorff V., Ogura Y., Marchetto S.,
+RA   Lecine P., Borg J.P., Nunez G.;
+RT   "A role for Erbin in the regulation of Nod2-dependent NF-kappaB
+RT   signaling.";
+RL   J. Biol. Chem. 280:40301-40309(2005).
+RN   [4]
+RP   FUNCTION, INTERACTION WITH CASP1; CASP4 AND NLRP1, AUTOINHIBITION, AND
+RP   DOMAIN.
+RX   PubMed=18511561; DOI=10.1073/pnas.0802726105;
+RA   Hsu L.C., Ali S.R., McGillivray S., Tseng P.H., Mariathasan S.,
+RA   Humke E.W., Eckmann L., Powell J.J., Nizet V., Dixit V.M., Karin M.;
+RT   "A NOD2-NALP1 complex mediates caspase-1-dependent IL-1beta secretion
+RT   in response to Bacillus anthracis infection and muramyl dipeptide.";
+RL   Proc. Natl. Acad. Sci. U.S.A. 105:7803-7808(2008).
+RN   [5]
+RP   INTERACTION WITH RIPK2.
+RX   PubMed=19592251; DOI=10.1016/j.cub.2009.06.038;
+RA   Tao M., Scacheri P.C., Marinis J.M., Harhaj E.W., Matesic L.E.,
+RA   Abbott D.W.;
+RT   "ITCH K63-ubiquitinates the NOD2 binding protein, RIP2, to influence
+RT   inflammatory signaling pathways.";
+RL   Curr. Biol. 19:1255-1263(2009).
+RN   [6]
+RP   IDENTIFICATION IN A COMPLEX WITH ARHGEF2 AND RIPK2, AND INTERACTION
+RP   WITH RIPK2.
+RX   PubMed=21887730; DOI=10.1002/ibd.21851;
+RA   Zhao Y., Alonso C., Ballester I., Song J.H., Chang S.Y., Guleng B.,
+RA   Arihiro S., Murray P.J., Xavier R., Kobayashi K.S., Reinecker H.C.;
+RT   "Control of NOD2 and Rip2-dependent innate immune activation by GEF-
+RT   H1.";
+RL   Inflamm. Bowel Dis. 18:603-612(2012).
 CC   -!- FUNCTION: Involved in gastrointestinal immunity. Upon stimulation
 CC       by muramyl dipeptide (MDP), a fragment of bacterial peptidoglycan,
 CC       binds the proximal adapter receptor-interacting RIPK2, which
