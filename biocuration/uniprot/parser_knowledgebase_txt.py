@@ -220,12 +220,31 @@ class Reference():
         return self._parse_rc_rx('RX')
 
     @property
+    def pmid(self):
+        """
+        Return PubMed ID of reference, None if there is none.
+        :return: PubMed ID, string
+        """
+        for source, identifier in self.references:
+            if source == 'PubMed':
+                return identifier
+
+    @property
     def authors(self):
         if len(self._data['RA']) == 1:
             authors = self._data['RA'][0]
         else:
             authors = ' '.join(self._data['RA'])
         return authors.rstrip(';')
+
+    @property
+    def first_author(self):
+        """
+        Return first author name of reference.
+        :return: author name, string
+        """
+        authors = self.authors.split(', ')
+        return authors[0]
 
     @property
     def title(self):

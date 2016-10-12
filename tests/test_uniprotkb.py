@@ -79,8 +79,14 @@ def test_reference_references():
     assert seq_record[0].references[0].references == [('PubMed', '16897345'),
                                               ('DOI', '10.1007/s00335-005-0148-2')]
 
+def test_reference_pmid_retrieval():
+    assert seq_record[0].references[0].pmid == '16897345'
+
 def test_reference_authors():
     assert seq_record[0].references[0].authors == 'Taylor K.H., Taylor J.F., White S.N., Womack J.E.'
+
+def test_reference_first_author():
+    assert seq_record[0].references[0].first_author == 'Taylor K.H.'
 
 def test_reference_title():
     assert seq_record[0].references[0].title == 'Identification of genetic variation and putative regulatory regions in bovine CARD15.'
