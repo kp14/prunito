@@ -194,6 +194,59 @@ class Record:
         seq = gapped_seq.replace(' ', '')
         return seq
 
+    @property
+    def isoforms(self):
+        """
+        Generates isoforms.
+        :return: tuple (name, sequence)
+        """
+        slen = len(self.sequence)
+        iso = defaultdict(dict)
+        for ft in self.features:
+            if ft[0] == 'VAR_SEQ':
+                for match in re.findall('isoform [A-Za-z0-9]+', ft[3]):
+                    name = match[8:]
+                    try:
+                        _ = iso[name]['blocks']
+                    except KeyError:
+                        iso[name]['blocks'] = []
+                    if ft[3].startswith('Missing'):
+                        iso[name]['blocks'].append((ft[1] - 1, ft[2], '-'))
+                    else:
+                        _, change = ft[3].split(' -> ')
+                        change_no_iso = re.sub(' [(]in isoform .+[])]\.', '', change)
+                        change_no_tags = re.sub(' [{].+[}]\.', '', change_no_iso)
+                        aa_changes = change_no_tags.replace(' ', '')
+                        iso[name]['blocks'].append((ft[1] - 1, ft[2], aa_changes))
+        for isoform, data in iso.items():
+            seq = [0]
+            for block in data['blocks']:
+                seq.append(block[0])
+                seq.append(block[1])
+            seq.append(slen)
+            for idx in range(0, len(seq), 2):
+                start = seq[idx]
+                stop = seq[idx + 1]
+                if start >= stop:
+                    pass
+                else:
+                    tpl = (start, stop, '+')
+                    data['blocks'].append(tpl)
+            data['blocks'].sort()
+            temp = []
+            for block in data['blocks']:
+                if block[2] == '+':
+                    for idx in range(block[0], block[1]):
+                        temp.append(self.sequence[idx])
+                elif block[2] == '-':
+                    pass
+                else:
+                    temp.extend(list(block[2]))
+            data['seq'] = ''.join(temp)
+        for iso_name, data in iso.items():
+            qualified_iso_name = '{0}-{}'.format(self.primary_accession, iso_name)
+            yield (qualified_iso_name, data['seq'])
+
 
 class Reference():
 
