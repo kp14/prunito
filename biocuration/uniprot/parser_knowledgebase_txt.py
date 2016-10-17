@@ -204,7 +204,7 @@ class Record:
         iso = defaultdict(dict)
         for ft in self.features:
             if ft[0] == 'VAR_SEQ':
-                for match in re.findall('isoform [A-Za-z0-9]+', ft[3]):
+                for match in re.findall('isoform [A-Za-z0-9-]+', ft[3]):
                     name = match[8:]
                     try:
                         _ = iso[name]['blocks']
