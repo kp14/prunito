@@ -244,7 +244,7 @@ class Record:
                     temp.extend(list(block[2]))
             data['seq'] = ''.join(temp)
         for iso_name, data in iso.items():
-            qualified_iso_name = '{0}-{}'.format(self.primary_accession, iso_name)
+            qualified_iso_name = '{0}-{1}'.format(self.primary_accession, iso_name)
             yield (qualified_iso_name, data['seq'])
 
 
