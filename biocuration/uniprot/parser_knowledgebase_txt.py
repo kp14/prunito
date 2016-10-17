@@ -183,7 +183,11 @@ class Record:
                     if featureline[3].startswith('/FTId'):
                         current[4] = featureline[3][6:-1]
                     else:
-                        current[3] += ' {}'.format(featureline[3])
+                        if current[3].endswith('-'):
+                            add_space = ''
+                        else:
+                            add_space = ' '
+                        current[3] += '{0}{1}'.format(add_space, featureline[3])
                 if idx == ft_bag_len - 1:
                     self._features.append(tuple(current))
             return self._features
