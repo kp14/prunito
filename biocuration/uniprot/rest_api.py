@@ -5,6 +5,7 @@ from biocuration.utils import (UNIPROT_KNOWLEDGEBASE,
                                UNIPROT_BATCH,
                                UNIPROT_CONVERT,
                                UNIPROT_MAP,
+                               VALID_ID_MAPPINGS,
                                is_value_in_iterable)
 
 def current_release():
@@ -138,6 +139,10 @@ def map_id(query, source_fmt, target_fmt, output_fmt='tab'):
     Returns:
         string in specified output format.
     '''
+    if source_fmt.upper() not in VALID_ID_MAPPINGS:
+        raise ValueError('{} is not a valid mapping source'.format(source_fmt.upper()))
+    if target_fmt.upper() not in VALID_ID_MAPPINGS:
+        raise ValueError('{} is not a valid mapping source'.format(target_fmt.upper()))
     if hasattr(query, 'pop'):
         query = ' '.join(query)
     payload = {'from': source_fmt.upper(),
