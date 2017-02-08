@@ -121,15 +121,27 @@ def convert(path, typ='uniprot', from_='txt', to='xml', encoding='ascii'):
         response.raise_for_status()
 
 
-def map(query, source_fmt, target_fmt, output_fmt='tab'):
-    '''Map one set of idenfifiers to another.
+def map_id(query, source_fmt, target_fmt, output_fmt='tab'):
+    '''Map one set of identifiers to another.
 
     See http://www.uniprot.org/help/programmatic_access#conversion for details.
     Note: The response.url filed contains the URL from which to download
     the mapping, e.g. http://www.uniprot.org/mapping/M20160504763V34ZKX0.tab
+
+    Args:
+        query: string or iterable of strings. If a string then this should consist of space-separated identifiers,
+            if an iterable then this should be of individual identifiers.
+        source_fmt: string. The format of the provided identifiers. See UniProt help for allowed values.
+        target_fmt: string. The desired format of the identifiers. See UniProt help for allowed values.
+        output_fmt: string. Desired data structure for response. Defaults to 'tab' (tabular), 'txt' is also valid.
+
+    Returns:
+        string in specified output format.
     '''
-    payload = {'from': source_fmt,
-               'to': target_fmt,
+    if hasattr(query, 'pop'):
+        query = ' '.join(query)
+    payload = {'from': source_fmt.upper(),
+               'to': target_fmt.upper(),
                'format': output_fmt,
                'query': query,
                }
