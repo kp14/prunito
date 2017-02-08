@@ -14,6 +14,6 @@ from .rest_api import (current_release,
                        number_SP_hits,
                        retrieve_batch,
                        convert,
-                       map,
+                       map_id,
                        )
 from .scraping import get_lineage
