@@ -11,33 +11,6 @@ from ..uniprot import parse_txt_compatible
 from ..uniprot import search_all, search_reviewed
 from ..utils import Borg
 
-TELL = 'own parser'
-
-def run_analysis(in_file, ratio):
-    """Runs the actual analysis from the command line.
-
-    Makes use of classes QueryComparator and SwissProtRecordCollector.
-
-    Parameters:
-    in_file: input, file handle, mandatory
-                Depending on the command line options this can be a path
-                pointing to a local file on disk or a handle pointing to
-                the results of a query to the UniProtKB website.
-    ratio: frequency of occurrence of any given datum, float 0.0-1.0,
-           default=0.9 as
-                taken from the command line options
-
-    """
-    borg_qc = Borg.QueryComparator()
-    entries = parse_txt_compatible(in_file)
-    record_collector = SwissProtRecordCollector()
-    for entry in entries:
-        record_collector.collect_record(entry)
-    record_collector.summarize_all(cutoff=ratio, save_it=True, plot_it=None)
-    #record_collector.get_graph()
-    borg_qc.addList(record_collector.accessions)
-    return record_collector
-
 
 class SPAnalysis(Borg):
     """A class modelling a commonprot analysis."""
@@ -104,7 +77,7 @@ class SPAnalysis(Borg):
         collector.summarize_all(cutoff=ratio, save_it=False, plot_it=None)
 
 
-def run_distil():
+def run_notebook():
     """Create the GUI controls and any control logic."""
 
     #Create Borg for others to communicate with
@@ -167,55 +140,3 @@ def run_distil():
 
     run_button.on_click(on_run_button_clicked)
     clear_cache_button.on_click(on_clear_cache_button_clicked)
-
-
-if __name__ == '__main__':
-
-    options = get_run_options()  # parse command line args
-
-    borg = Borg.QueryComparator()
-
-    collector = None
-
-    #Nothing to analyze.
-    if not options.file and not options.query:
-        sys.stderr.write("\nNo parameters were given."
-                         "\nPlease provide a file using the -l option "
-                         "or a query using the -q option\n")
-        sys.exit(1)
-
-    #we have a local file to analyze
-    elif options.file and not options.query:
-        collector = run_analysis(options.file, options.ratio)
-
-    #we have a web query to analyze
-    elif not options.file and options.query:
-
-        for query in options.query:
-            print('\nRunning query... {0} with ratio: {1}\n'.format(query, options.ratio))
-            query_final = query.encode('ascii', 'ignore')
-            results = search_reviewed(query_final,
-                                              format=options.format,
-                                              file=True)
-            print('Results retrieved, running analysis.')
-            collector = run_analysis(results, options.ratio)
-
-    else:
-        print("Something is wrong, possibly conflicting parameters.")
-
-    if options.query and len(options.query) > 1:
-        print(borg.reportIntersection())
-
-    while True:
-        go_on = raw_input("\nProvide a new ratio (0-1) if you'd like "
-                          "to re-run the analysis.\nAny letter aborts.\n"
-                          "--> ")
-        try:
-            new_ratio = float(go_on)
-            if 0.0 <= new_ratio <= 1.0:
-                collector.summarize_all(cutoff=new_ratio, save_it=False, plot_it=None)
-            else:
-                print("Please provide a value between 0.0 and 1.0")
-        except ValueError:
-            print("Thanks for playing...")
-            sys.exit(1)

@@ -11,9 +11,9 @@ import time
 from .uniprot import search_all
 from .utils import InterProXrefs, EBI_HMMER, validate_param
 try:
-    import venn.draw as vd
+    import venndy.draw as vd
 except ImportError:
-    sys.exit('Depends on the `venn` package.')
+    sys.exit('Depends on the `venndy` package.')
 
 
 def search_phmmer(seq=None, seqdb=None, output='json', **kwargs):
