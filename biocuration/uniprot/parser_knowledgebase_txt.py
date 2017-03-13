@@ -336,7 +336,7 @@ def _flatten_lists(lol):
 
 def parse_txt(handle):
     bag, context = _set_up()
-    if not handle:s
+    if not handle:
         print('Nothing to parse. Are you sure the query returns anything?')
     for line in handle:
         line_type, line = line[:2], line[5:]
