@@ -66,6 +66,8 @@ class SPAnalysis(Borg):
 
         #results = search_mode(query, frmt='txt', file=True)
         entries = parse_txt_compatible(results)
+        if not entries:
+            sys.exit('No entries that could be parsed were retrieved. Check your query.')
         collector = SwissProtRecordCollector()
         for entry in entries:
             collector.collect_record(entry)
