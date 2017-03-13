@@ -46,6 +46,7 @@ def _retrieve_data(identifier, fmt='text'):
         result.raise_for_status()
 
 def embl_cds2fasta(embl_entry, gene_name):
+    pass
 #from Bio import SeqIO
 #
 #
@@ -59,5 +60,6 @@ def embl_cds2fasta(embl_entry, gene_name):
 #                    out.write('>{0}\n{1}\n'.format(ft.qualifiers['product'], ft.qualifiers['translation'][0]))
 
 def embl2fasta(embl_entry):
+    pass
 #with open('embl.tmp', 'r') as ghandle, open('embl.fasta', 'w') as out:
 #    SeqIO.write(SeqIO.parse(ghandle, 'embl'), out, 'fasta')

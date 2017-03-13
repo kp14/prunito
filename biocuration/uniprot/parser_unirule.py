@@ -427,7 +427,7 @@ def extract_case_annotations(case, uni):
         for annot in case.annotations.annotation:
             annotation_list.extend(_extract_annotations(annot))
     except AttributeError:
-        logging.warn('Case appears to have no annotations: {}'.format(rule.attrib['id']))
+        logging.warning('Case appears to have no annotations: {}'.format(rule.attrib['id']))
     uni.cases[-1].annotations.extend(annotation_list)
 
 
