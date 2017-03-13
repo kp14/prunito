@@ -336,29 +336,30 @@ def _flatten_lists(lol):
 
 def parse_txt(handle):
     bag, context = _set_up()
-    if not handle:
-        print('Nothing to parse. Are you sure the query returns anything?')
-    for line in handle:
-        line_type, line = line[:2], line[5:]
-        stripped_line = line.rstrip()
-#        stripped_line = line
-        try:
-            if line_type.startswith('R'):
-                if line_type == 'RN':
-                    number = _extract_ref_number(line)
-                    context = number
-                    bag['RF'][context] = defaultdict(list)
+    if handle:
+        for line in handle:
+            line_type, line = line[:2], line[5:]
+            stripped_line = line.rstrip()
+    #        stripped_line = line
+            try:
+                if line_type.startswith('R'):
+                    if line_type == 'RN':
+                        number = _extract_ref_number(line)
+                        context = number
+                        bag['RF'][context] = defaultdict(list)
+                    else:
+                        bag['RF'][context][line_type].append(stripped_line)
+                value = PARSER_MAP[line_type](stripped_line)
+                if value:
+                    bag[line_type].append(value)
+            except KeyError:
+                if line_type == '//':
+                    yield bag
+                    bag, context = _set_up()
                 else:
-                    bag['RF'][context][line_type].append(stripped_line)
-            value = PARSER_MAP[line_type](stripped_line)
-            if value:
-                bag[line_type].append(value)
-        except KeyError:
-            if line_type == '//':
-                yield bag
-                bag, context = _set_up()
-            else:
-                logging.debug("Unknown line type: {}".format(line_type))
+                    logging.debug("Unknown line type: {}".format(line_type))
+    else:
+        print('Nothing to parse. Are you sure the query returns anything?')
 
 
 def parse_txt_compatible(handle):
