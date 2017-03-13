@@ -3,6 +3,7 @@
 import itertools
 import logging
 import re
+import sys
 from collections import defaultdict
 
 
@@ -336,6 +337,8 @@ def _flatten_lists(lol):
 
 def parse_txt(handle):
     bag, context = _set_up()
+    if not handle:
+        sys.exit('Nothing to parse. Are you sure the query returns anything?')
     for line in handle:
         line_type, line = line[:2], line[5:]
         stripped_line = line.rstrip()

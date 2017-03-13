@@ -199,7 +199,7 @@ class SwissProtRecordCollector(object):
                 ri.virus_hits = self._construct_taxo_url(n, 'Viruses', linked_accs)
                 report.append(ri)
         # sort on first item in lists, i.e. node class
-        report_sorted = sorted(report, key=lambda x: a.annotation_class)
+        report_sorted = sorted(report, key=lambda x: x.annotation_class)
         return report_sorted
 
     def summarize_notebook(self, cutoff=0.0):
