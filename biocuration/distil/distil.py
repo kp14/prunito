@@ -53,7 +53,7 @@ class SPAnalysis(Borg):
         """
         clear_output()
         print("Re-running analysis with new ratio using cached data.")
-        collector.summarize_all(cutoff=ratio, save_it=False, plot_it=None)
+        collector.summarize_notebook(cutoff=ratio)
 
     def _run_first_time(self, query, reviewed, ratio):
         """Run an analysis for the first time, i.e., results are not cached."""
@@ -61,22 +61,15 @@ class SPAnalysis(Borg):
             results = search_reviewed(query, frmt='txt', file=True)
         else:
             results = search_all(query, frmt='txt', file=True)
-
-        #query_final = query.encode('ascii', 'ignore')
-
-        #results = search_mode(query, frmt='txt', file=True)
         entries = parse_txt_compatible(results)
         if not entries:
             sys.exit('No entries that could be parsed were retrieved. Check your query.')
         collector = SwissProtRecordCollector()
         for entry in entries:
             collector.collect_record(entry)
-
         clear_output()
-
         self.cache[(query, reviewed)] = collector
-
-        collector.summarize_all(cutoff=ratio, save_it=False, plot_it=None)
+        collector.summarize_notebook(cutoff=ratio)
 
 
 def run_notebook():

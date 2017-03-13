@@ -30,14 +30,14 @@ report_template = Template("""
         </tr>
     {% for item in data %}
         <tr>
-        <td>{{ item[0] }}</td>
-        <td>{{ item[1] }} </td>
-        <td>{{ item[2] }}</td>
-        <td>{{ item[3] }}</td>
-        <td>{{ item[4] }}</td>
-        <td>{{ item[5] }}</td>
-        <td>{{ item[6] }}</td>
-        <td>{{ item[7] }}</td>
+        <td>{{ item.annotation_class }}</td>
+        <td>{{ item.annotation_type }} </td>
+        <td>{{ item.value }}</td>
+        <td>{{ item.total_hits }}</td>
+        <td>{{ item.eukaryota_hits }}</td>
+        <td>{{ item.bacteria_hits }}</td>
+        <td>{{ item.archaea_hits }}</td>
+        <td>{{ item.virus_hits }}</td>
         </tr>
     {% endfor %}
     </table>
@@ -174,7 +174,7 @@ class SwissProtRecordCollector(object):
             self.graph.add_node(a_key, {'freq': 1, 'class': _class, 'typ': typ, 'group': group})
         self.graph.add_edge(self.current_entry, a_key)
 
-    def summarize_all(self, cutoff=0.0, save_it=False, plot_it=None):
+    def summarize_all(self, cutoff=0.0):
         print( "\n{0} entries were analyzed\n".format(self.get_number_of_entries()))
         # Let's exclude accession nodes
         try:
@@ -188,30 +188,23 @@ class SwissProtRecordCollector(object):
             actual_ratio = self.graph.node[n]['freq'] / float(self.get_number_of_entries())
             if actual_ratio > cutoff:
                 linked_accs = self._get_linked_accessions(n)
-                report.append([self.graph.node[n]['class'],
-                               self.graph.node[n]['typ'],
-                               self._construct_url(n, self.graph.node[n]),
-                               self._construct_entry_url(linked_accs),
-                               self._construct_taxo_url(n, 'Eukaryota', linked_accs),
-                               self._construct_taxo_url(n, 'Bacteria', linked_accs),
-                               self._construct_taxo_url(n, 'Archaea', linked_accs),
-                               self._construct_taxo_url(n, 'Viruses', linked_accs),
-                               ])
+                ri = ReportItem()
+                ri.annotation_class = self.graph.node[n]['class']
+                ri.annotation_type = self.graph.node[n]['typ']
+                ri.value = self._construct_url(n, self.graph.node[n])
+                ri.total_hits = self._construct_entry_url(linked_accs)
+                ri.eukaryota_hits = self._construct_taxo_url(n, 'Eukaryota', linked_accs)
+                ri.bacteria_hits = self._construct_taxo_url(n, 'Bacteria', linked_accs)
+                ri.archaea_hits = self._construct_taxo_url(n, 'Archaea', linked_accs)
+                ri.virus_hits = self._construct_taxo_url(n, 'Viruses', linked_accs)
+                report.append(ri)
         # sort on first item in lists, i.e. node class
-        report_sorted = sorted(report)
-        display(HTML(self.template.render(data=report_sorted)))
-        #for item in report_sorted:
-            #print( "{0}\t{1}:\t{2} ---> {3}".format(*item))
+        report_sorted = sorted(report, key=lambda x: a.annotation_class)
+        return report_sorted
 
-        if save_it:
-            target = "d3_example/force/force.json"
-            dmp = nx.readwrite.json_graph.node_link_data(self.graph)
-            json.dump(dmp, open(target, 'w'))
-            print( "Wrote graph data to json in {}".format(target))
-        if plot_it and plot_it == '3d':
-            self._make_3D_point_cloud()
-        if plot_it and plot_it == '2d':
-            self._make_2D_point_cloud()
+    def summarize_notebook(self, cutoff=0.0):
+        items = self.summarize_all(cutoff=cutoff)
+        display(HTML(self.template.render(data=items)))
 
     def _construct_taxo_url(self, node, taxon, acc_list):
         accs_for_taxon = [acc for acc in acc_list if taxon in self._get_neighbors_by_class(acc, 'taxon')]
@@ -382,6 +375,18 @@ class SwissProtRecordCollector(object):
         number_of_vectors = len(data_nodes)
 
 
+class ReportItem(object):
+    '''Details of one reported annotation.'''
+
+    def __init__(self):
+        self.annotation_class = None
+        self.annotation_type = None
+        self.value = None
+        self.total_hits = None
+        self.eukaryota_hits = None
+        self.bacteria_hits = None
+        self.archaea_hits = None
+        self.virus_hits = None
 
 
 
