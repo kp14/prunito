@@ -16,13 +16,16 @@ class Evidence(object):
         self.source = source
         self.id = self._calculate_id()
 
+    def __str__(self):
+        return '{}-{}'.format(str(self.code), str(self.source))
+
     def _calculate_id(self):
         """Calculate ID, a digest of object values.
 
         Returns:
             id, string
         """
-        s = '{}-{}'.format(str(self.code), str(self.source))
+        s = self.__str__()
         return hashlib.md5(s.encode()).hexdigest()
 
 
@@ -34,13 +37,16 @@ class Statement(object):
         self.type = typ
         self.id = self._calculate_id()
 
+    def __str__(self):
+        return '{}-{}'.format(self.type, self.value)
+
     def _calculate_id(self):
         """Calculate digest of value and type.
         
         Returns:
             id, string
         """
-        s = '{}-{}'.format(self.type, self.value)
+        s = self.__str__()
         return hashlib.md5(s.encode()).hexdigest()
 
 
@@ -67,6 +73,19 @@ class Annotation(object):
             return self.evidence.source
         except AttributeError:
             return None
+
+    @property
+    def evidence(self):
+        try:
+            return self.evidence.code
+        except AttributeError:
+            return None
+
+    def __str__(self):
+        return '{en}: {st} - {ev}'.format(en=self.entity,
+                                          st=self._statement.__str__(),
+                                          ev=self.evidence.__str__(),
+                                          )
 
     def __cmp__(self, other):
         return self.id == other.id
