@@ -75,7 +75,7 @@ class Annotation(object):
             return None
 
     @property
-    def evidence(self):
+    def evidence_code(self):
         try:
             return self.evidence.code
         except AttributeError:
@@ -87,8 +87,8 @@ class Annotation(object):
                                           ev=self.evidence.__str__(),
                                           )
 
-    def __cmp__(self, other):
-        return self.id == other.id
+    def __eq__(self, other):
+        return self._statement.id == other._statement.id
 
     def _calculate_id(self):
         """Calculate digest of value and type.
@@ -96,7 +96,7 @@ class Annotation(object):
         Returns:
             id, string
         """
-        s = '{}-{}-{}'.format(self.entity, self.evidence.id, self._statement.id)
+        s = self.__str__()
         return hashlib.md5(s.encode()).hexdigest()
 
 
@@ -104,10 +104,31 @@ class ACollection(object):
     """A collection of annotations."""
 
     def __init__(self):
-        self._annotations = set()
+        self._annotations = []
+
+    @classmethod
+    def from_iterable(cls, iterable):
+        """Alternative constructor."""
+        instance = cls()
+        for a in iterable:
+            instance.add(a)
+        return instance
 
     def add(self, annotation):
-        self._annotations.add(annotation)
+        self._annotations.append(annotation)
+
+    def size(self):
+        return self.__len__()
+
+    def get_idx(self,idx):
+        """Return Annotation at index idx.
+        Returns:
+            Annotation instance
+        """
+        return self._annotations[idx]
+
+    def __len__(self):
+        return self._annotations.__len__()
 
     def __iter__(self):
         return self
@@ -117,18 +138,42 @@ class ACollection(object):
             yield anno
 
 
+def consume(entry):
+    for c in entry.comments:
+        typ, val = c.split(': ')
+        body_and_ev = val.split(' {')
+        try:
+            body, ev = body_and_ev
+        except ValueError:
+            print('Weird splitting pattern for comment: {} {}'.format(typ, val))
+            continue
+        else:
+            # handle evidences
+            evidences = []
+            for token in ev.rstrip('}.').split(', '):
+                try:
+                    code, source = token.split('|')
+                except ValueError:
+                    code, source = token, None
+                evidences.append(Evidence(code=code, source=source))
+            # handle statements
+            annotations = []
+            stmts = re.split('\. ', body)
+            for stmt in stmts:
+                text = re.split('\(PubMed:', stmt, 1)[0]
+                for ev in evidences:
+                    if ev.source in stmt:
+                        anno = Annotation(entry.primary_accession,
+                                          Statement(text, typ),
+                                          evidence=ev)
+                        annotations.append(anno)
+    for anno in annotations:
+        print(anno)
+
 
 if __name__ == '__main__':
     from biocuration import uniprot as up
-    with open('entry.txt', 'r', encoding='ascii') as infile:
+    with open('C:/Users/kpichler/Documents/Python/evidences/entry.txt', 'r', encoding='ascii') as infile:
         entry = list(up.parse_txt_compatible(infile))[0]
-        for c in entry.comments:
-            typ, val = c.split(': ')
-            body_and_ev = val.split(' {')
-            if len(body_and_ev) == 2:
-                body, ev = body_and_ev
-            else:
-                print('Weird splitting pattern for comment: {} {}'.format(typ, val))
-            stmts = re.split('\. ', body)
-            print(stmts)
-            print(ev.rstrip('}.'))
+        consume(entry)
+
