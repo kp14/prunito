@@ -47,9 +47,9 @@ class Statement(object):
 class Annotation(object):
     """An annotation is used in UniProtKB."""
 
-    def __init__(self, stmnt, entity, evidence=None):
-        self._statement = stmnt
+    def __init__(self, entity, stmnt, evidence=None):
         self.entity = entity
+        self._statement = stmnt
         self.evidence = evidence
         self.id = self._calculate_id()
 
@@ -68,6 +68,9 @@ class Annotation(object):
         except AttributeError:
             return None
 
+    def __cmp__(self, other):
+        return self.id == other.id
+
     def _calculate_id(self):
         """Calculate digest of value and type.
 
@@ -82,13 +85,18 @@ class ACollection(object):
     """A collection of annotations."""
 
     def __init__(self):
-        self._statements = {}
-        self._state_map = defaultdict(set)
+        self._annotations = set()
 
     def add(self, annotation):
-        self._statements[annotation.digest] = annotation._statement
-        annotation._statement = annotation.digest
-        self._state_map[annotation].add(annotation)
+        self._annotations.add(annotation)
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        for anno in self._annotations:
+            yield anno
+
 
 
 if __name__ == '__main__':
