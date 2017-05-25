@@ -131,14 +131,11 @@ class ACollection(object):
         return self._annotations.__len__()
 
     def __iter__(self):
-        return self
-
-    def __next__(self):
-        for anno in self._annotations:
-            yield anno
+        return iter(self._annotations)
 
 
 def consume(entry):
+    coll = ACollection()
     for c in entry.comments:
         typ, val = c.split(': ')
         body_and_ev = val.split(' {')
@@ -157,7 +154,6 @@ def consume(entry):
                     code, source = token, None
                 evidences.append(Evidence(code=code, source=source))
             # handle statements
-            annotations = []
             stmts = re.split('\. ', body)
             for stmt in stmts:
                 text = re.split('\(PubMed:', stmt, 1)[0]
@@ -166,8 +162,8 @@ def consume(entry):
                         anno = Annotation(entry.primary_accession,
                                           Statement(text, typ),
                                           evidence=ev)
-                        annotations.append(anno)
-    for anno in annotations:
+                        coll.add(anno)
+    for anno in coll:
         print(anno)
 
 
