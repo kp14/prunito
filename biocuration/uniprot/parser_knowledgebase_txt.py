@@ -361,6 +361,7 @@ def parse_txt(handle):
                         yield bag
                         bag, context = _set_up()
                     else:
+                        logging.warning('Ignored lowercase entry.')
                         del bag
                         bag, context = _set_up()
                         ignore = False
