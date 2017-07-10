@@ -197,3 +197,10 @@ def test_comment_compatibility():
 def test_feature_compatibility():
     assert biopython_record.features[0] == my_record[0].features[0]
     assert len(biopython_record.features) == len(my_record[0].features)
+
+
+def test_ignore_lowercase_entries():
+    datafile = os.path.join(base_dir, 'SwissProt', 'contains_lowercase.txl')
+    with open(datafile, 'r') as infile:
+        entries = list(up.parse_txt_compatible(infile))
+        assert len(entries) == 23

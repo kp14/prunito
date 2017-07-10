@@ -337,8 +337,11 @@ def _flatten_lists(lol):
 def parse_txt(handle):
     bag, context = _set_up()
     if handle:
+        ignore = False
         for line in handle:
             line_type, line = line[:2], line[5:]
+            if line_type in ['id', 'dt', 'ac']:
+                ignore = True
             stripped_line = line.rstrip()
     #        stripped_line = line
             try:
@@ -354,8 +357,13 @@ def parse_txt(handle):
                     bag[line_type].append(value)
             except KeyError:
                 if line_type == '//':
-                    yield bag
-                    bag, context = _set_up()
+                    if not ignore:
+                        yield bag
+                        bag, context = _set_up()
+                    else:
+                        del bag
+                        bag, context = _set_up()
+                        ignore = False
                 else:
                     logging.debug("Unknown line type: {}".format(line_type))
     else:
