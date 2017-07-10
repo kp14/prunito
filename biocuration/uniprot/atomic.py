@@ -6,7 +6,13 @@ from collections import defaultdict
 ECO_PTRN = re.compile('ECO:[0-9]{7}')
 
 class Evidence(object):
-    """Evidence as defined by ECO."""
+    """Evidence as defined by Evidence Code Ontology.
+    
+    Args:
+        code (str, optional): Evidence code from ontology; defaults to ECO:0000000.
+        source (optional): Source of the evidence, usually a PMID.
+        id: md5 signature
+    """
 
     def __init__(self, code='ECO:0000000', source=None):
         if not re.match(ECO_PTRN, code):
@@ -30,7 +36,17 @@ class Evidence(object):
 
 
 class Statement(object):
-    """A statement or assertion that can be made about an entity."""
+    """A statement or assertion that can be made about an entity.
+    
+    Args:
+        val (str): The statement.
+        typ (str): Type (category) for the statement; taken from UniProt.
+    
+    Attributes:
+        val (str): The statement.
+        typ (str): Type (category) for the statement; taken from UniProt.
+        id: md5 signature
+        """
 
     def __init__(self, val, typ):
         self.value = val
@@ -51,7 +67,17 @@ class Statement(object):
 
 
 class Annotation(object):
-    """An annotation is used in UniProtKB."""
+    """An annotation as used in UniProtKB.
+    
+    Args:
+        entity (str): The entity an annotation is attached to, a UniProtKB accession.
+        stmnt (:obj:`Statement`): The value/type of the annotation statement, e.g. Has xyz activity.
+        evidence (:obj:`Evidence`, optional): Evidence for the statement.
+    
+    Attributes:
+        entity (str): The entity an annotation is attached to, a UniProtKB accession.
+        evidence (:obj:`Evidence`, optional): Evidence for the statement.
+        """
 
     def __init__(self, entity, stmnt, evidence=None):
         self.entity = entity
@@ -61,14 +87,17 @@ class Annotation(object):
 
     @property
     def value(self):
+        """Return value of Annotation statement."""
         return self._statement.value
 
     @property
     def type(self):
+        """Return type of Annotation statement."""
         return self._statement.type
 
     @property
     def source(self):
+        """Return source of Evidence for Annotation statement."""
         try:
             return self.evidence.source
         except AttributeError:
@@ -76,6 +105,7 @@ class Annotation(object):
 
     @property
     def evidence_code(self):
+        """Return the ECO evidence code of an Annotation."""
         try:
             return self.evidence.code
         except AttributeError:
@@ -108,20 +138,35 @@ class ACollection(object):
 
     @classmethod
     def from_iterable(cls, iterable):
-        """Alternative constructor."""
+        """Alternative constructor to generate an ACollection.
+        
+        This assumes an iterable of Annotations instances.
+        
+        Args:
+            iterable: Iterable of Annotation instances.
+            
+        Returns:
+            ACollection instance
+        """
         instance = cls()
         for a in iterable:
             instance.add(a)
         return instance
 
     def add(self, annotation):
+        """Add an Annotation to the ACollection`s list."""
         self._annotations.append(annotation)
 
     def size(self):
+        """Return length of ACollection list."""
         return self.__len__()
 
-    def get_idx(self,idx):
+    def get_idx(self, idx):
         """Return Annotation at index idx.
+        
+        Args:
+            idx (int): 
+        
         Returns:
             Annotation instance
         """
