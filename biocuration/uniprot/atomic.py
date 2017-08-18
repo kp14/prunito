@@ -180,6 +180,7 @@ class ACollection(object):
 
 
 def consume(entry):
+    """Parse a Biopython-type Record entry instance and add Annotations to collection."""
     coll = ACollection()
     for c in entry.comments:
         typ, val = c.split(': ')
