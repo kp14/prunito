@@ -237,26 +237,53 @@ def _parse_freetext(typ, value):
 def _parse_subcellular_location(typ, value):
     """Extract Annotations from subcellular location comments.
 
-            Args:
-                typ (str): type of UniProt comment
-                value (str): body of a UniProt comment
+    Args:
+        typ (str): type of UniProt comment
+        value (str): body of a UniProt comment
 
-            Return:
-                  Annotation instances
-            """
-    pass
+    Return:
+          Annotation instances
+    """
+    note = ''
+    try:
+        locations_all, note = value.split('. Note=')
+    except ValueError: # there is no Note
+        locations = value.split('. ')
+    else:
+        locations = locations_all.split('. ')
+    for location in locations:
+        try:
+            loc, evs = location.split(' {')
+        except ValueError:
+            loc = location
+            evs = None
+        if evs:
+            evidences = []
+            for token in evs.rstrip('}.').split(', '):
+                try:
+                    code, source = token.split('|')
+                except ValueError:
+                    code, source = token, None
+                evidences.append(Evidence(code=code, source=source))
+            for ev in evidences:
+                yield Annotation(entry.primary_accession,
+                                 Statement(loc, typ),
+                                 evidence=ev)
+        else:
+            yield Annotation(entry.primary_accession,
+                             Statement(loc, typ))
 
 
 def _parse_cofactor(typ, value):
     """Extract Annotations from cofactor comments.
 
-            Args:
-                typ (str): type of UniProt comment
-                value (str): body of a UniProt comment
+    Args:
+        typ (str): type of UniProt comment
+        value (str): body of a UniProt comment
 
-            Return:
-                  Annotation instances
-            """
+    Return:
+          Annotation instances
+    """
     pass
 
 
