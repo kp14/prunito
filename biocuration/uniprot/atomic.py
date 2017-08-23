@@ -163,33 +163,18 @@ class APile(object):
         Args:
             entry: Biopython-type Record instance of a UniProt entry
         """
+        _mapper = {'intera': _parse_interaction,
+                   'subcel': _parse_subcellular_location,
+                   'cofact': _parse_cofactor,
+                   }
         for comment in entry.comments:
             typ, value = comment.split(': ')
-            body_and_ev = value.split(' {')
+            parser_func = _mapper.get(typ[:6].lower(), _parse_freetext)
             try:
-                body, ev = body_and_ev
-            except ValueError:
-                print('Weird splitting pattern for comment: {} {}'.format(typ, value))
-                continue
-            else:
-                # handle evidences
-                evidences = []
-                for token in ev.rstrip('}.').split(', '):
-                    try:
-                        code, source = token.split('|')
-                    except ValueError:
-                        code, source = token, None
-                    evidences.append(Evidence(code=code, source=source))
-                # handle statements
-                stmts = re.split('\. ', body)
-                for stmt in stmts:
-                    text = re.split('\(PubMed:', stmt, 1)[0]
-                    for ev in evidences:
-                        if ev.source in stmt:
-                            anno = Annotation(entry.primary_accession,
-                                              Statement(text, typ),
-                                              evidence=ev)
-                            self.add(anno)
+                for annotation in parser_func(typ, value):
+                    self.add(annotation)
+            except TypeError as e:
+                print(e, typ, value)
 
     def size(self):
         """Return length of ACollection list."""
@@ -212,6 +197,80 @@ class APile(object):
     def __iter__(self):
         return iter(self._annotations)
 
+
+def _parse_freetext(typ, value):
+    """Extract Annotations from freetext comments.
+
+    Args:
+        typ (str): type of UniProt comment
+        value (str): freetext body of a UniProt comment
+
+    Return:
+          Annotation instances
+    """
+    body_and_ev = value.split(' {')
+    try:
+        body, ev = body_and_ev
+    except ValueError:
+        print('Weird splitting pattern for comment: {} {}'.format(typ, value))
+    else:
+        # handle evidences
+        evidences = []
+        for token in ev.rstrip('}.').split(', '):
+            try:
+                code, source = token.split('|')
+            except ValueError:
+                code, source = token, None
+            evidences.append(Evidence(code=code, source=source))
+        # handle statements
+        stmts = re.split('\. ', body)
+        for stmt in stmts:
+            text = re.split('\(PubMed:', stmt, 1)[0]
+            for ev in evidences:
+                if ev.source in stmt:
+                    anno = Annotation(entry.primary_accession,
+                                      Statement(text, typ),
+                                      evidence=ev)
+                    yield anno
+
+
+def _parse_subcellular_location(typ, value):
+    """Extract Annotations from subcellular location comments.
+
+            Args:
+                typ (str): type of UniProt comment
+                value (str): body of a UniProt comment
+
+            Return:
+                  Annotation instances
+            """
+    pass
+
+
+def _parse_cofactor(typ, value):
+    """Extract Annotations from cofactor comments.
+
+            Args:
+                typ (str): type of UniProt comment
+                value (str): body of a UniProt comment
+
+            Return:
+                  Annotation instances
+            """
+    pass
+
+
+def _parse_interaction(typ, value):
+    """Extract Annotations from interaction comments.
+
+        Args:
+            typ (str): type of UniProt comment
+            value (str): body of a UniProt comment
+
+        Return:
+              Annotation instances
+        """
+    pass
 
 if __name__ == '__main__':
     from biocuration import uniprot as up
