@@ -48,9 +48,11 @@ class Statement(object):
         id: md5 signature
         """
 
-    def __init__(self, val, typ):
+    def __init__(self, val, typ, **kwargs):
         self.value = val
         self.type = typ
+        for k, v in kwargs.items():
+            self.__setattr__(k, v)
         self.id = self._calculate_id()
 
     def __str__(self):
@@ -175,6 +177,9 @@ class APile(object):
                     self.add(annotation)
             except TypeError as e:
                 print(e, typ, value)
+        for feature in entry.features:
+            for annotation in _parse_feature(feature):
+                self.add(annotation)
 
     def size(self):
         """Return length of ACollection list."""
@@ -197,6 +202,30 @@ class APile(object):
     def __iter__(self):
         return iter(self._annotations)
 
+
+def _parse_feature(feature):
+    typ, start, stop, description, _ = feature
+    try:
+        text, evs = description.split('. {')
+    except ValueError:
+        text = description
+        evs = None
+    value = typ + ' ' + text
+    if evs:
+        evidences = []
+        for token in evs.rstrip('}.').split(', '):
+            try:
+                code, source = token.split('|')
+            except ValueError:
+                code, source = token, None
+            evidences.append(Evidence(code=code, source=source))
+        for ev in evidences:
+            yield Annotation(entry.primary_accession,
+                             Statement(value, typ),
+                             evidence=ev)
+    else:
+        yield Annotation(entry.primary_accession,
+                         Statement(value, typ))
 
 def _parse_freetext(typ, value):
     """Extract Annotations from freetext comments.
@@ -244,7 +273,7 @@ def _parse_subcellular_location(typ, value):
     Return:
           Annotation instances
     """
-    note = ''
+    note = '' #TODO: Handle the Note
     try:
         locations_all, note = value.split('. Note=')
     except ValueError: # there is no Note
