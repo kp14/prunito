@@ -76,7 +76,7 @@ def anno():
 @pytest.fixture
 def acoll():
     data = generate_annotations()
-    coll = atomic.ACollection.from_iterable(data)
+    coll = atomic.APile.from_iterable(data)
     return coll
 
 

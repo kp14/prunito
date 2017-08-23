@@ -130,15 +130,15 @@ class Annotation(object):
         return hashlib.md5(s.encode()).hexdigest()
 
 
-class ACollection(object):
-    """A collection of annotations."""
+class APile(object):
+    """A collection (pile) of annotations."""
 
     def __init__(self):
         self._annotations = []
 
     @classmethod
     def from_iterable(cls, iterable):
-        """Alternative constructor to generate an ACollection.
+        """Alternative constructor to generate an APile.
         
         This assumes an iterable of Annotations instances.
         
@@ -156,6 +156,40 @@ class ACollection(object):
     def add(self, annotation):
         """Add an Annotation to the ACollection`s list."""
         self._annotations.append(annotation)
+
+    def consume(self, entry):
+        """Convert a Biopython-type record into Annotations.
+
+        Args:
+            entry: Biopython-type Record instance of a UniProt entry
+        """
+        for comment in entry.comments:
+            typ, value = comment.split(': ')
+            body_and_ev = value.split(' {')
+            try:
+                body, ev = body_and_ev
+            except ValueError:
+                print('Weird splitting pattern for comment: {} {}'.format(typ, value))
+                continue
+            else:
+                # handle evidences
+                evidences = []
+                for token in ev.rstrip('}.').split(', '):
+                    try:
+                        code, source = token.split('|')
+                    except ValueError:
+                        code, source = token, None
+                    evidences.append(Evidence(code=code, source=source))
+                # handle statements
+                stmts = re.split('\. ', body)
+                for stmt in stmts:
+                    text = re.split('\(PubMed:', stmt, 1)[0]
+                    for ev in evidences:
+                        if ev.source in stmt:
+                            anno = Annotation(entry.primary_accession,
+                                              Statement(text, typ),
+                                              evidence=ev)
+                            self.add(anno)
 
     def size(self):
         """Return length of ACollection list."""
@@ -179,43 +213,12 @@ class ACollection(object):
         return iter(self._annotations)
 
 
-def consume(entry):
-    """Parse a Biopython-type Record entry instance and add Annotations to collection."""
-    coll = ACollection()
-    for c in entry.comments:
-        typ, val = c.split(': ')
-        body_and_ev = val.split(' {')
-        try:
-            body, ev = body_and_ev
-        except ValueError:
-            print('Weird splitting pattern for comment: {} {}'.format(typ, val))
-            continue
-        else:
-            # handle evidences
-            evidences = []
-            for token in ev.rstrip('}.').split(', '):
-                try:
-                    code, source = token.split('|')
-                except ValueError:
-                    code, source = token, None
-                evidences.append(Evidence(code=code, source=source))
-            # handle statements
-            stmts = re.split('\. ', body)
-            for stmt in stmts:
-                text = re.split('\(PubMed:', stmt, 1)[0]
-                for ev in evidences:
-                    if ev.source in stmt:
-                        anno = Annotation(entry.primary_accession,
-                                          Statement(text, typ),
-                                          evidence=ev)
-                        coll.add(anno)
-    for anno in coll:
-        print(anno)
-
-
 if __name__ == '__main__':
     from biocuration import uniprot as up
     with open('C:/Users/kpichler/Documents/Python/evidences/entry.txt', 'r', encoding='ascii') as infile:
         entry = list(up.parse_txt_compatible(infile))[0]
-        consume(entry)
+        p = APile()
+        p.consume(entry)
+        for annotation in p:
+            print(annotation)
 
