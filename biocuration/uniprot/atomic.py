@@ -330,10 +330,14 @@ def _parse_interaction(typ, value):
 
 if __name__ == '__main__':
     from biocuration import uniprot as up
-    with open('C:/Users/kpichler/Documents/Python/evidences/entry.txt', 'r', encoding='ascii') as infile:
-        entry = list(up.parse_txt_compatible(infile))[0]
+    with open('C:/Users/kpichler/Documents/Python/evidences/allnew.txl', 'r', encoding='ascii') as infile:
         p = APile()
-        p.consume(entry)
-        for annotation in p:
-            print(annotation)
+        for entry in up.parse_txt_compatible(infile):
+            p.consume(entry)
+        print(p.size())
+        # entry = list(up.parse_txt_compatible(infile))[0]
+        # p = APile()
+        # p.consume(entry)
+        # for annotation in p:
+        #     print(annotation)
 
