@@ -168,6 +168,8 @@ class APile(object):
         _mapper = {'intera': _parse_interaction,
                    'subcel': _parse_subcellular_location,
                    'cofact': _parse_cofactor,
+                   'domain': _parse_freetext,
+                   'ptm': _parse_freetext,
                    }
         for comment in entry.comments:
             typ, value = comment.split(': ')
@@ -255,12 +257,18 @@ def _parse_freetext(typ, value):
         stmts = re.split('\. ', body)
         for stmt in stmts:
             text = re.split('\(PubMed:', stmt, 1)[0]
-            for ev in evidences:
-                if ev.source in stmt:
-                    anno = Annotation(entry.primary_accession,
-                                      Statement(text, typ),
-                                      evidence=ev)
-                    yield anno
+            if len(evidences) == 1:
+                anno = Annotation(entry.primary_accession,
+                                  Statement(text, typ),
+                                  evidence=ev)
+                yield anno
+            else:
+                for ev in evidences:
+                    if ev.source in stmt:
+                        anno = Annotation(entry.primary_accession,
+                                          Statement(text, typ),
+                                          evidence=ev)
+                        yield anno
 
 
 def _parse_subcellular_location(typ, value):
@@ -331,6 +339,8 @@ def _parse_interaction(typ, value):
 if __name__ == '__main__':
     from biocuration import uniprot as up
     with open('C:/Users/kpichler/Documents/Python/evidences/allnew.txl', 'r', encoding='ascii') as infile:
+    # with open('/home/klemens/Downloads/entry.txt', 'r', encoding='ascii') as infile:
+        # entry = list(up.parse_txt_compatible(infile))[0]
         p = APile()
         for entry in up.parse_txt_compatible(infile):
             p.consume(entry)
