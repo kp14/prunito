@@ -379,7 +379,7 @@ def parse_txt_compatible(handle):
 
 def parse_txt_atomic(handle):
     pile = APile()
-    for entry in parse_txt_compatible(handle)
+    for entry in parse_txt_compatible(handle):
         pile.consume(entry)
     return pile
 
