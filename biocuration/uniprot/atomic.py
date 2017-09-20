@@ -382,7 +382,8 @@ def _parse_interaction(typ, value):
 
 if __name__ == '__main__':
     from biocuration import uniprot as up
-    with open('C:/Users/kpichler/Documents/Python/evidences/allnew.txl', 'r', encoding='ascii') as infile:
+    # with open('C:/Users/kpichler/Documents/Python/evidences/allnew.txl', 'r', encoding='ascii') as infile:
+    with open('C:/Users/kpichler/Annotation/_THURSDAY/kpPrMoth.pep', 'r', encoding='ascii') as infile:
     # with open('/home/klemens/Downloads/entry.txt', 'r', encoding='ascii') as infile:
         # entry = list(up.parse_txt_compatible(infile))[0]
         p = APile()
