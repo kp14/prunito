@@ -4,6 +4,7 @@ import itertools
 import logging
 import re
 from collections import defaultdict
+from .atomic import APile
 
 
 logging.basicConfig(level=logging.WARN)
@@ -374,6 +375,13 @@ def parse_txt(handle):
 def parse_txt_compatible(handle):
     for bag in parse_txt(handle):
         yield Record(bag)
+
+
+def parse_txt_atomic(handle):
+    pile = APile()
+    for entry in parse_txt_compatible(handle)
+        pile.consume(entry)
+    return pile
 
 def _set_up():
     bag = defaultdict(list)
