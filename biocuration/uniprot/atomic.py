@@ -255,7 +255,7 @@ class AtomicParser():
 
     def parse(self):
         for comment in self.entry.comments:
-            typ, value = comment.split(': ')
+            typ, value = comment.split(': ', maxsplit=1)
             parser_func = self._mapper.get(typ[:6].lower(), self._parse_freetext)
             try:
                 for annotation in parser_func(typ, value):
@@ -400,7 +400,7 @@ class AtomicParser():
 if __name__ == '__main__':
     from biocuration import uniprot as up
     # with open('C:/Users/kpichler/Documents/Python/evidences/allnew.txl', 'r', encoding='ascii') as infile:
-    with open('C:/Users/kpichler/Annotation/_THURSDAY/kpPrMoth.pep', 'r', encoding='ascii') as infile:
+    with open('/home/klemens/Documents/data.txt', 'r', encoding='ascii') as infile:
     # with open('/home/klemens/Downloads/entry.txt', 'r', encoding='ascii') as infile:
         # entry = list(up.parse_txt_compatible(infile))[0]
         p = APile()
