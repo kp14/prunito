@@ -187,6 +187,50 @@ class APile(object):
         """Return length of ACollection list."""
         return self.__len__()
 
+    def entities(self):
+        """Set of entities for which APile contains annotations.
+
+        Returns:
+            set
+        """
+        entities = set()
+        for anno in self._annotations:
+            entities.add(anno.entity)
+        return entities
+
+    def sources(self):
+        """Set of sources used in evidence tags contained in annotations.
+
+        Returns:
+            set
+        """
+        sources = set()
+        for anno in self._annotations:
+            sources.add(anno.source)
+        return sources
+
+    def evtags(self):
+        """Set of evidence tags contained in annotations.
+
+        Returns:
+            set
+        """
+        evtags = set()
+        for anno in self._annotations:
+            evtags.add(anno.evidence_code)
+        return evtags
+
+    def annotation_types(self):
+        """Set of evidence tags contained in annotations.
+
+        Returns:
+            set
+        """
+        atypes = set()
+        for anno in self._annotations:
+            atypes.add(anno.type)
+        return atypes
+
     def get_idx(self, idx):
         """Return Annotation at index idx.
         
@@ -345,9 +389,5 @@ if __name__ == '__main__':
         for entry in up.parse_txt_compatible(infile):
             p.consume(entry)
         print(p.size())
-        # entry = list(up.parse_txt_compatible(infile))[0]
-        # p = APile()
-        # p.consume(entry)
-        # for annotation in p:
-        #     print(annotation)
+
 
