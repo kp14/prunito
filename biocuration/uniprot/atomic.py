@@ -287,7 +287,7 @@ class AtomicParser():
                                  Statement(value, typ),
                                  evidence=ev)
         else:
-            yield Annotation(entry.primary_accession,
+            yield Annotation(self.entry.primary_accession,
                              Statement(value, typ))
 
     def _parse_freetext(self, typ, value):
