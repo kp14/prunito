@@ -165,23 +165,9 @@ class APile(object):
         Args:
             entry: Biopython-type Record instance of a UniProt entry
         """
-        _mapper = {'intera': _parse_interaction,
-                   'subcel': _parse_subcellular_location,
-                   'cofact': _parse_cofactor,
-                   'domain': _parse_freetext,
-                   'ptm': _parse_freetext,
-                   }
-        for comment in entry.comments:
-            typ, value = comment.split(': ')
-            parser_func = _mapper.get(typ[:6].lower(), _parse_freetext)
-            try:
-                for annotation in parser_func(typ, value):
-                    self.add(annotation)
-            except TypeError as e:
-                print(e, typ, value)
-        for feature in entry.features:
-            for annotation in _parse_feature(feature):
-                self.add(annotation)
+        ap = AtomicParser(entry)
+        for annotation in ap.parse():
+            self.add(annotation)
 
     def size(self):
         """Return length of ACollection list."""
@@ -249,95 +235,45 @@ class APile(object):
         return iter(self._annotations)
 
 
-def _parse_feature(feature):
-    typ, start, stop, description, _ = feature
-    try:
-        text, evs = description.split('. {')
-    except ValueError:
-        text = description
-        evs = None
-    value = typ + ' ' + text
-    if evs:
-        evidences = []
-        for token in evs.rstrip('}.').split(', '):
-            try:
-                code, source = token.split('|')
-            except ValueError:
-                code, source = token, None
-            evidences.append(Evidence(code=code, source=source))
-        for ev in evidences:
-            yield Annotation(entry.primary_accession,
-                             Statement(value, typ),
-                             evidence=ev)
-    else:
-        yield Annotation(entry.primary_accession,
-                         Statement(value, typ))
-
-def _parse_freetext(typ, value):
-    """Extract Annotations from freetext comments.
+class AtomicParser():
+    """Parse Biopython-type record entries into atomic annotations.
 
     Args:
-        typ (str): type of UniProt comment
-        value (str): freetext body of a UniProt comment
-
-    Return:
-          Annotation instances
+        entry: Biopython-type Record instance of a UniProt entry
+    Returns:
+        Annotation instances
     """
-    body_and_ev = value.split(' {')
-    try:
-        body, ev = body_and_ev
-    except ValueError:
-        print('Weird splitting pattern for comment: {} {}'.format(typ, value))
-    else:
-        # handle evidences
-        evidences = []
-        for token in ev.rstrip('}.').split(', '):
+
+    def __init__(self, entry):
+        self.entry = entry
+        self._mapper = {'intera': self._parse_interaction,
+                       'subcel': self._parse_subcellular_location,
+                       'cofact': self._parse_cofactor,
+                       'domain': self._parse_freetext,
+                       'ptm': self._parse_freetext,
+                       }
+
+    def parse(self):
+        for comment in self.entry.comments:
+            typ, value = comment.split(': ')
+            parser_func = self._mapper.get(typ[:6].lower(), self._parse_freetext)
             try:
-                code, source = token.split('|')
-            except ValueError:
-                code, source = token, None
-            evidences.append(Evidence(code=code, source=source))
-        # handle statements
-        stmts = re.split('\. ', body)
-        for stmt in stmts:
-            text = re.split('\(PubMed:', stmt, 1)[0]
-            if len(evidences) == 1:
-                anno = Annotation(entry.primary_accession,
-                                  Statement(text, typ),
-                                  evidence=ev)
-                yield anno
-            else:
-                for ev in evidences:
-                    if ev.source in stmt:
-                        anno = Annotation(entry.primary_accession,
-                                          Statement(text, typ),
-                                          evidence=ev)
-                        yield anno
+                for annotation in parser_func(typ, value):
+                    yield annotation
+            except TypeError as e:
+                print(e, typ, value)
+        for feature in self.entry.features:
+            for annotation in self._parse_feature(feature):
+                yield annotation
 
-
-def _parse_subcellular_location(typ, value):
-    """Extract Annotations from subcellular location comments.
-
-    Args:
-        typ (str): type of UniProt comment
-        value (str): body of a UniProt comment
-
-    Return:
-          Annotation instances
-    """
-    note = '' #TODO: Handle the Note
-    try:
-        locations_all, note = value.split('. Note=')
-    except ValueError: # there is no Note
-        locations = value.split('. ')
-    else:
-        locations = locations_all.split('. ')
-    for location in locations:
+    def _parse_feature(self, feature):
+        typ, start, stop, description, _ = feature
         try:
-            loc, evs = location.split(' {')
+            text, evs = description.split('. {')
         except ValueError:
-            loc = location
+            text = description
             evs = None
+        value = typ + ' ' + text
         if evs:
             evidences = []
             for token in evs.rstrip('}.').split(', '):
@@ -347,29 +283,57 @@ def _parse_subcellular_location(typ, value):
                     code, source = token, None
                 evidences.append(Evidence(code=code, source=source))
             for ev in evidences:
-                yield Annotation(entry.primary_accession,
-                                 Statement(loc, typ),
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(value, typ),
                                  evidence=ev)
         else:
             yield Annotation(entry.primary_accession,
-                             Statement(loc, typ))
+                             Statement(value, typ))
+
+    def _parse_freetext(self, typ, value):
+        """Extract Annotations from freetext comments.
+
+        Args:
+            typ (str): type of UniProt comment
+            value (str): freetext body of a UniProt comment
+
+        Return:
+              Annotation instances
+        """
+        body_and_ev = value.split(' {')
+        try:
+            body, ev = body_and_ev
+        except ValueError:
+            print('Weird splitting pattern for comment: {} {}'.format(typ, value))
+        else:
+            # handle evidences
+            evidences = []
+            for token in ev.rstrip('}.').split(', '):
+                try:
+                    code, source = token.split('|')
+                except ValueError:
+                    code, source = token, None
+                evidences.append(Evidence(code=code, source=source))
+            # handle statements
+            stmts = re.split('\. ', body)
+            for stmt in stmts:
+                text = re.split('\(PubMed:', stmt, 1)[0]
+                if len(evidences) == 1:
+                    anno = Annotation(self.entry.primary_accession,
+                                      Statement(text, typ),
+                                      evidence=ev)
+                    yield anno
+                else:
+                    for ev in evidences:
+                        if ev.source in stmt:
+                            anno = Annotation(self.entry.primary_accession,
+                                              Statement(text, typ),
+                                              evidence=ev)
+                            yield anno
 
 
-def _parse_cofactor(typ, value):
-    """Extract Annotations from cofactor comments.
-
-    Args:
-        typ (str): type of UniProt comment
-        value (str): body of a UniProt comment
-
-    Return:
-          Annotation instances
-    """
-    pass
-
-
-def _parse_interaction(typ, value):
-    """Extract Annotations from interaction comments.
+    def _parse_subcellular_location(self, typ, value):
+        """Extract Annotations from subcellular location comments.
 
         Args:
             typ (str): type of UniProt comment
@@ -378,7 +342,60 @@ def _parse_interaction(typ, value):
         Return:
               Annotation instances
         """
-    pass
+        note = '' #TODO: Handle the Note
+        try:
+            locations_all, note = value.split('. Note=')
+        except ValueError: # there is no Note
+            locations = value.split('. ')
+        else:
+            locations = locations_all.split('. ')
+        for location in locations:
+            try:
+                loc, evs = location.split(' {')
+            except ValueError:
+                loc = location
+                evs = None
+            if evs:
+                evidences = []
+                for token in evs.rstrip('}.').split(', '):
+                    try:
+                        code, source = token.split('|')
+                    except ValueError:
+                        code, source = token, None
+                    evidences.append(Evidence(code=code, source=source))
+                for ev in evidences:
+                    yield Annotation(self.entry.primary_accession,
+                                     Statement(loc, typ),
+                                     evidence=ev)
+            else:
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(loc, typ))
+
+
+    def _parse_cofactor(self, typ, value):
+        """Extract Annotations from cofactor comments.
+
+        Args:
+            typ (str): type of UniProt comment
+            value (str): body of a UniProt comment
+
+        Return:
+              Annotation instances
+        """
+        pass
+
+
+    def _parse_interaction(self, typ, value):
+        """Extract Annotations from interaction comments.
+
+            Args:
+                typ (str): type of UniProt comment
+                value (str): body of a UniProt comment
+
+            Return:
+                  Annotation instances
+            """
+        pass
 
 if __name__ == '__main__':
     from biocuration import uniprot as up
