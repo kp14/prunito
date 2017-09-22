@@ -1,6 +1,6 @@
 import hashlib
 import re
-from collections import defaultdict
+from biocuration.utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
 
 
 ECO_PTRN = re.compile('ECO:[0-9]{7}')
@@ -21,6 +21,15 @@ class Evidence(object):
             self.code = code
         self.source = source
         self.id = self._calculate_id()
+
+    def is_sim(self):
+        return self.code == 'ECO:0000250'
+
+    def is_exp(self):
+        return self.code == 'ECO:0000269'
+
+    def _is_auto(self):
+        return self.code in ['ECO:0000256', 'ECO:0000259', 'ECO:0000244']
 
     def __str__(self):
         return '{}-{}'.format(str(self.code), str(self.source))
@@ -300,36 +309,107 @@ class AtomicParser():
         Return:
               Annotation instances
         """
-        body_and_ev = value.split(' {')
-        try:
-            body, ev = body_and_ev
-        except ValueError:
-            print('Weird splitting pattern for comment: {} {}'.format(typ, value))
-        else:
-            # handle evidences
-            evidences = []
-            for token in ev.rstrip('}.').split(', '):
-                try:
-                    code, source = token.split('|')
-                except ValueError:
-                    code, source = token, None
-                evidences.append(Evidence(code=code, source=source))
-            # handle statements
-            stmts = re.split('\. ', body)
-            for stmt in stmts:
-                text = re.split('\(PubMed:', stmt, 1)[0]
-                if len(evidences) == 1:
-                    anno = Annotation(self.entry.primary_accession,
+        evidences = self._extract_evidences(value)
+        # There might not be any tags, we provide a token one
+        if not evidences:
+            evidences.append(Evidence())
+        # handling body of annotations
+        body = value.split(' {')[0]
+        statements = re.split('\. ', body)
+        from_pubmed = []
+        from_sim = []
+        from_unclear = []
+        for statement in statements:
+                if 'PubMed:' in statement:
+                    from_pubmed.append(statement)
+                elif '(By similarity)' in statement:
+                    from_sim.append(statement)
+                elif '(Probable)' in statement:
+                    from_pubmed.append(statement)
+                else:
+                    from_unclear.append(statement)
+        for s in from_pubmed:
+            text = re.split('\(PubMed:', s, 1)[0]
+            for ev in evidences:
+                if ev.source in s:
+                    yield Annotation(self.entry.primary_accession,
                                       Statement(text, typ),
                                       evidence=ev)
-                    yield anno
-                else:
-                    for ev in evidences:
-                        if ev.source in stmt:
-                            anno = Annotation(self.entry.primary_accession,
-                                              Statement(text, typ),
-                                              evidence=ev)
-                            yield anno
+        for s in from_sim:
+            text = re.split('\(By sim:', s, 1)[0]
+            sim_tags = [tag for tag in evidences if tag.is_sim()]
+            if len(sim_tags) == 1:
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(text, typ),
+                                 evidence=sim_tags[0])
+            else:
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(text, typ),
+                                 evidence=Evidence(code='ECO:0000250'))
+        for s in from_unclear:
+            pass
+
+
+
+    def _extract_evidences(self, blob):
+        evidences = []
+        for match in re.finditer(UNIPROT_EVIDENCE_REGEX, value):
+            ev_string = match.group()
+            try:
+                code, source = ev_string.split('|')
+            except ValueError:
+                code, source = ev_string, None
+            evidences.append(Evidence(code=code, source=source))
+        return evidences
+
+    def _automatic_tags(self, list_of_evidences):
+        auto_only = [tag for tag in list_of_evidences if tag.is_auto()]
+        return auto_only
+
+    def _sim_tags(self, list_of_evidences):
+        sim_only = [tag for tag in list_of_evidences if tag.is_sim()]
+        return len(sim_only)
+
+    def _exp_or_opi_tags(self, list_of_evidences):
+        exp_only = [tag for tag in list_of_evidences if tag.is_exp()]
+        return len(exp_only)
+
+    def _find_tag_for_pubmed(self, pubmed, list_of_evidences ):
+        for tag in list_of_evidences:
+            if tag.source == pubmed:
+                return tag
+                break
+
+        # body_and_ev = value.split(' {')
+        # try:
+        #     body, ev = body_and_ev
+        # except ValueError:
+        #     print('Weird splitting pattern for comment: {} {}'.format(typ, value))
+        # else:
+        #     # handle evidences
+        #     evidences = []
+        #     for token in ev.rstrip('}.').split(', '):
+        #         try:
+        #             code, source = token.split('|')
+        #         except ValueError:
+        #             code, source = token, None
+        #         evidences.append(Evidence(code=code, source=source))
+        #     # handle statements
+        #     stmts = re.split('\. ', body)
+        #     for stmt in stmts:
+        #         text = re.split('\(PubMed:', stmt, 1)[0]
+        #         if len(evidences) == 1:
+        #             anno = Annotation(self.entry.primary_accession,
+        #                               Statement(text, typ),
+        #                               evidence=ev)
+        #             yield anno
+        #         else:
+        #             for ev in evidences:
+        #                 if ev.source in stmt:
+        #                     anno = Annotation(self.entry.primary_accession,
+        #                                       Statement(text, typ),
+        #                                       evidence=ev)
+        #                     yield anno
 
 
     def _parse_subcellular_location(self, typ, value):

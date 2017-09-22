@@ -71,7 +71,8 @@ def validate_param(param, val, allowed_vals):
 UNIPROT_ACCESSION = re.compile(r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]')
 UNIPROT_ACCESSION_REGEX = UNIPROT_ACCESSION
 UNIPROT_ACCESSION_REGEX_STRING = r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]'
-
+UNIPROT_EVIDENCE_REGEX = re.compile(r'ECO:[0-9]{7}(?:\|[A-Za-z-]*:[A-Za-z0-9]*)?')
+PUBMED_REGEX = re.compile(r'PubMed:[0-9]*')
 
 ##############################################################
 # General purpose classes
