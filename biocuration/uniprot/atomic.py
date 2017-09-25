@@ -329,14 +329,14 @@ class AtomicParser():
                 else:
                     from_unclear.append(statement)
         for s in from_pubmed:
-            text = re.split('\(PubMed:', s, 1)[0]
+            text = s.split(' (PubMed:')[0]
             for ev in evidences:
                 if ev.source in s:
                     yield Annotation(self.entry.primary_accession,
                                       Statement(text, typ),
                                       evidence=ev)
         for s in from_sim:
-            text = re.split('\(By sim:', s, 1)[0]
+            text = s.split(' (By sim')[0]
             sim_tags = [tag for tag in evidences if tag.is_sim()]
             if len(sim_tags) == 1:
                 yield Annotation(self.entry.primary_accession,
@@ -353,7 +353,7 @@ class AtomicParser():
 
     def _extract_evidences(self, blob):
         evidences = []
-        for match in re.finditer(UNIPROT_EVIDENCE_REGEX, value):
+        for match in re.finditer(UNIPROT_EVIDENCE_REGEX, blob):
             ev_string = match.group()
             try:
                 code, source = ev_string.split('|')
