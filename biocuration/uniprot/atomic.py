@@ -357,6 +357,11 @@ class AtomicParser():
                 yield Annotation(self.entry.primary_accession,
                                  Statement(text, typ),
                                  evidence=Evidence(code=this_code))
+            elif len(evidences) > 1 and len(set([e.code for e in evidences])) > 1 and from_sim:
+                code = list(set([e.code for e in evidences if not e.code == 'ECO:0000250']))[0]# a hack
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(text, typ),
+                                 evidence=Evidence(code=code))
 
 
 
@@ -438,6 +443,8 @@ class AtomicParser():
             locations = value.split('. ')
         else:
             locations = locations_all.split('. ')
+        if note:
+            yield from self._parse_freetext('SUBCELLULAR LOCATION', note)
         for location in locations:
             try:
                 loc, evs = location.split(' {')
