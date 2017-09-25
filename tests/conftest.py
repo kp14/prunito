@@ -69,7 +69,7 @@ EXPECTED_ANNOTATIONS = [
     'P62140: FUNCTION-In balance with CSNK1D and CSNK1E, determines the circadian period length, through the regulation of the speed and rhythmicity of PER1 and PER2 phosphorylation - ECO:0000269-None',
     'P62140: FUNCTION-May dephosphorylate CSNK1D and CSNK1E - ECO:0000269-None',
     'P62140: CATALYTIC ACTIVITY-[a protein]-serine/threonine phosphate + H(2)O = [a protein]-serine/threonine + phosphate - ECO:0000000-None',
-    'P62140: CATALYTIC ACTIVITY-[Myosin light-chain] phosphate + H(2)O = [myosin light-chain] + phosphate - ECO:0000269-PubMed:23396208',
+    'P62140: CATALYTIC ACTIVITY-[Myosin light-chain] phosphate + H(2)O = [myosin light-chain] + phosphate - ECO:0000269-PubMed:20516061',
     'P62140: ENZYME REGULATION-Inhibited by the toxins okadaic acid, tautomycin and microcystin Leu-Arg - ECO:0000250-None',
     'P62140: ENZYME REGULATION-The phosphatase activity of the PPP1R15A-PP1 complex toward EIF2S1 is specifically inhibited by Salubrinal, a drug that protects cells from endoplasmic reticulum stress - ECO:0000250-None',
     'P62140: SUBUNIT-Interacts with RRP1B - ECO:0000269-PubMed:20926688',

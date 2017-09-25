@@ -347,7 +347,16 @@ class AtomicParser():
                                  Statement(text, typ),
                                  evidence=Evidence(code='ECO:0000250'))
         for s in from_unclear:
-            pass
+            text = s.rstrip('. ')
+            if not from_sim and not from_pubmed and len(evidences) == 1:# 1 tag applicable to all
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(text, typ),
+                                 evidence=evidences[0])
+            elif len(evidences) > 1 and len(set([e.code for e in evidences])) == 1:# 1 type of tag applicable to all but unclear source
+                this_code = evidences[0].code
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(text, typ),
+                                 evidence=Evidence(code=this_code))
 
 
 
