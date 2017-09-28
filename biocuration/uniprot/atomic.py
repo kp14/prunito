@@ -17,6 +17,7 @@ class Evidence(object):
 
     def __init__(self, code='ECO:0000000', source=None):
         if not re.match(ECO_PTRN, code):
+            self.code='ECO:0000000'
             raise ValueError('Invalid ECO code: {}'.format(code))
         else:
             self.code = code
@@ -218,7 +219,8 @@ class APile(object):
         """
         evtags = set()
         for anno in self._annotations:
-            evtags.add(anno.evidence_code)
+            if anno.evidence_code:
+                evtags.add(anno.evidence_code)
         return sorted(evtags)
 
     def annotation_types(self):
