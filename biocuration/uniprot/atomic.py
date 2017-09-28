@@ -1,5 +1,6 @@
 import hashlib
 import re
+from collections import defaultdict
 from biocuration.utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
 
 
@@ -146,6 +147,8 @@ class APile(object):
 
     def __init__(self):
         self._annotations = []
+        self.keywords = defaultdict(list)
+        self.rp_tokens = defaultdict(list)
 
     @classmethod
     def from_iterable(cls, iterable):
@@ -177,6 +180,8 @@ class APile(object):
         ap = AtomicParser(entry)
         for annotation in ap.parse():
             self.add(annotation)
+        for kw in entry.keywords:
+            self.keywords[kw].append(entry.primary_accession)
 
     def size(self):
         """Return length of ACollection list."""
