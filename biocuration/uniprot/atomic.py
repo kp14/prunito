@@ -206,7 +206,8 @@ class APile(object):
         """
         sources = set()
         for anno in self._annotations:
-            sources.add(anno.source)
+            if anno.source:
+                sources.add(anno.source)
         return sorted(sources)
 
     def evtags(self):
