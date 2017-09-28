@@ -196,7 +196,7 @@ class APile(object):
         entities = set()
         for anno in self._annotations:
             entities.add(anno.entity)
-        return entities
+        return sorted(entities)
 
     def sources(self):
         """Set of sources used in evidence tags contained in annotations.
@@ -207,7 +207,7 @@ class APile(object):
         sources = set()
         for anno in self._annotations:
             sources.add(anno.source)
-        return sources
+        return sorted(sources)
 
     def evtags(self):
         """Set of evidence tags contained in annotations.
@@ -218,7 +218,7 @@ class APile(object):
         evtags = set()
         for anno in self._annotations:
             evtags.add(anno.evidence_code)
-        return evtags
+        return sorted(evtags)
 
     def annotation_types(self):
         """Set of evidence tags contained in annotations.
@@ -229,7 +229,7 @@ class APile(object):
         atypes = set()
         for anno in self._annotations:
             atypes.add(anno.type)
-        return atypes
+        return sorted(atypes)
 
     def get_idx(self, idx):
         """Return Annotation at index idx.
