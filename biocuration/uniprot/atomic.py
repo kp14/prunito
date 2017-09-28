@@ -367,6 +367,9 @@ class AtomicParser():
                 yield Annotation(self.entry.primary_accession,
                                  Statement(text, typ),
                                  evidence=Evidence(code=code))
+            else:
+                yield Annotation(self.entry.primary_accession,
+                                 Statement(text, typ))
 
 
 
