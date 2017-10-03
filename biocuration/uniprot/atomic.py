@@ -288,8 +288,12 @@ class AtomicParser():
         try:
             text, evs = description.split('. {')
         except ValueError:
-            text = description
-            evs = None
+            if description.startswith('{'):
+                text = ''
+                evs = description[1:]
+            else:
+                text = description
+                evs = None
         value = typ + ' ' + text
         if evs:
             evidences = []

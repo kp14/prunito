@@ -561,10 +561,16 @@ FT   ACT_SITE    124    124       Proton donor. {ECO:0000250}.
 FT   METAL        63     63       Manganese 1. {ECO:0000250}.
 FT   METAL        65     65       Manganese 1. {ECO:0000250}.
 FT   METAL        91     91       Manganese 1. {ECO:0000250}.
-FT   METAL        91     91       Manganese 2. {ECO:0000250}.
-FT   METAL       123    123       Manganese 2. {ECO:0000250}.
+FT   METAL        91     91       Manganese 2.
+FT                                {ECO:0000250|UniProtKB:P62141}.
+FT   METAL       123    123       Manganese 2.
+FT                                {ECO:0000250|UniProtKB:P62141,
+FT                                ECO:0000250|UniProtKB:Q33333}.
 FT   METAL       172    172       Manganese 2. {ECO:0000250}.
 FT   METAL       247    247       Manganese 2. {ECO:0000250}.
+FT   DISULFID     61    171       {ECO:0000250|UniProtKB:P12345}
+FT   DISULFID     66    180       {ECO:0000250|UniProtKB:A11111,
+FT                                ECO:0000250|UniProtKB:Q33333}.
 FT   MOD_RES       2      2       N-acetylalanine.
 FT                                {ECO:0000244|PubMed:22223895,
 FT                                ECO:0000244|PubMed:22814378,
