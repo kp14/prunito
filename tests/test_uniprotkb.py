@@ -69,6 +69,10 @@ def test_gene_name():
     assert my_record[0].gene_name == 'Name=NOD2; Synonyms=CARD15;'
 
 
+def test_primary_gene_name():
+    assert my_record[0].primary_gene_name == 'NOD2'
+
+
 def test_organism_classification():
     assert my_record[0].organism_classification == ['Eukaryota', 'Metazoa', 'Chordata', 'Craniata', 'Vertebrata', 'Euteleostomi', 'Mammalia', 'Eutheria', 'Laurasiatheria', 'Cetartiodactyla', 'Ruminantia', 'Pecora', 'Bovidae', 'Bovinae', 'Bos']
 

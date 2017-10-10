@@ -83,7 +83,28 @@ class Record:
 
     @property
     def gene_name(self):
+
         return ' '.join(self._bag['GN'])
+
+    @property
+    def primary_gene_name(self):
+        """Gene name as captured in UniProtKB.
+
+        Specifically, the Name= field in GN lines. If an entry does not have
+        a Name field even if it has other GN fields this returns an empty string.
+
+        Returns:
+            str
+        """
+        primary_gn = ''
+        try:
+            first_gn_token = self.gene_name.split(';')[0]
+        except KeyError:
+            pass
+        else:
+            if first_gn_token.startswith('Name'):
+                primary_gn = first_gn_token[5:].split('{')[0]
+        return primary_gn
 
     @property
     def organism(self):
