@@ -5,6 +5,7 @@ import logging
 import re
 from collections import defaultdict
 from .atomic import APile
+from biocuration.utils import EC_REGEX
 
 
 logging.basicConfig(level=logging.WARN)
@@ -82,6 +83,15 @@ class Record:
         return rec_name
 
     @property
+    def ec_numbers(self):
+        """Get all EC numbers present in the DE block.
+
+        Returns:
+            list of str
+        """
+        return re.findall(EC_REGEX, self.description)
+
+    @property
     def gene_name(self):
 
         return ' '.join(self._bag['GN'])
@@ -103,7 +113,7 @@ class Record:
             pass
         else:
             if first_gn_token.startswith('Name'):
-                primary_gn = first_gn_token[5:].split('{')[0]
+                primary_gn = first_gn_token[5:].split(' {')[0]
         return primary_gn
 
     @property

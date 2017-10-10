@@ -58,15 +58,18 @@ def test_primary_accession():
 
 
 def test_description():
-    assert my_record[0].description == "RecName: Full=Nucleotide-binding oligomerization domain-containing protein 2; AltName: Full=Caspase recruitment domain-containing protein 15;"
+    assert my_record[0].description == "RecName: Full=Nucleotide-binding oligomerization domain-containing protein 2; EC=2.3.1.234 {ECO:0000255|HAMAP-Rule:MF_01445, ECO:0000269|PubMed:22378793}; AltName: Full=Caspase recruitment domain-containing protein 15; EC=6.3.1.999;"
 
 
 def test_recommended_full_name():
     assert my_record[0].recommended_full_name == 'Nucleotide-binding oligomerization domain-containing protein 2'
 
 
+def test_ec_numbers():
+    assert my_record[0].ec_numbers == ['2.3.1.234', '6.3.1.999']
+
 def test_gene_name():
-    assert my_record[0].gene_name == 'Name=NOD2; Synonyms=CARD15;'
+    assert my_record[0].gene_name == 'Name=NOD2 {ECO:0000255|HAMAP-Rule:MF_01445}; Synonyms=CARD15;'
 
 
 def test_primary_gene_name():

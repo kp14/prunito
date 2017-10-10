@@ -4,8 +4,10 @@ DT   26-MAY-2009, integrated into UniProtKB/Swiss-Prot.
 DT   16-AUG-2004, sequence version 1.
 DT   07-SEP-2016, entry version 102.
 DE   RecName: Full=Nucleotide-binding oligomerization domain-containing protein 2;
+DE            EC=2.3.1.234 {ECO:0000255|HAMAP-Rule:MF_01445, ECO:0000269|PubMed:22378793};
 DE   AltName: Full=Caspase recruitment domain-containing protein 15;
-GN   Name=NOD2; Synonyms=CARD15;
+DE            EC=6.3.1.999;
+GN   Name=NOD2 {ECO:0000255|HAMAP-Rule:MF_01445}; Synonyms=CARD15;
 OS   Bos taurus (Bovine).
 OC   Eukaryota; Metazoa; Chordata; Craniata; Vertebrata; Euteleostomi;
 OC   Mammalia; Eutheria; Laurasiatheria; Cetartiodactyla; Ruminantia;
