@@ -1,5 +1,3 @@
-__author__ = 'kpichler'
-
 import itertools
 from math import acos, atan2, cos, exp, pi, sin, sqrt
 from numpy import array, float64, zeros

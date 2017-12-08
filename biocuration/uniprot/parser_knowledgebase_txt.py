@@ -5,7 +5,7 @@ import logging
 import re
 from collections import defaultdict
 from .atomic import APile
-from biocuration.utils import EC_REGEX
+from ..utils import EC_REGEX
 
 
 logging.basicConfig(level=logging.WARN)

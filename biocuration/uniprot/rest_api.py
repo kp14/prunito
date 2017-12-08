@@ -1,7 +1,7 @@
 import io
 import requests
 
-from biocuration.utils import (UNIPROT_KNOWLEDGEBASE,
+from ..utils import (UNIPROT_KNOWLEDGEBASE,
                                UNIPROT_BATCH,
                                UNIPROT_CONVERT,
                                UNIPROT_MAP,
