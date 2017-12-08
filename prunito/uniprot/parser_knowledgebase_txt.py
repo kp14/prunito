@@ -546,9 +546,3 @@ PARSER_MAP = {"ID": _parse_id,
               "**": _parse_generic,
               "SQ": _parse_generic,
               "  ": _parse_generic}
-
-if __name__ == '__main__':
-    datafile = 'C:/Users/kpichler/Documents/Python/biocuration_pc/tests/SwissProt/one_sp_entry.txl'
-    with open(datafile, 'r', encoding='ascii') as data:
-        e = list(parse_txt_compatible(data))
-        e[0].features
