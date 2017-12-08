@@ -1,6 +1,6 @@
 import hashlib
 import pytest
-from biocuration.uniprot import atomic
+from prunito.uniprot import atomic
 
 
 def test_actual_in_expected(actual, expected_list):

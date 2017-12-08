@@ -8,7 +8,7 @@ import os
 import pytest
 
 from Bio import SwissProt
-from biocuration.uniprot import parse_txt_compatible, parse_txt_atomic
+from prunito.uniprot import parse_txt_compatible, parse_txt_atomic
 
 
 #####################################################################

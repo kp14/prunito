@@ -10,7 +10,7 @@ import pytest
 import os
 
 from Bio import SwissProt
-import biocuration.uniprot as up
+import prunito.uniprot as up
 
 
 # Import paths for data files

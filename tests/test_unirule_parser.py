@@ -10,7 +10,7 @@ Created on Thu Feb  4 15:06:48 2016
 import pytest
 import os
 
-from biocuration.uniprot import parse_rules
+from prunito.uniprot import parse_rules
 
 # Some diffs are very long here if tests fail so we set this
 # to None to display the whole diff
