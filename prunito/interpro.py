@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 16 14:57:52 2015
+"""Module for accessing InterPro via REST-ful web services."""
 
-@author: kp14
-"""
 import requests
 import sys
 import time
@@ -18,88 +15,64 @@ except ImportError:
            'Drawing InterPro overlaps will not be possible.')
     warnings.warn(msg, ImportWarning)
 
+interpro_session = requests.Session()
 
-def search_phmmer(seq=None, seqdb=None, output='json', **kwargs):
+def search_phmmer(seq, database='swissprot', fmt='json', hits=10, alignments=False):
     '''Run a protein sequence against a sequence DB using phmmer.
 
     The input sequence can either be provided in FASTA format or alternatively
     as a retrievable accession number, e.g. a UniprotKB accession.
 
-    Parameters:
+    Args:
 
-    seq: input sequence in FASTA format; string; cannot be used together with `acc`
+        seq (str): input sequence in FASTA format.
 
-    acc: accession of sequence to run; cannot be used together with `seq`
+        database (str): sequence database to run search against;
+               Possible values: uniprotrefprot, uniprotkb, swissprot, pdb,
+               rp15, rp35, rp55, rp75, ensemblgenomes, ensembl, qfo
 
-    seqdb: sequence database to run search against;
-           Possible values: uniprotkb, swissprot, pdb, rp15, rp35, rp55, rp75,
-                            uniprotrefprot, pfamseq, qfo
+        output (str): format of output; default: json
+                Possible values: json, text, xml, yaml
 
-    output: format of output; default: json
-            Possible values: json, text, xml, yaml
+        hits (int): humber of results to retrieve; Max: 1000, Default: 10
 
-    hits: humber of results to retrieve; has to be specified as tuple if ints
-
-    return_alignments: set to True of alignments should be retrieved
-
-    e: E value cutoff for returned hits
-    ...
+        alignments (boolean): Whether alignments should be retrieved. Default: False.
 
     Returns:
-    string in chosen format
+        data in selected format (default JSON)
     '''
-    return _search_hmmer(seq=seq, seqdb=seqdb, output=output, **kwargs )
-
-
-def _search_hmmer(tool='phmmer',
-                  seq=None,
-                  seqdb=None,
-                  output=None,
-                  hits=None,
-                  return_alignments=False,
-                  e=None,
-                  domE=None,
-                  incE=None,
-                  incdomE=None):
-    '''Some docs
-    '''
-    validate_param('seqdb', seqdb, _HMMER_PARAMS['seqdb'])
-    validate_param('tool', tool, _HMMER_PARAMS['tool'])
-    validate_param('output', output, _HMMER_PARAMS['output'])
-    session = requests.Session()
-    payload = {'seqdb': seqdb,
+    payload = {'seqdb': database,
                'seq': seq,
               }
-    url = '/'.join([EBI_HMMER, tool])
-    posted = session.post(url, data=payload, allow_redirects=False)
+    url = '/'.join([EBI_HMMER, 'phmmer'])
+    posted = interpro_session.post(url, data=payload, allow_redirects=False)
     if posted.ok:
         time.sleep(3)
-        output_values = {'output': output,
+        output_values = {'output': fmt,
+                         'range': '1,{}'.format(str(hits)),
+                         'ali': alignments,
                          }
-        if hits:
-            output_values['range'] = str(hits[0]) + ',' + str(hits[1])
-        results = session.get(posted.headers['location'], data=output_values)
-        #results = session.get(posted.headers['location'], headers={'Accept': 'application/json'})
-        if output == 'json':
+        results = interpro_session.get(posted.url, params=output_values)
+        if fmt == 'json':
             return results.json()
         else:
             return results.content.decode('utf-8')
 
 
 def draw_signature_overlaps(list_of_signatures, mode='save'):
-    '''Represent overlaps in UniprotKB coverage of InterPro xrefs as Venn diagram.
+    '''Represent overlaps in UniProtKB coverage of InterPro xrefs as Venn diagram.
 
-    Parameters:
-    list_of_signatures: list of InterPro xref identifiers
-    mode: 'save', 'ipython', 'raw'; defaults to save
+    Args:
+        list_of_signatures: list of InterPro xref identifiers
+        mode: 'save', 'ipython', 'raw'; defaults to save
 
     Returns:
-    Saved rendered SVG Venn diagram; wrapped in SVG() container if mode ipython
-    Outputfile name: sig1_sig2_..._sigN.svg
+        Saved rendered SVG Venn diagram; wrapped in SVG() container if mode ipython
+        Outputfile name: sig1_sig2_..._sigN.svg
     '''
     res_sets = []
     for sig in list_of_signatures:
-        res_set = _get_signature_hit_list(sig)
+        res_set = uniprot_hits_for_interpro(sig)
         res_sets.append(res_set)
 
     rendered_diagram = vd.draw(res_sets, labels=list_of_signatures)
@@ -120,56 +93,20 @@ def draw_signature_overlaps(list_of_signatures, mode='save'):
         return rendered_diagram
 
 
-def _get_signature_hit_list(sig):
-    '''Retrieve UniProKB hits for a given siganture.
+def uniprot_hits_for_interpro(signature):
+    '''Retrieve UniProKB hits for a given InterPro signature.
 
-    Parameters:
-    sig: InterPro (member) database identifier; string
+    Args:
+        signature (str) : InterPro (member) database identifier
 
     Returns:
-    set of UniProtKB accessions
+        UniProtKB accessions (set)
     '''
-    result = search_all(sig, frmt='list')
+    result = search_all(signature, frmt='list')
     if result:
         result_set = set(result.strip().split('\n'))
     else:
         result_set = set()
-        print('Signature returned empty:{}'.format(sig))
+        # print('Signature returned empty:{}'.format(signature))
     return result_set
 
-
-_HMMER_PARAMS = {'seqdb': ('pdb',
-                           'swissprot',
-                           'uniprotkb',
-                           'rp15',
-                           'rp35',
-                           'rp55',
-                           'rp75',
-                           'uniprotrefprot',
-                           'pfamseq',
-                           'qfo'
-                           ),
-                'hmmdb': ('pfam',
-                          'gene3d',
-                          'tigrfam',
-                          'superfam',
-                          ),
-                'tool': ('phmmer',
-                         'hmmsearch',
-                         'jackhmmer',
-                         'hmmscan',
-                         ),
-                'output': ('json',
-                           'xml',
-                           'text',
-                           'yaml',
-                          ),
-                }
-
-if __name__ == '__main__':
-    import json
-    res = search_phmmer(seq='>Seq\nKLRVLGYHNGEWCEAQTKNGQGWVPSNYITPVNSLENSIDKHSWYHGPVSRNAAEY',
-                        seqdb='swissprot', hits=(1,1), output='text')
-    print(res)
-    #print(json.dumps(res, sort_keys=True, indent=4))
-    #draw_signature_overlaps(['PTHR10159', 'PR01908', 'PR01909', 'PR01764', 'PIRSF000939'], mode='save')
