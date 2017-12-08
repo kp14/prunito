@@ -18,22 +18,39 @@ session = requests.Session()
 def retrieve_cds(pid, fmt='fasta'):
     '''Get CDS referenced by a protein_id.
 
-    Parameter:
-    pid: pid, string like BAC67592(.1) ecluding the version
-    fmt: fasta, text or xml; default to fasta
+    ProteinIDs (pid) have the format <ID>.<VERSION>, e.g. BAC67592.1
+    They are different from ENA accession numbers although those look similar.
+    A given ENA entry (as identified by an accession) can contain zero to many
+    pid. For retrieval from ENA, versions of pid should be stripped.
+
+    Args:
+        pid (str): The protein_ID, e.g. BAC67592.
+        fmt (str, optional): Retrieval format. Can be fasta, text, xml. Defaults to fasta.
 
     Returns:
-    CDS nucleotide seq in FastA format
+    CDS nucleotide seq in FastA format (str)
     '''
     try:
         # No checks are currently made to ensure that pid is a pid
-        return _retrieve_data(pid, fmt=fmt)
+        return retrieve(pid, fmt=fmt)
     except ValueError as e:
         print(pid, e)
 
 
-def _retrieve_data(identifier, fmt='text'):
-    '''Retrieva data from ENA via REST.'''
+def retrieve(identifier, fmt='text'):
+    '''Retrieve data based on an ENA identifier.
+
+    This is intended for ENA accession numbers and proteinIDs but I guess it
+    should work for assembly metadata (e.g. GCA_001521735) or BioProject metadata
+    (PRJNA301708), too. Not sure how useful the latter are though.
+
+    Args:
+        identifier (str): Identifier to retrieve.
+        fmt (str, optional): Retrieval format. Can be fasta, text, xml. Defaults to text.
+
+    Returns:
+        Data linked to identifier (str)
+    '''
     error_msg = 'display type is either not supported or entry is not found'
     data = identifier + '&display=' + fmt
     result = session.get('/'.join([utils.ENA_DATA, data]))
