@@ -3,6 +3,7 @@
 import requests
 import urllib
 from collections import OrderedDict
+from urllib.parse import urlencode
 from .utils import EPMC_SEARCH
 
 
@@ -38,7 +39,7 @@ def search(query, fmt='json', result_type='lite', page_size=25):
     payload['resulttype'] = result_type
     payload['pageSize'] = page_size
 
-    result = requests.get(EPMC_SEARCH + urllib.parse.urlencode(payload))
+    result = requests.get(EPMC_SEARCH + urlencode(payload))
     if result.ok:
         if fmt == 'json':
             return result.json()
