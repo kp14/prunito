@@ -1,3 +1,12 @@
+"""Module for representing UniProtKB data as single annotations.
+
+Many of the fields used in UniProtKB are free text and/or multi-labeled
+with many evidence tags attached to one data point. Sometimes it would
+be beneficial to be able to treat all data points as separate annotations,
+i.e., a data point reported by two different papers would be two separate
+annotations. I call these atomic annotations.
+"""
+
 import hashlib
 import re
 from collections import defaultdict

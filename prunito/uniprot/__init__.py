@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Jun 23 15:45:49 2015
-
-@author: kp14
-"""
+"""Package for accessing UniProt data via REST-ful web services."""
 
 from .parser_knowledgebase_txt import parse_txt, parse_txt_compatible, parse_txt_atomic
 from .parser_unirule import parse_rules
