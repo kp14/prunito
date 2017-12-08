@@ -2,9 +2,7 @@
 """
 Some UniProt data are not available via the REST API, these can be scraped.
 
-Created on Fri Jan 22 13:04:00 2016
-
-@author: kp14
+Note: To be replaced by calls to the proteins API
 """
 import requests
 from bs4 import BeautifulSoup
