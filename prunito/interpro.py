@@ -13,7 +13,10 @@ from .utils import InterProXrefs, EBI_HMMER, validate_param
 try:
     import venndy.draw as vd
 except ImportError:
-    sys.exit('Depends on the `venndy` package.')
+    import warnings
+    msg = ('Package venndy not installed. '
+           'Drawing InterPro overlaps will not be possible.')
+    warnings.warn(msg, ImportWarning)
 
 
 def search_phmmer(seq=None, seqdb=None, output='json', **kwargs):

@@ -43,6 +43,5 @@ setup(name='prunito',
       install_requires=['requests',
                         'lxml',
                         'beautifulsoup4',
-                        'venndy',
                         ],
       include_package_data=True)

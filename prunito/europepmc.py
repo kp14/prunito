@@ -1,7 +1,6 @@
 """Module for accessing EuropePMC via REST-ful web services."""
 
 import requests
-import urllib
 from collections import OrderedDict
 from urllib.parse import urlencode
 from .utils import EPMC_SEARCH
