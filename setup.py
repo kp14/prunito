@@ -25,21 +25,21 @@ def find_version(*file_paths):
 
 long_description = read('README')
 
-setup(name='biocuration',
-      version=find_version('biocuration', '__init__.py'),
+setup(name='prunito',
+      version=find_version('prunito', '__init__.py'),
       description='A collection of tools for protein biocuration.',
       long_description=long_description,
       classifiers=[
         'Development Status :: 4 - Beta',
         'License :: Public Domain',
-        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.6',
         'Topic :: Scientific/Engineering :: Visualization',
       ],
-      url='https://bitbucket.org/kp14/biocuration-project',
+      url='https://github.com/kp14/prunito',
       author='kp14',
       author_email='',
       license='Public Domain',
-      packages=['biocuration', 'biocuration/uniprot', 'biocuration/distil'],
+      packages=['prunito', 'prunito/uniprot', 'prunito/distil'],
       install_requires=['requests',
                         'lxml',
                         'beautifulsoup4',
