@@ -507,17 +507,3 @@ class AtomicParser():
                   Annotation instances
             """
         pass
-
-if __name__ == '__main__':
-    from biocuration import uniprot as up
-    with open('C:/users/kpichler/Documents/Python/biocuration_pc/tests/SwissProt/atomic.txl', 'r', encoding='ascii') as infile:
-    # with open('/home/klemens/Documents/data.txt', 'r', encoding='ascii') as infile:
-    # with open('/home/klemens/Downloads/entry.txt', 'r', encoding='ascii') as infile:
-        # entry = list(up.parse_txt_compatible(infile))[0]
-        p = APile()
-        for entry in up.parse_txt_compatible(infile):
-            p.consume(entry)
-        for annotation in p:
-            print(annotation)
-
-
