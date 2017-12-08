@@ -44,7 +44,7 @@ QUICKGO_SEARCH = '/'.join([EBI_BASE, 'QuickGO/GSearch'])
 # Example: http://www.ebi.ac.uk/ena/data/view/AB107287&display=fasta
 ENA_DATA = '/'.join([EBI_BASE, 'ena/data/view'])
 
-
+EPMC_SEARCH = '/'.join([EBI_BASE, 'europepmc/webservices/rest/search/'])
 ##############################################################
 # General purpose functions
 ##############################################################

@@ -1,110 +1,69 @@
-"""Module for accessing EuropePMC via REST-ful web services.
+"""Module for accessing EuropePMC via REST-ful web services."""
 
-This uses the `search` module of said web services.
-URL constructing follows the following pattern:
+import requests
+import urllib
+from collections import OrderedDict
+from .utils import EPMC_SEARCH
 
-GET http://www.ebi.ac.uk/europepmc/webservices/rest/search/
-                            query={}[&parameters]
 
-Mandatory parameter:
+def search(query, fmt='json', result_type='lite', page_size=25):
+    """Search publication database.
 
-`query`: various fields can be searched
+    The details of the search syntax are explain here:
+    http://europepmc.org/Help#SSR
 
-Optional parameters:
+    The parameter pageSize is provided which allows downloading of at
+    maximum 1000 hits, enough for our purposes. Thus, a parameter page
+    or cursorMark are not deemed necessary.
 
-`resulttype`: idlist, core, lite
-
+    Args:
+        query (str): The Query.
+        fmt (str, optional): Format of returned data. Can be XML, JSON, DC.
+            Defaults to JSON.
+        result_type (str, optional): Depth of returned data.
+            Can be idlist, core, lite.
             idlist: returns a list of IDs and sources for the
                 given search terms
             lite: returns key metadata for the given search terms (default).
             core: returns full metadata for a given
                 publication ID; including abstract, full text
                 links, and MeSH terms.
-
-`page`: Specify the results page you wish to retrieve, where
-        applicable. Page length of 25 and page numbers start
-        at 1; default value is 1 (i.e. publications 1-25), if
-        parameter unspecified.
-
-`format`: XML, JSON (default=JSON)
-
-`callback`: Use the callback parameter to make cross-domain
-        requests and retrieve JSON data. The value is user
-        specified. The web service wraps its response with
-        the given callback value.
-"""
-import requests
-import urllib
-
-from collections import OrderedDict
-
-
-def search(query,
-           fmt='json',
-           resulttype='lite',
-           page='1',
-           callback=None):
-    """Search with default values for all parameters.
-    Returns JSON data.
+        pageSize (int, optional): Specify the number of articles you wish to
+            retrieve in each page. Max: 1000, Default: 25.
     """
-    result = _search(query,
-                     fmt=fmt,
-                     resulttype=resulttype,
-                     page=page,
-                     callback=callback)
-    return result
-
-
-def search_fulltext(query,
-                    fmt='json',
-                    resulttype='',
-                    page='1',
-                    callback=None):
-    """Search fulltext articles only.
-    Returns JSON data.
-    """
-    result = _search(query,
-                     fmt=fmt,
-                     resulttype=resulttype,
-                     page=page,
-                     callback=callback)
-    return result
-
-
-def retrieve_pmid(pmid):
-    query = 'ext_id:{}'.format(str(pmid))
-    result = _search(query,
-                     fmt='json',
-                     resulttype='core',
-                     page='1',
-                     callback=None)
-    return result
-
-
-def _search(query,
-            fmt='json',
-            resulttype='lite',
-            page='1',
-            callback=None):
-    """Does all the heavy lifting.
-
-    JSON is always returned.
-    """
-    base_url = "http://www.ebi.ac.uk/europepmc/webservices/rest/search/"
-
     # Normal dict did not work as parameters were shuffled
     payload = OrderedDict()
     payload['query'] = query
     payload['format'] = fmt
-    payload['resulttype'] = resulttype
-    payload['page'] = page
+    payload['resulttype'] = result_type
+    payload['pageSize'] = page_size
 
-    if callback is not None:
-        payload['callback'] = callback
-
-    result = requests.get(base_url + urllib.parse.urlencode(payload))
+    result = requests.get(EPMC_SEARCH + urllib.parse.urlencode(payload))
     if result.ok:
         if fmt == 'json':
             return result.json()
         else:
             return result.text
+
+
+def get_pmid_metadata(pmid):
+    """Retrieve core metadata of a given PubMed ID.
+
+    Core metadata include the abstract, full text links and MeSH terms.
+    All of these have to be extracted from the JSON.
+
+    As a PubMed ID should be unique, this function returns zero or one
+    result. If there are more than one hits then the first one is returned.
+
+    Args:
+        pmid (str or int): PubMed ID.
+
+    Returns:
+        Metadata (dict) or None
+    """
+    query = 'ext_id:{} src:med'.format(str(pmid))
+    result = search(query, result_type='core')
+    if result['hitCount'] == 0:
+        return None
+    else:
+        return result['resultList']['result'][0]
