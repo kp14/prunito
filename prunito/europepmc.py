@@ -48,7 +48,7 @@ def search(query, fmt='json', result_type='lite', page_size=25):
 
 
 def get_pmid_metadata(pmid):
-    """Retrieve core metadata of a given PubMed ID.
+    """Retrieve core metadata for a given PubMed ID.
 
     Core metadata include the abstract, full text links and MeSH terms.
     All of these have to be extracted from the JSON.

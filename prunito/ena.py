@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Jan 20 10:26:06 2016
-
-@author: kp14
-"""
+"""Module for accessing ENA data via REST-ful web services."""
 
 import requests
 try:
