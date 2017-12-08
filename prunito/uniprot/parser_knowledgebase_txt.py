@@ -3,14 +3,18 @@
 import itertools
 import logging
 import re
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 from .atomic import APile
 from ..utils import EC_REGEX
 
 
 logging.basicConfig(level=logging.WARN)
 
+
 LINE_ENDINGS = ' \n\r'
+
+
+Feature = namedtuple('Feature', ['type', 'start', 'end', 'description', 'ftid'])
 
 
 class Record:
@@ -221,7 +225,7 @@ class Record:
                             add_space = ' '
                         current[3] += '{0}{1}'.format(add_space, featureline[3])
                 if idx == ft_bag_len - 1:
-                    self._features.append(tuple(current))
+                    self._features.append(Feature(*current))
             return self._features
 
     @property
