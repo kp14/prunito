@@ -201,3 +201,142 @@ def test_tax_ids_info_several_ids():
 @pytest.mark.xfail(raises=ValueError)
 def test_get_info_on_taxIDs_string_input():
     r = up.get_info_on_taxIDs('9606,10090')
+
+
+def test_get_lineage_for_taxID():
+    expected = [
+                {
+                  "taxonomyId": 9606,
+                  "scientificName": "Homo sapiens"
+                },
+                {
+                  "taxonomyId": 9605,
+                  "scientificName": "Homo"
+                },
+                {
+                  "taxonomyId": 207598,
+                  "scientificName": "Homininae"
+                },
+                {
+                  "taxonomyId": 9604,
+                  "scientificName": "Hominidae"
+                },
+                {
+                  "taxonomyId": 314295,
+                  "scientificName": "Hominoidea"
+                },
+                {
+                  "taxonomyId": 9526,
+                  "scientificName": "Catarrhini"
+                },
+                {
+                  "taxonomyId": 314293,
+                  "scientificName": "Simiiformes"
+                },
+                {
+                  "taxonomyId": 376913,
+                  "scientificName": "Haplorrhini"
+                },
+                {
+                  "taxonomyId": 9443,
+                  "scientificName": "Primates"
+                },
+                {
+                  "taxonomyId": 314146,
+                  "scientificName": "Euarchontoglires"
+                },
+                {
+                  "taxonomyId": 1437010,
+                  "scientificName": "Boreoeutheria"
+                },
+                {
+                  "taxonomyId": 9347,
+                  "scientificName": "Eutheria"
+                },
+                {
+                  "taxonomyId": 32525,
+                  "scientificName": "Theria"
+                },
+                {
+                  "taxonomyId": 40674,
+                  "scientificName": "Mammalia"
+                },
+                {
+                  "taxonomyId": 32524,
+                  "scientificName": "Amniota"
+                },
+                {
+                  "taxonomyId": 32523,
+                  "scientificName": "Tetrapoda"
+                },
+                {
+                  "taxonomyId": 1338369,
+                  "scientificName": "Dipnotetrapodomorpha"
+                },
+                {
+                  "taxonomyId": 8287,
+                  "scientificName": "Sarcopterygii"
+                },
+                {
+                  "taxonomyId": 117571,
+                  "scientificName": "Euteleostomi"
+                },
+                {
+                  "taxonomyId": 117570,
+                  "scientificName": "Teleostomi"
+                },
+                {
+                  "taxonomyId": 7776,
+                  "scientificName": "Gnathostomata"
+                },
+                {
+                  "taxonomyId": 7742,
+                  "scientificName": "Vertebrata"
+                },
+                {
+                  "taxonomyId": 89593,
+                  "scientificName": "Craniata"
+                },
+                {
+                  "taxonomyId": 7711,
+                  "scientificName": "Chordata"
+                },
+                {
+                  "taxonomyId": 33511,
+                  "scientificName": "Deuterostomia"
+                },
+                {
+                  "taxonomyId": 33213,
+                  "scientificName": "Bilateria"
+                },
+                {
+                  "taxonomyId": 6072,
+                  "scientificName": "Eumetazoa"
+                },
+                {
+                  "taxonomyId": 33208,
+                  "scientificName": "Metazoa"
+                },
+                {
+                  "taxonomyId": 33154,
+                  "scientificName": "Opisthokonta"
+                },
+                {
+                  "taxonomyId": 2759,
+                  "scientificName": "Eukaryota"
+                },
+                {
+                  "taxonomyId": 131567,
+                  "scientificName": "cellular organisms"
+                },
+                {
+                  "taxonomyId": 1,
+                  "scientificName": "root"
+                }
+              ]
+    actual = up.get_lineage_for_taxID(9606)
+    actual_list = list(actual)
+    assert len(expected) == len(actual_list)
+    for item in zip(expected, actual_list):
+        for k, v in item[0].items():
+            item[1][k] == v

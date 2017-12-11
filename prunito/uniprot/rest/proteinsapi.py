@@ -77,3 +77,34 @@ def get_info_on_taxIDs(taxIDs, fmt='json'):
                 for ele in tree.iter('taxonomy'):
                     yield ele
 
+
+def get_lineage_for_taxID(taxID, fmt='json'):
+    """Retrieve all ancestor nodes of the given one.
+
+    The data retrieved for each node are taxID and the scientific name.
+
+    Args:
+        taxID (str or int): TaxID (NCBI taxonomy identifier)
+
+    Returns:
+        Generator yielding dicts (if JSON) or XML elements (if XML) for each taxID
+    """
+    fmt = fmt.lower()
+    allowed = ('json', 'xml')
+    if not fmt in allowed:
+        raise ValueError('Invalid result format: {0}. Choose one of: {1}'.format(fmt,
+                                                                                 allowed))
+    headers = {'Accept': 'application/{}'.format(fmt)}
+    r = SESSION.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers)
+    if not r.ok:
+        r.raise_for_status()
+    else:
+        if fmt == 'json':
+            content = r.json()
+            for node in content['taxonomies']:
+                yield node
+        else:
+            from lxml import etree as ET
+            tree = ET.fromstring(r.text)
+            for ele in tree.iter('taxonomy'):
+                yield ele

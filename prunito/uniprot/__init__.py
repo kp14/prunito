@@ -12,7 +12,9 @@ from .rest_api import (current_release,
                        convert,
                        map_id,
                        )
-from .rest.proteinsapi import (get_info_on_taxID,
-                                get_info_on_taxIDs
+from .rest.proteinsapi import (
+                                get_info_on_taxID,
+                                get_info_on_taxIDs,
+                                get_lineage_for_taxID,
                                )
 from .scraping import get_lineage
