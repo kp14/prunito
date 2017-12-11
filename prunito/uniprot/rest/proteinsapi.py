@@ -5,15 +5,16 @@ from ...utils import PROTEINS_API_TAXONOMY
 SESSION = requests.Session()
 
 
-def tax_node_info(taxIDs, fmt='json'):
-    """Get details about one or more taxonomic node(s).
+def get_info_on_taxID(taxID, fmt='json'):
+    """Get details about one or more taxonomic node(s) as identified by a taxID.
 
     This includes names, rank, UniProt mnemonics, parent, sibling
-    and child nodes, if any.
+    and child nodes, if any. This only accepts a single taxID. Use tax_ids_info()
+    for several.
 
     Args:
-        taxID (iterable): Iterable of identifiers of the taxonomic nodes you want info on.
-            Items in iterator can be strings or integers.
+        taxID (str or int): Identifier of the taxonomic node you want info on.
+            Can be string or integer.
         fmt (str): Format information is wanted in. Can be JSON or XML.
             Defaults to JSON.
 
@@ -27,7 +28,7 @@ def tax_node_info(taxIDs, fmt='json'):
                                                                            allowed))
     else:
         headers = {'Accept': 'application/{}'.format(fmt)}
-        r = SESSION.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', taxIDs]), headers=headers)
+        r = SESSION.get('/'.join([PROTEINS_API_TAXONOMY, 'id', str(taxID)]), headers=headers)
         if not r.ok:
             r.raise_for_status()
         else:
