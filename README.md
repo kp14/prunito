@@ -8,10 +8,14 @@ In addition to UniProt data, a few tools for accessing and/or working data from 
 ## UniProt
 
 This includes a parser for the UniProtKB text format. Biopython provides a parser as well but writing my own was a way
-of learning as much as being able to customize certain aspects. The returned Record object, for example, provide many
-convenience methods for accessing fields liek the recommended name, the primary accession etc. Also included is a parser
-for the UniRule XML format used by some of the automatic annotation pipelines feeding into especially the unreviewed
+of learning as much as being able to customize certain aspects. The returned Record objects, for example, provide many
+convenience methods for accessing fields like the recommended name, the primary accession etc. 
+
+Also included is a parser for the UniRule XML format used by some of the automatic annotation pipelines feeding into especially the unreviewed
 part of UniProtKB (aka UniProtKB/TrEMBL).
+
+The Proteins API, which serves UniProt-associated data but is hosted under an EBI URL, is used for retrieving data
+on taxonomy nodes.
 
 ## ENA
 

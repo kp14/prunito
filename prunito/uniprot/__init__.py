@@ -17,4 +17,3 @@ from .rest.proteinsapi import (
                                 get_info_on_taxIDs,
                                 get_lineage_for_taxID,
                                )
-from .scraping import get_lineage
