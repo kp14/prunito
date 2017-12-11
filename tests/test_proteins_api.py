@@ -1,3 +1,4 @@
+import pytest
 from prunito import uniprot as up
 
 
@@ -41,6 +42,33 @@ def test_get_info_on_taxID_int_id():
     actual = up.get_info_on_taxID(9606) # taxID passed as int
     for k, v in expected.items():
         assert actual[k] == v
+
+
+def test_get_info_on_taxID_xml():
+    expected = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+            '<taxonomyNode xmlns="http://www.ebi.ac.uk/proteins/api/taxonomy/docs/xsd/taxonomy">'
+            '<taxonomyId>9606</taxonomyId>'
+            '<mnemonic>HUMAN</mnemonic>'
+            '<scientificName>Homo sapiens</scientificName>'
+            '<commonName>Human</commonName>'
+            '<rank>species</rank>'
+            '<parentLink>https://www.ebi.ac.uk/proteins/api/taxonomy/id/9605</parentLink>'
+            '<childrenLinks>'
+            '<childLink>https://www.ebi.ac.uk/proteins/api/taxonomy/id/741158</childLink>'
+            '<childLink>https://www.ebi.ac.uk/proteins/api/taxonomy/id/63221</childLink>'
+            '</childrenLinks>'
+            '<siblingsLinks>'
+            '<siblingLinks>https://www.ebi.ac.uk/proteins/api/taxonomy/id/1425170</siblingLinks>'
+            '</siblingsLinks>'
+            '</taxonomyNode>')
+    actual = up.get_info_on_taxID(9606, fmt='xml') # XML as format
+    assert isinstance(actual, str)
+    assert actual == expected
+
+
+@pytest.mark.xfail(raises='ValueError')
+def test_get_info_on_taxID_wrong_fmt():
+    r = up.get_info_on_taxID(9606, fmt='rdf')
 
 
 # def test_tax_ids_info_several_ids():
