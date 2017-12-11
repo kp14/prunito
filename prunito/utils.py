@@ -10,7 +10,7 @@ from enum import Enum
 
 UNIPROT_BASE = 'http://www.uniprot.org'
 
-EBI_BASE = 'http://www.ebi.ac.uk'
+EBI_BASE = 'https://www.ebi.ac.uk'
 
 # Example: http://www.uniprot.org/uniprot/?query=name%3Dtest&sort=score
 UNIPROT_KNOWLEDGEBASE = '/'.join([UNIPROT_BASE, 'uniprot'])
@@ -28,6 +28,10 @@ UNIPROT_CONVERT = '/'.join([UNIPROT_BASE, 'convert'])
 UNIPROT_MAP = '/'.join([UNIPROT_BASE, 'mapping'])
 
 UNIPROT_UNIRULE = '/'.join([UNIPROT_BASE, 'unirule'])
+
+PROTEINS_API_BASE = '/'.join([EBI_BASE, 'proteins/api'])
+
+PROTEINS_API_TAXONOMY = '/'.join([PROTEINS_API_BASE, 'taxonomy'])
 
 # Example: http://www.ebi.ac.uk/interpro/search?q=kinase
 INTERPRO_SEARCH = '/'.join([EBI_BASE, 'interpro/search'])

@@ -12,4 +12,5 @@ from .rest_api import (current_release,
                        convert,
                        map_id,
                        )
+from .rest.proteinsapi import tax_node_info
 from .scraping import get_lineage
