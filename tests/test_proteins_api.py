@@ -1,5 +1,6 @@
 import pytest
 from prunito import uniprot as up
+from prunito.uniprot.rest.proteinsapi import NoDataError
 
 
 def test_get_info_on_taxID_string_id():
@@ -23,14 +24,16 @@ def test_get_info_on_taxID_string_id():
         assert actual[k] == v
 
 
-@pytest.mark.xfail(raises='NoDataError')
 def test_get_info_on_taxID_invalid_taxid():
     r = up.get_lineage_for_taxID('*89HJ')
+    with pytest.raises(NoDataError):
+        next(r)
 
 
-@pytest.mark.xfail(raises='NoDataError')
 def test_get_info_on_taxID_nonexisting_taxid():
     r = up.get_lineage_for_taxID(10000001000000)
+    with pytest.raises(NoDataError):
+        next(r)
 
 
 def test_get_info_on_taxID_int_id():
@@ -178,12 +181,13 @@ def test_tax_ids_info_several_ids():
     actual = up.get_info_on_taxIDs([9606,3202,176652,10090])
     for tax in zip(expected, list(actual)):
         for k, v in tax[0].items():
-            tax[1][k] == v
+            assert tax[1][k] == v
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_get_info_on_taxIDs_string_input():
     r = up.get_info_on_taxIDs('9606,10090')
+    with pytest.raises(ValueError):
+        next(r)
 
 
 def test_get_lineage_for_taxID():
@@ -322,14 +326,16 @@ def test_get_lineage_for_taxID():
     assert len(expected) == len(actual_list)
     for item in zip(expected, actual_list):
         for k, v in item[0].items():
-            item[1][k] == v
+            assert item[1][k] == v
 
 
-@pytest.mark.xfail(raises='NoDataError')
 def test_get_lineage_for_taxID_invalid_taxid():
     r = up.get_lineage_for_taxID('*89HJ')
+    with pytest.raises(NoDataError):
+        next(r)
 
 
-@pytest.mark.xfail(raises='NoDataError')
 def test_get_lineage_for_taxID_nonexisting_taxid():
     r = up.get_lineage_for_taxID(1000010000000)
+    with pytest.raises(NoDataError):
+        next(r)

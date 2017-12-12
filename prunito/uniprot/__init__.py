@@ -10,7 +10,7 @@ from .rest.uniprotapi import (current_release,
                               number_SP_hits,
                               retrieve_batch,
                               convert,
-                              map_id,
+                              map_to_or_from_uniprot,
                               )
 from .rest.proteinsapi import (
                                 get_info_on_taxID,

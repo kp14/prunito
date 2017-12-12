@@ -85,15 +85,12 @@ def get_lineage_for_taxID(taxID):
     """
     headers = {'Accept': 'application/json'}
     r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers)
-    if not r.ok:
-        r.raise_for_status()
-    else:
-        content = r.json()
-        try:
-            for node in content['taxonomies']:
-                yield node
-        except KeyError:
-            raise NoDataError(content['errorMessage'])
+    content = r.json()
+    try:
+        for node in content['taxonomies']:
+            yield node
+    except KeyError:
+        raise NoDataError(content['errorMessage'][0])
 
 
 class NoDataError(Exception):

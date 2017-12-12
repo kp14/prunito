@@ -1,5 +1,6 @@
 import io
 import requests
+from collections import defaultdict
 
 from ...utils import (UNIPROT_KNOWLEDGEBASE,
                                UNIPROT_BATCH,
@@ -166,37 +167,66 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
         response.raise_for_status()
 
 
-def map_id(query, source_fmt, target_fmt, output_fmt='tab'):
+def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
     '''Map one set of identifiers to another.
+
+    UniProt provides mappings to more than 100 databases it cross-references.
+    The limitation of the service is that it only maps X -> UniProt or
+    UniProt -> Y. A direct mapping from X -> Y is not possible; this would be
+    a 2-step process.
+
+    Mappings are not necessarily 1-to-1 as e.g. a given UniProtKB entry can
+    have many associated PDB cross-references. To reflect this, the returned
+    data structure is a dict.
+
+    As mapped data are returned in tabular format, customization of columns is
+    possible in principle. However, this is not implemented here as the function
+    is only concerned with the actual mapping and not any further data. Those
+    could be retrieved in a second call using search or batch retrieval.
 
     See http://www.uniprot.org/help/programmatic_access#conversion for details.
     Note: The response.url field contains the URL from which to download
     the mapping, e.g. http://www.uniprot.org/mapping/M20160504763V34ZKX0.tab
 
     Args:
-        query: string or iterable of strings. If a string then this should consist of space-separated identifiers,
-            if an iterable then this should be of individual identifiers.
-        source_fmt: string. The format of the provided identifiers. See UniProt help for allowed values.
-        target_fmt: string. The desired format of the identifiers. See UniProt help for allowed values.
-        output_fmt: string. Desired data structure for response. Defaults to 'tab' (tabular), 'txt' is also valid.
+        id_list (list): Identifiers to be mapped. Identifiers should be strings.
+        source_fmt (str): Format of the provided identifiers. See UniProt help for allowed values.
+        target_fmt (str): Desired format of the identifiers. See UniProt help for allowed values.
 
     Returns:
-        string in specified output format.
+        dict: With source IDs as keys and a list of target IDs a values.
+
+    Raises:
+        ValueError: If invalid identifier formats are used.
+        ValueError: If not at least source or target is UniProt accession/ID
     '''
-    if source_fmt.upper() not in VALID_ID_MAPPINGS:
-        raise ValueError('{} is not a valid mapping source'.format(source_fmt.upper()))
-    if target_fmt.upper() not in VALID_ID_MAPPINGS:
-        raise ValueError('{} is not a valid mapping source'.format(target_fmt.upper()))
-    if hasattr(query, 'pop'):
-        query = ' '.join(query)
+    if source_fmt.upper() not in VALID_ID_MAPPINGS or target_fmt.upper() not in VALID_ID_MAPPINGS:
+        msg = 'Invalid mapping source(s): {0}, {1}\nUse one of:\n{2}'.format(source_fmt.upper(),
+                                                                             target_fmt.upper(),
+                                                                             ', '.join(VALID_ID_MAPPINGS))
+        raise ValueError(msg)
+    if not source_fmt.upper() in ('ACC', 'ID'):
+        if not target_fmt.upper() in ('ACC', 'ID'):
+            raise ValueError('Source or target format has to be UniProt ACC or ID.')
+    id_list = ' '.join(id_list)
     payload = {'from': source_fmt.upper(),
                'to': target_fmt.upper(),
-               'format': output_fmt,
-               'query': query,
+               'format': 'tab',
+               'query': id_list,
                }
     response = requests.get(UNIPROT_MAP, params=payload)
     if response.ok:
-        return response.text
+        mapped = defaultdict(list)
+        lines = iter(response.text.split('\n'))
+        lines.__next__() # skip header
+        for line in lines:
+            try:
+                source, target = line.strip().split('\t')
+            except ValueError:
+                pass
+            else:
+                mapped[source].append(target)
+        return mapped
     else:
         response.raise_for_status()
 
