@@ -42,6 +42,5 @@ setup(name='prunito',
       packages=['prunito', 'prunito/uniprot', 'prunito/distil'],
       install_requires=['requests',
                         'lxml',
-                        'beautifulsoup4',
                         ],
       include_package_data=True)
