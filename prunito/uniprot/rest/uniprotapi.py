@@ -138,19 +138,20 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
         result.raise_for_status()
 
 
-def convert(path, typ='uniprot', from_='txt', to='xml'):
-    '''Convert between different data formats using UniProt service.
+def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
+    '''Convert UniProt entries between different formats.
+
+    Currently, only single entries are supported.
 
     Parameters:
-        path (str): Path to file containing entry to be converted
-        typ (str): Data type. Default: uniprot.
-        from (str): Source format.
-        to (str): Target format.
+        path (str): Path to file containing entry to be converted.
+        source_fmt (str): Source format. Default: txt.
+        target_fmt (str): Target format. Default: xml.
 
     Returns:
         str: Converted data.
     '''
-    payload = {'type': typ,
+    payload = {'type': 'uniprot',
                'from': from_,
                'to': to
                }
