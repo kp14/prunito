@@ -11,7 +11,11 @@ from ...utils import (UNIPROT_KNOWLEDGEBASE,
 def current_release():
     """Get current public release of UniProtKB.
 
-       :returns: release as string
+    Releases are specified as <year>_<release>, e.g. 2016_02.
+    There are 11 or 12 releases per calendar year.
+
+       Returns:
+           str: Release, e.g. 2016_02
 
     """
     # Release number contained in request header
@@ -26,46 +30,78 @@ def current_release():
         result.raise_for_status()
 
 def search_reviewed(query, frmt='txt', file=False):
-    '''Search reviewed UniProtKB entries only (Swiss-Prot).
+    '''Search reviewed UniProtKB (Swiss-Prot) entries only.
 
-    Accepts standard UniProtKB query syntax.
-    Returns data as a string.
-    Returns None if no results.
+    Accepts standard UniProtKB query syntax, so queries can be tested
+    on the uniprot.org website.
+
+    Args:
+        query (str): UniProtKB query string.
+        frmt (str; optional): Format for results.
+            Can be txt, xml, rdf, fasta. Defaults to txt.
+        file (bool): Whether to wrap returned string in StringIO.
+            Defaults to False.
+
+    Returns:
+        str or None: Data, if any.
     '''
     result = _search(query, frmt=frmt, reviewed=True,
                      unreviewed=False, file=file)
     return result
 
 def search_unreviewed(query, frmt='txt', file=False):
-    '''Search unreviewed UniProtKB entries only (TrEMBL)
+    '''Search unreviewed UniProtKB (TrEMBL) entries only.
 
-    Accepts standard UniProtKB query syntax.
-    Returns data as a string.
-    Returns None if no results.
+    Accepts standard UniProtKB query syntax, so queries can be tested
+    on the uniprot.org website.
+
+    Args:
+        query (str): UniProtKB query string.
+        frmt (str; optional): Format for results.
+            Can be txt, xml, rdf, fasta. Defaults to txt.
+        file (bool): Whether to wrap returned string in StringIO.
+            Defaults to False.
+
+    Returns:
+        str or None: Data, if any.
     '''
     result = _search(query, frmt=frmt, reviewed=False,
                      unreviewed=True, file=file)
     return result
 
 def search_all(query, frmt='txt', file=False):
-    '''Search all of UniProtKB (Swiss-Prot + TrEMBL)
+    '''Search all of UniProtKB (Swiss-Prot + TrEMBL).
 
-    Accepts standard UniProtKB query syntax.
-    Returns data as a string.
-    Returns None if no results.
+    Accepts standard UniProtKB query syntax, so queries can be tested
+    on the uniprot.org website.
+
+    Args:
+        query (str): UniProtKB query string.
+        frmt (str; optional): Format for results.
+            Can be txt, xml, rdf, fasta. Defaults to txt.
+        file (bool): Whether to wrap returned string in StringIO.
+            Defaults to False.
+
+    Returns:
+        str or None: Data, if any.
     '''
     result = _search(query, frmt=frmt, reviewed=True,
                      unreviewed=True, file=file)
     return result
 
-def number_SP_hits(query, frmt='list', file=False):
+def number_SP_hits(query):
     '''Search reviewed UniProtKB entries only (Swiss-Prot).
 
     Accepts standard UniProtKB query syntax.
-    Returns int, number of hits.
+
+    Args:
+        query (str): UniProtKB query string.
+
+    Returns:
+        int: number of hits.
     '''
-    result = _search(query, frmt=frmt, reviewed=True,
-                     unreviewed=False, file=file)
+    result = _search(query, frmt='list', reviewed=True,
+                     unreviewed=False, file=False)
     if result:
         hit_list = result.split('\n')
         number = len(hit_list) - 1
@@ -77,7 +113,15 @@ def number_SP_hits(query, frmt='list', file=False):
 def retrieve_batch(ac_list, frmt='txt', file=False):
     '''Batch retrieval of uniProtKB entries.
 
-    Returns data as a string.
+    Args:
+        ac_list (list): UniProtKB accessions
+        frmt (str; optional): Format for results.
+            Can be txt, xml, rdf, fasta. Defaults to txt.
+        file (bool): Whether to wrap returned string in StringIO.
+            Defaults to False.
+
+    Returns:
+        str or None: Data, if any.
     '''
     payload = {'query':' '.join(ac_list),
                'format':frmt}
@@ -94,18 +138,17 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
         result.raise_for_status()
 
 
-def convert(path, typ='uniprot', from_='txt', to='xml', encoding='ascii'):
+def convert(path, typ='uniprot', from_='txt', to='xml'):
     '''Convert between different data formats using UniProt service.
 
     Parameters:
-        path: path to file containing entry to be converted
-        typ: type of the format; default: uniprot
-        from: source format
-        to: target format
-        encding: encoding of the files to be sent; default: ascii
+        path (str): Path to file containing entry to be converted
+        typ (str): Data type. Default: uniprot.
+        from (str): Source format.
+        to (str): Target format.
 
     Returns:
-        string
+        str: Converted data.
     '''
     payload = {'type': typ,
                'from': from_,
@@ -126,7 +169,7 @@ def map_id(query, source_fmt, target_fmt, output_fmt='tab'):
     '''Map one set of identifiers to another.
 
     See http://www.uniprot.org/help/programmatic_access#conversion for details.
-    Note: The response.url filed contains the URL from which to download
+    Note: The response.url field contains the URL from which to download
     the mapping, e.g. http://www.uniprot.org/mapping/M20160504763V34ZKX0.tab
 
     Args:
@@ -202,14 +245,3 @@ def _check_format(fmt):
     if not is_value_in_iterable(fmt, return_formats):
         msg = 'Allowed values: {0}\nPassed in value: {1}'
         raise ValueError(msg.format(return_formats, fmt))
-
-if __name__ == "__main__":
-    print('This is uniprot_query.py.\n')
-    test = search_reviewed('name:tax-1 AND taxonomy:11926', file=True)
-    print(type(test))
-    print(test.getvalue())
-    AClist = ['P12344', 'P12345']
-    batch = retrieve_batch(AClist, file=False)
-    print(batch)
-
-
