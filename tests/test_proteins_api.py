@@ -340,3 +340,13 @@ def test_get_lineage_for_taxID():
     for item in zip(expected, actual_list):
         for k, v in item[0].items():
             item[1][k] == v
+
+
+@pytest.mark.xfail(raises='NoDataError')
+def test_get_lineage_for_taxID_invalid_taxid():
+    r = up.get_lineage_for_taxID('*89HJ')
+
+
+@pytest.mark.xfail(raises='NoDataError')
+def test_get_lineage_for_taxID_nonexisting_taxid():
+    r = up.get_lineage_for_taxID(1000010000000)

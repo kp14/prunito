@@ -2,7 +2,7 @@ import requests
 from ...utils import PROTEINS_API_TAXONOMY
 
 
-SESSION = requests.Session()
+session = requests.Session()
 
 
 def get_info_on_taxID(taxID, fmt='json'):
@@ -20,6 +20,9 @@ def get_info_on_taxID(taxID, fmt='json'):
 
     Returns:
         Data (JSON dict or XML string)
+
+    Raises:
+        ValueError: If unknown result format is specified.
     """
     fmt = fmt.lower()
     allowed = ('json', 'xml')
@@ -28,7 +31,7 @@ def get_info_on_taxID(taxID, fmt='json'):
                                                                            allowed))
     else:
         headers = {'Accept': 'application/{}'.format(fmt)}
-        r = SESSION.get('/'.join([PROTEINS_API_TAXONOMY, 'id', str(taxID)]), headers=headers)
+        r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'id', str(taxID)]), headers=headers)
         if not r.ok:
             r.raise_for_status()
         else:
@@ -50,8 +53,12 @@ def get_info_on_taxIDs(taxIDs, fmt='json'):
         fmt (str): Format information is wanted in. Can be JSON or XML.
             Defaults to JSON.
 
-    Returns:
-        Generator yielding dicts (if JSON) or XML elements (if XML) for each taxID
+    Yields:
+        Dicts (if JSON) or XML elements (if XML) for each taxID
+
+    Raises:
+        ValueError: If unknown result format is specified.
+        ValueError: If taxIDs are not provided as list or tuple.
     """
     fmt = fmt.lower()
     allowed = ('json', 'xml')
@@ -63,7 +70,7 @@ def get_info_on_taxIDs(taxIDs, fmt='json'):
     else:
         ids_stringified = ','.join([str(item) for item in taxIDs])
         headers = {'Accept': 'application/{}'.format(fmt)}
-        r = SESSION.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers)
+        r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers)
         if not r.ok:
             r.raise_for_status()
         else:
@@ -78,7 +85,7 @@ def get_info_on_taxIDs(taxIDs, fmt='json'):
                     yield ele
 
 
-def get_lineage_for_taxID(taxID, fmt='json'):
+def get_lineage_for_taxID(taxID):
     """Retrieve all ancestor nodes of the given one.
 
     The data retrieved for each node are taxID and the scientific name.
@@ -86,25 +93,21 @@ def get_lineage_for_taxID(taxID, fmt='json'):
     Args:
         taxID (str or int): TaxID (NCBI taxonomy identifier)
 
-    Returns:
-        Generator yielding dicts (if JSON) or XML elements (if XML) for each taxID
+    Yields:
+        dict: Data for each taxID
     """
-    fmt = fmt.lower()
-    allowed = ('json', 'xml')
-    if not fmt in allowed:
-        raise ValueError('Invalid result format: {0}. Choose one of: {1}'.format(fmt,
-                                                                                 allowed))
-    headers = {'Accept': 'application/{}'.format(fmt)}
-    r = SESSION.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers)
+    headers = {'Accept': 'application/json'}
+    r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers)
     if not r.ok:
         r.raise_for_status()
     else:
-        if fmt == 'json':
-            content = r.json()
+        content = r.json()
+        try:
             for node in content['taxonomies']:
                 yield node
-        else:
-            from lxml import etree as ET
-            tree = ET.fromstring(r.text)
-            for ele in tree.iter('taxonomy'):
-                yield ele
+        except KeyError:
+            raise NoDataError(content['errorMessage'])
+
+
+class NoDataError(Exception):
+    pass
