@@ -152,8 +152,8 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
         str: Converted data.
     '''
     payload = {'type': 'uniprot',
-               'from': from_,
-               'to': to
+               'from': source_fmt,
+               'to': target_fmt,
                }
     files = {'data': open(path, 'r', encoding=encoding)}
     response = requests.post(UNIPROT_CONVERT,
