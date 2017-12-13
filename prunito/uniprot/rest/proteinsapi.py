@@ -1,5 +1,5 @@
 import requests
-from ...utils import PROTEINS_API_TAXONOMY
+from ...utils import PROTEINS_API_TAXONOMY, NoDataError
 
 
 session = requests.Session()
@@ -89,7 +89,3 @@ def get_lineage_for_taxID(taxID):
             yield node
     except KeyError:
         raise NoDataError(content['errorMessage'][0])
-
-
-class NoDataError(Exception):
-    pass

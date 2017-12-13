@@ -1,39 +1,15 @@
 # -*- coding: utf-8 -*-
 """Module for accessing ENA data via REST-ful web services."""
-
+import time
 import requests
-try:
-    from Bio import SeqIO
-except ImportError:
-    print('No Bio.SeqIO module - functionality relying on parsing EMBL files will be unavailable.')
 
-from . import utils
+
+from .utils import TRANSEQ_RUN, TRANSEQ_STATUS, TRANSEQ_RESULTS, ENA_DATA, NoDataError
 
 session = requests.Session()
 
-def retrieve_cds(pid, fmt='fasta'):
-    '''Get CDS referenced by a protein_id.
 
-    ProteinIDs (pid) have the format <ID>.<VERSION>, e.g. BAC67592.1
-    They are different from ENA accession numbers although those look similar.
-    A given ENA entry (as identified by an accession) can contain zero to many
-    pid. For retrieval from ENA, versions of pid should be stripped.
-
-    Args:
-        pid (str): The protein_ID, e.g. BAC67592.
-        fmt (str, optional): Retrieval format. Can be fasta, text, xml. Defaults to fasta.
-
-    Returns:
-    CDS nucleotide seq in FastA format (str)
-    '''
-    try:
-        # No checks are currently made to ensure that pid is a pid
-        return retrieve(pid, fmt=fmt)
-    except ValueError as e:
-        print(pid, e)
-
-
-def retrieve(identifier, fmt='text'):
+def retrieve(identifier, fmt='fasta'):
     '''Retrieve data based on an ENA identifier.
 
     This is intended for ENA accession numbers and proteinIDs but I guess it
@@ -42,37 +18,67 @@ def retrieve(identifier, fmt='text'):
 
     Args:
         identifier (str): Identifier to retrieve.
-        fmt (str, optional): Retrieval format. Can be fasta, text, xml. Defaults to text.
+        fmt (str, optional): Retrieval format. Can be fasta, text, xml. Defaults to fasta.
 
     Returns:
         Data linked to identifier (str)
+
+    Raises:
+        NoDataError: If no data are returned
     '''
     error_msg = 'display type is either not supported or entry is not found'
     data = identifier + '&display=' + fmt
-    result = session.get('/'.join([utils.ENA_DATA, data]))
+    result = session.get('/'.join([ENA_DATA, data]))
     if result.ok:
         decoded_result = result.content.decode('utf8')
         if error_msg in decoded_result:
-            raise ValueError(error_msg)
+            raise NoDataError(error_msg)
         return decoded_result
     else:
         result.raise_for_status()
 
-def embl_cds2fasta(embl_entry, gene_name):
-    pass
-#from Bio import SeqIO
-#
-#
-#with open('embl.tmp', 'r') as ghandle, open('gluclalpha.fasta', 'w') as out:
-#    cds_count = 0
-#    for record in SeqIO.parse(ghandle, 'embl'):
-#        for ft in record.features:
-#            if ft.type == 'CDS':
-#                cds_count += 1
-#                if 'GluClalpha' in ft.qualifiers['gene']:
-#                    out.write('>{0}\n{1}\n'.format(ft.qualifiers['product'], ft.qualifiers['translation'][0]))
 
-def embl2fasta(embl_entry):
-    pass
-#with open('embl.tmp', 'r') as ghandle, open('embl.fasta', 'w') as out:
-#    SeqIO.write(SeqIO.parse(ghandle, 'embl'), out, 'fasta')
+def translate(seq, frame='6', trim=False):
+    """Translate a nucleotide sequence.
+
+    This uses the EMBOSS transeq tool, so in principle its documentation
+    applies here, too. Not all possible parameters are currently exposed.
+
+    Args:
+        seq (str): Sequence to be translated.
+            Transeq allows various formats among which FASTA and EMBL
+            are most relevant here.
+        frame (str): which frames to translate. Defaults to 6, meaning all.
+            Other options are: 1, 2, 3, -1, -2, -3, F (all forward) and R.
+        trim (bool): Whether transeq should remove trailing * or X.
+
+    Returns:
+         str: Protein sequences in FASTA format.
+
+    Raises:
+        NoDataError: If translation fails or any errors using webservice.
+    """
+    seconds_before_checking_again = 5
+    job_id = None
+    status = None
+    data = {'email': 'kp14git@hotmail.com',
+            'trim': trim,
+            'frame': frame,
+            'sequence': seq}
+    job = session.post(TRANSEQ_RUN, data=data)
+    if job.ok:
+        job_id = job.text
+    else:
+        job.raise_for_status()
+    while not status == 'FINISHED':
+        print(status)
+        time.sleep(seconds_before_checking_again)
+        status_url = '/'.join([TRANSEQ_STATUS, job_id])
+        print(status_url)
+        r = session.get(status_url)
+        status = r.text
+        if status in ('ERROR', 'FAILURE'):
+            raise NoDataError('Transeq returned: {}'.format(status))
+    result_url = '/'.join([TRANSEQ_RESULTS, job_id, 'out'])
+    result = session.get(result_url)
+    return result.text

@@ -49,6 +49,11 @@ QUICKGO_SEARCH = '/'.join([EBI_BASE, 'QuickGO/GSearch'])
 ENA_DATA = '/'.join([EBI_BASE, 'ena/data/view'])
 
 EPMC_SEARCH = '/'.join([EBI_BASE, 'europepmc/webservices/rest/search/'])
+
+TRANSEQ_BASE = 'http://www.ebi.ac.uk/Tools/services/rest/emboss_transeq'
+TRANSEQ_RUN = '/'.join([TRANSEQ_BASE, 'run'])
+TRANSEQ_STATUS = '/'.join([TRANSEQ_BASE, 'status'])
+TRANSEQ_RESULTS = '/'.join([TRANSEQ_BASE, 'result'])
 ##############################################################
 # General purpose functions
 ##############################################################
@@ -310,3 +315,7 @@ VALID_ID_MAPPINGS = {'ACC',
                     'GENEWIKI_ID',
                     'GENOMERNAI_ID',
                     }
+
+
+class NoDataError(Exception):
+    pass
