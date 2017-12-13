@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 """Module for accessing ENA data via REST-ful web services."""
+import re
 import time
 import requests
 
 
-from .utils import TRANSEQ_RUN, TRANSEQ_STATUS, TRANSEQ_RESULTS, ENA_DATA, NoDataError
+from .utils import TRANSEQ_RUN, TRANSEQ_STATUS, TRANSEQ_RESULTS, ENA_DATA, NoDataError, ENA_IDENTIFIER_REGEX
 
 session = requests.Session()
 
@@ -26,6 +27,8 @@ def retrieve(identifier, fmt='fasta'):
     Raises:
         NoDataError: If no data are returned
     '''
+    if not re.match(ENA_IDENTIFIER_REGEX, identifier) or not 5 < len(identifier) < 9:
+        raise ValueError('Identifier seems to have wrong format. Provide only 1 identifier.')
     error_msg = 'display type is either not supported or entry is not found'
     data = identifier + '&display=' + fmt
     result = session.get('/'.join([ENA_DATA, data]))

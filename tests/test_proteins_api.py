@@ -1,6 +1,6 @@
 import pytest
 from prunito import uniprot as up
-from prunito.uniprot.rest.proteinsapi import NoDataError
+from prunito.utils import NoDataError
 
 
 def test_get_info_on_taxID_string_id():

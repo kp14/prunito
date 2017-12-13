@@ -84,6 +84,7 @@ UNIPROT_EVIDENCE_REGEX = re.compile(r'ECO:[0-9]{7}(?:\|[A-Za-z-]*:[A-Za-z0-9]*)?
 PUBMED_REGEX = re.compile(r'PubMed:[0-9]*')
 EC_REGEX = re.compile(r'[1-6]\.[0-9-]*\.[0-9-]*\.[0-9-]*')
 EC_INCOMPLETE_REGEX = re.compile(r'[1-6]\.[0-9-]*\.[0-9-]*\.-')
+ENA_IDENTIFIER_REGEX = re.compile(r'[A-Z][0-9]{5}|[A-Z]{2}[0-9]{6}|[A-Z]{3}[0-9]{5}')
 
 ##############################################################
 # General purpose classes
