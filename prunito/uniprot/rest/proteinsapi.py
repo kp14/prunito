@@ -24,14 +24,11 @@ def get_info_on_taxID(taxID):
     """
     headers = {'Accept': 'application/json'}
     r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'id', str(taxID)]), headers=headers)
-    if not r.ok:
-        r.raise_for_status()
+    content = r.json()
+    if r.status_code == 400 or r.status_code == 404 or r.status_code == 500:
+        raise NoDataError(content['errorMessage'])
     else:
-        content = r.json()
-        if not 'errorMessage' in content.keys():
-            return content
-        else:
-            raise NoDataError(content['errorMessage'])
+        return content
 
 
 def get_info_on_taxIDs(taxIDs):
@@ -58,15 +55,16 @@ def get_info_on_taxIDs(taxIDs):
         ids_stringified = ','.join([str(item) for item in taxIDs])
         headers = {'Accept': 'application/json'}
         r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers)
-        if not r.ok:
-            r.raise_for_status()
-        else:
-            content = r.json()
+        content = r.json()
+        try:
+            for node in content['taxonomies']:
+                yield node
+        except KeyError:
             try:
-                for node in content['taxonomies']:
-                    yield node
-            except KeyError:
                 raise NoDataError(content['errorMessage'])
+            except KeyError:
+                raise NoDataError(content['errors'][0]['errorMessage'])
+
 
 
 def get_lineage_for_taxID(taxID):
