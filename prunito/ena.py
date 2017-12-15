@@ -62,9 +62,33 @@ def translate(seq, frame='1', trim=False):
     Raises:
         NoDataError: If translation fails or any errors using webservice.
     """
-    seconds_before_checking_again = 5
-    job_id = None
-    status = None
+    seconds_before_checking_again = 3
+    job_id = _translate_start_job(seq, frame=frame, trim=trim)
+    finished = False
+    while not finished:
+        time.sleep(seconds_before_checking_again)
+        finished = _translate_poll_job_is_finished(job_id)
+    result = _translate_retrieve_result(job_id)
+    return result
+
+
+def _translate_start_job(seq, frame='1', trim=True):
+    """Start Transeq job.
+
+    Args:
+        seq (str): Sequence to be translated.
+            Transeq allows various formats among which FASTA and EMBL
+            are most relevant here.
+        frame (str): which frames to translate. Defaults to 6, meaning all.
+            Other options are: 1, 2, 3, -1, -2, -3, F (all forward) and R.
+        trim (bool): Whether transeq should remove trailing * or X.
+
+    Returns:
+        Str: job ID.
+
+    Raises:
+        HTTPError: Passed on from request.
+    """
     data = {'email': 'kp14git@hotmail.com',
             'trim': trim,
             'frame': frame,
@@ -72,17 +96,43 @@ def translate(seq, frame='1', trim=False):
     job = session.post(TRANSEQ_RUN, data=data)
     if job.ok:
         job_id = job.text
+        return job_id
     else:
         job.raise_for_status()
-    while not status == 'FINISHED':
-        print(status)
-        time.sleep(seconds_before_checking_again)
-        status_url = '/'.join([TRANSEQ_STATUS, job_id])
-        print(status_url)
-        r = session.get(status_url)
-        status = r.text
-        if status in ('ERROR', 'FAILURE'):
-            raise NoDataError('Transeq returned: {}'.format(status))
+
+
+def _translate_poll_job_is_finished(job_id):
+    """Poll status of Transeq job.
+
+    Args:
+        job_id (str): The Transeq job ID.
+
+    Returns:
+        bool
+
+    Raises:
+        NoDataError: If job fails, returns an error or is gone.
+    """
+    status_url = '/'.join([TRANSEQ_STATUS, job_id])
+    r = session.get(status_url)
+    status = r.text
+    if status == 'FINISHED':
+        return True
+    elif status == 'RUNNING':
+        return False
+    elif status in ('ERROR', 'FAILURE', 'NOT_FOUND'):
+        raise NoDataError('Transeq returned: {}'.format(status))
+
+
+def _translate_retrieve_result(job_id):
+    """Return protein sequence.
+
+    Args:
+        job_id (str): Transeq job ID.
+
+    Returns:
+        str: Translations in FASTA format.
+    """
     result_url = '/'.join([TRANSEQ_RESULTS, job_id, 'out'])
     result = session.get(result_url)
     return result.text

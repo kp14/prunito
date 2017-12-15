@@ -42,3 +42,7 @@ def test_retrieve_wrong_url():
 def test_retrieve_wrong_url_xml():
     with pytest.raises(ValueError):
         r = ena.retrieve('display=111BAC6&7592=some', fmt='xml')
+
+
+def test_translate_start_job(monkeypatch):
+    pass
