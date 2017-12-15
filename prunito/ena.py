@@ -27,7 +27,8 @@ def retrieve(identifier, fmt='fasta'):
     Raises:
         NoDataError: If no data are returned
     '''
-    if not re.match(ENA_IDENTIFIER_REGEX, identifier) or not 5 < len(identifier) < 9:
+    match = re.match(ENA_IDENTIFIER_REGEX, identifier)
+    if not match or len(match.group()) is not len(identifier):
         raise ValueError('Identifier seems to have wrong format. Provide only 1 identifier.')
     error_msg = 'display type is either not supported or entry is not found'
     data = identifier + '&display=' + fmt
@@ -41,7 +42,7 @@ def retrieve(identifier, fmt='fasta'):
         result.raise_for_status()
 
 
-def translate(seq, frame='6', trim=False):
+def translate(seq, frame='1', trim=False):
     """Translate a nucleotide sequence.
 
     This uses the EMBOSS transeq tool, so in principle its documentation

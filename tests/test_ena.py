@@ -9,6 +9,11 @@ def test_retrieve_fasta():
     assert r.startswith('>ENA|BAC67592')
 
 
+def test_retrieve_xml():
+    r = ena.retrieve('BAC67592', fmt='xml')
+    assert r.startswith('<?xml version="1.0" encoding="UTF-8"?>')
+
+
 def test_retrieve_fasta_wrong_id():
     with pytest.raises(NoDataError):
         r = ena.retrieve('BAC00000', fmt='fasta')
@@ -32,3 +37,8 @@ def test_retrieve_many_ids():
 def test_retrieve_wrong_url():
     with pytest.raises(ValueError):
         r = ena.retrieve('display=111BAC6&7592=some')
+
+
+def test_retrieve_wrong_url_xml():
+    with pytest.raises(ValueError):
+        r = ena.retrieve('display=111BAC6&7592=some', fmt='xml')
