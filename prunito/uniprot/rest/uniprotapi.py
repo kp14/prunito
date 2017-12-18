@@ -9,6 +9,10 @@ from ...utils import (UNIPROT_KNOWLEDGEBASE,
                                VALID_ID_MAPPINGS,
                                is_value_in_iterable)
 
+
+session = requests.Session()
+
+
 def current_release():
     """Get current public release of UniProtKB.
 
@@ -25,7 +29,7 @@ def current_release():
                "random": "yes",
                'format': 'list',
                }
-    result = requests.get(UNIPROT_KNOWLEDGEBASE, params=payload)
+    result = session.get(UNIPROT_KNOWLEDGEBASE, params=payload)
     if result.ok:
         return result.headers['x-uniprot-release'] # Returns string by default
     else:
@@ -127,7 +131,7 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
     '''
     payload = {'query':' '.join(ac_list),
                'format':frmt}
-    result = requests.get(UNIPROT_BATCH, params=payload)
+    result = session.get(UNIPROT_BATCH, params=payload)
     if result.ok:
         if len(result.content) > 0:
             if file:
@@ -158,7 +162,7 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
                'to': target_fmt,
                }
     files = {'data': open(path, 'r', encoding=encoding)}
-    response = requests.post(UNIPROT_CONVERT,
+    response = session.post(UNIPROT_CONVERT,
                              data=payload,
                              files=files
                              )
@@ -215,7 +219,7 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
                'format': 'tab',
                'query': id_list,
                }
-    response = requests.get(UNIPROT_MAP, params=payload)
+    response = session.get(UNIPROT_MAP, params=payload)
     if response.ok:
         mapped = defaultdict(list)
         lines = iter(response.text.split('\n'))
@@ -245,7 +249,7 @@ def _search(query, frmt='txt', reviewed=True, unreviewed=True, file=False):
         msg = ('At least one of parameters `reviewed` and `unreviewed` has to be True.\n'
                'Found: reviewed: {0}, unreviewed: {1}')
         raise ValueError(msg.format(reviewed, unreviewed))
-    result = requests.get(UNIPROT_KNOWLEDGEBASE, params=payload)
+    result = session.get(UNIPROT_KNOWLEDGEBASE, params=payload)
     if result.ok:
         if len(result.content) > 0:
             if file:
