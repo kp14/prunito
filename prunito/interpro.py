@@ -6,7 +6,7 @@ import sys
 import time
 
 from .uniprot import search_all
-from .utils import InterProXrefs, EBI_HMMER, validate_param
+from .utils import InterProXrefs, EBI_HMMER
 try:
     import venndy.draw as vd
 except ImportError:

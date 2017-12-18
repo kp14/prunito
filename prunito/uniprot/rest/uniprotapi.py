@@ -51,8 +51,7 @@ def search_reviewed(query, frmt='txt', file=False):
     Returns:
         str or None: Data, if any.
     '''
-    result = _search(query, frmt=frmt, reviewed=True,
-                     unreviewed=False, file=file)
+    result = _search(query, frmt=frmt, reviewed=True, file=file)
     return result
 
 def search_unreviewed(query, frmt='txt', file=False):
@@ -71,8 +70,7 @@ def search_unreviewed(query, frmt='txt', file=False):
     Returns:
         str or None: Data, if any.
     '''
-    result = _search(query, frmt=frmt, reviewed=False,
-                     unreviewed=True, file=file)
+    result = _search(query, frmt=frmt, reviewed=False, file=file)
     return result
 
 def search_all(query, frmt='txt', file=False):
@@ -91,8 +89,7 @@ def search_all(query, frmt='txt', file=False):
     Returns:
         str or None: Data, if any.
     '''
-    result = _search(query, frmt=frmt, reviewed=True,
-                     unreviewed=True, file=file)
+    result = _search(query, frmt=frmt, reviewed=True, file=file)
     return result
 
 def number_SP_hits(query):
@@ -106,8 +103,7 @@ def number_SP_hits(query):
     Returns:
         int: number of hits.
     '''
-    result = _search(query, frmt='list', reviewed=True,
-                     unreviewed=False, file=False)
+    result = _search(query, frmt='list', reviewed=True, file=False)
     if result:
         hit_list = result.split('\n')
         number = len(hit_list) - 1
@@ -236,24 +232,19 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
         response.raise_for_status()
 
 
-def _search(query, frmt='txt', reviewed=True, unreviewed=True, file=False):
-    _check_format(frmt)
-    payload = {'query':query, 'format':frmt}
-    if reviewed and unreviewed:
-        pass
-    elif reviewed and not unreviewed:#Swiss-Prot
+def _search(query, frmt='txt', reviewed=True, file=False):
+    fmt = frmt.lower()
+    _check_format(fmt)
+    payload = {'query':query, 'format':fmt}
+    if reviewed:  # Only UniProtKB/Swiss-Prot
         payload['query'] += ' AND reviewed:yes'
-    elif not reviewed and unreviewed:#TrEMBL
+    else:  # All of UniProtKB
         payload['query'] += ' AND reviewed:no'
-    elif not reviewed and not unreviewed:
-        msg = ('At least one of parameters `reviewed` and `unreviewed` has to be True.\n'
-               'Found: reviewed: {0}, unreviewed: {1}')
-        raise ValueError(msg.format(reviewed, unreviewed))
     result = session.get(UNIPROT_KNOWLEDGEBASE, params=payload)
     if result.ok:
         if len(result.content) > 0:
             if file:
-                return _to_StringIO(result.content)
+                return io.StringIO(result.content.decode())
             else:
                 return str(result.content, encoding="ascii")
         else:
@@ -262,12 +253,8 @@ def _search(query, frmt='txt', reviewed=True, unreviewed=True, file=False):
         result.raise_for_status()
 
 
-def _to_StringIO(text):
-    return io.StringIO(text.decode())
-    #return io.StringIO(unicode(text))
-
 def _check_format(fmt):
-    return_formats = ('html',
+    allowed_formats = ('html',
                       'tab',
                       'xls',
                       'fasta',
@@ -276,8 +263,7 @@ def _check_format(fmt):
                       'xml',
                       'rdf',
                       'list',
-                      #'rss',
                       )
-    if not is_value_in_iterable(fmt, return_formats):
-        msg = 'Allowed values: {0}\nPassed in value: {1}'
-        raise ValueError(msg.format(return_formats, fmt))
+    if fmt not in allowed_formats:
+        msg = 'Allowed: {0}\nReceived: {1}'
+        raise ValueError(msg.format(allowed_formats, fmt))

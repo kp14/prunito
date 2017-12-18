@@ -62,13 +62,6 @@ def is_value_in_iterable(val, iterable):
     '''Test whther values is contained in iterable like list or set'''
     return val in iterable
 
-
-def validate_param(param, val, allowed_vals):
-    if not is_value_in_iterable(val, allowed_vals):
-        raise ValueError('Wrong parameter {0}!\n'
-                         'Allowed:{1}\n'
-                         'Got:{2}'.format(param, allowed_vals, val))
-
 ##############################################################
 # General purpose regular expressions
 ##############################################################
