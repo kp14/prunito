@@ -131,7 +131,7 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
     if result.ok:
         if len(result.content) > 0:
             if file:
-                return _to_StringIO(result.content)
+                return io.StringIO(result.content.decode())
             else:
                 return str(result.content, encoding="ascii")
         else:
