@@ -23,6 +23,7 @@ def current_release():
     # So we retrieve a random human entry and look up the value
     payload = {"query": "organism:9606 AND reviewed:yes",
                "random": "yes",
+               'format': 'list',
                }
     result = requests.get(UNIPROT_KNOWLEDGEBASE, params=payload)
     if result.ok:
