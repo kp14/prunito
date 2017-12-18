@@ -53,7 +53,9 @@ def search_reviewed(query, frmt='txt', file=False):
     Returns:
         str or None: Data, if any.
     '''
-    result = _search(query, frmt=frmt, reviewed=True, file=file)
+    if 'reviewed:yes' not in query:
+        query += ' AND reviewed:yes'
+    result = _search(query, frmt=frmt, file=file)
     return result
 
 
@@ -73,15 +75,19 @@ def search_unreviewed(query, frmt='txt', file=False):
     Returns:
         str or None: Data, if any.
     '''
-    result = _search(query, frmt=frmt, reviewed=False, file=file)
+    if 'reviewed:no' not in query:
+        query += ' AND reviewed:no'
+    result = _search(query, frmt=frmt, file=file)
     return result
 
 
-def search_all(query, frmt='txt', file=False):
-    '''Search all of UniProtKB (Swiss-Prot + TrEMBL).
+def search(query, frmt='txt', file=False):
+    '''Search UniProtKB.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
-    on the uniprot.org website.
+    on the uniprot.org website. Unless reviewed=yes/no is specified as
+    part of the query, all of UniProtKB is searched, which means there
+    could be very many hits.
 
     Args:
         query (str): UniProtKB query string.
@@ -93,7 +99,7 @@ def search_all(query, frmt='txt', file=False):
     Returns:
         str or None: Data, if any.
     '''
-    result = _search(query, frmt=frmt, reviewed=True, file=file)
+    result = _search(query, frmt=frmt, file=file)
     return result
 
 
@@ -108,7 +114,7 @@ def number_SP_hits(query):
     Returns:
         int: number of hits.
     '''
-    result = _search(query, frmt='list', reviewed=True, file=False)
+    result = _search(query, frmt='list', file=False)
     if result:
         hit_list = result.split('\n')
         number = len(hit_list) - 1
@@ -237,23 +243,19 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
         response.raise_for_status()
 
 
-def _search(query, frmt='txt', reviewed=True, file=False):
+def _search(query, frmt='txt', file=False):
     fmt = frmt.lower()
     _check_format(fmt)
     payload = {'query':query, 'format':fmt}
-    if reviewed:  # Only UniProtKB/Swiss-Prot
-        payload['query'] += ' AND reviewed:yes'
-    else:  # All of UniProtKB
-        payload['query'] += ' AND reviewed:no'
     result = session.get(UNIPROT_KNOWLEDGEBASE, params=payload)
     if result.ok:
         if len(result.content) > 0:
             if file:
-                return io.StringIO(result.content.decode())
+                return io.StringIO(result.text)
             else:
-                return str(result.content, encoding="ascii")
+                return str(result.text)
         else:
-            return None
+            raise NoDataError('No data were retrieved.')
     else:
         result.raise_for_status()
 
