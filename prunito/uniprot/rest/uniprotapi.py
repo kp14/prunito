@@ -37,7 +37,7 @@ def current_release():
         result.raise_for_status()
 
 
-def search_reviewed(query, frmt='txt', file=False):
+def search_reviewed(query, frmt='txt', file_handle=False):
     '''Search reviewed UniProtKB (Swiss-Prot) entries only.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
@@ -47,7 +47,7 @@ def search_reviewed(query, frmt='txt', file=False):
         query (str): UniProtKB query string.
         frmt (str; optional): Format for results.
             Can be txt, xml, rdf, fasta. Defaults to txt.
-        file (bool): Whether to wrap returned string in StringIO.
+        file_handle (bool): Whether to wrap returned string in StringIO.
             Defaults to False.
 
     Returns:
@@ -55,11 +55,11 @@ def search_reviewed(query, frmt='txt', file=False):
     '''
     if 'reviewed:yes' not in query:
         query += ' AND reviewed:yes'
-    result = _search(query, frmt=frmt, file=file)
+    result = _search(query, frmt=frmt, file_handle=file_handle)
     return result
 
 
-def search_unreviewed(query, frmt='txt', file=False):
+def search_unreviewed(query, frmt='txt', file_handle=False):
     '''Search unreviewed UniProtKB (TrEMBL) entries only.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
@@ -69,7 +69,7 @@ def search_unreviewed(query, frmt='txt', file=False):
         query (str): UniProtKB query string.
         frmt (str; optional): Format for results.
             Can be txt, xml, rdf, fasta. Defaults to txt.
-        file (bool): Whether to wrap returned string in StringIO.
+        file_handle (bool): Whether to wrap returned string in StringIO.
             Defaults to False.
 
     Returns:
@@ -77,11 +77,11 @@ def search_unreviewed(query, frmt='txt', file=False):
     '''
     if 'reviewed:no' not in query:
         query += ' AND reviewed:no'
-    result = _search(query, frmt=frmt, file=file)
+    result = _search(query, frmt=frmt, file_handle=file_handle)
     return result
 
 
-def search(query, frmt='txt', file=False):
+def search(query, frmt='txt', file_handle=False):
     '''Search UniProtKB.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
@@ -93,13 +93,13 @@ def search(query, frmt='txt', file=False):
         query (str): UniProtKB query string.
         frmt (str; optional): Format for results.
             Can be txt, xml, rdf, fasta. Defaults to txt.
-        file (bool): Whether to wrap returned string in StringIO.
+        file_handle (bool): Whether to wrap returned string in StringIO.
             Defaults to False.
 
     Returns:
         str or None: Data, if any.
     '''
-    result = _search(query, frmt=frmt, file=file)
+    result = _search(query, frmt=frmt, file_handle=file_handle)
     return result
 
 
@@ -114,7 +114,7 @@ def number_SP_hits(query):
     Returns:
         int: number of hits.
     '''
-    result = _search(query, frmt='list', file=False)
+    result = _search(query, frmt='list', file_handle=False)
     if result:
         hit_list = result.split('\n')
         number = len(hit_list) - 1
@@ -243,14 +243,14 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
         response.raise_for_status()
 
 
-def _search(query, frmt='txt', file=False):
+def _search(query, frmt='txt', file_handle=False):
     fmt = frmt.lower()
     _check_format(fmt)
     payload = {'query':query, 'format':fmt}
     result = session.get(UNIPROT_KNOWLEDGEBASE, params=payload)
     if result.ok:
         if len(result.content) > 0:
-            if file:
+            if file_handle:
                 return io.StringIO(result.text)
             else:
                 return str(result.text)

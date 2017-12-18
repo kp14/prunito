@@ -58,7 +58,7 @@ class SPAnalysis(Borg):
     def _run_first_time(self, query, reviewed, ratio):
         """Run an analysis for the first time, i.e., results are not cached."""
         if reviewed:
-            results = search_reviewed(query, frmt='txt', file=True)
+            results = search_reviewed(query, frmt='txt', file_handle=True)
         else:
             results = search_all(query, frmt='txt', file=True)
         entries = parse_txt_compatible(results)
