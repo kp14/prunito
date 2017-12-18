@@ -3,11 +3,12 @@ import requests
 from collections import defaultdict
 
 from ...utils import (UNIPROT_KNOWLEDGEBASE,
-                               UNIPROT_BATCH,
-                               UNIPROT_CONVERT,
-                               UNIPROT_MAP,
-                               VALID_ID_MAPPINGS,
-                               is_value_in_iterable)
+                      UNIPROT_BATCH,
+                      UNIPROT_CONVERT,
+                      UNIPROT_MAP,
+                      VALID_ID_MAPPINGS,
+                      NoDataError,
+                      )
 
 
 session = requests.Session()
@@ -35,6 +36,7 @@ def current_release():
     else:
         result.raise_for_status()
 
+
 def search_reviewed(query, frmt='txt', file=False):
     '''Search reviewed UniProtKB (Swiss-Prot) entries only.
 
@@ -53,6 +55,7 @@ def search_reviewed(query, frmt='txt', file=False):
     '''
     result = _search(query, frmt=frmt, reviewed=True, file=file)
     return result
+
 
 def search_unreviewed(query, frmt='txt', file=False):
     '''Search unreviewed UniProtKB (TrEMBL) entries only.
@@ -73,6 +76,7 @@ def search_unreviewed(query, frmt='txt', file=False):
     result = _search(query, frmt=frmt, reviewed=False, file=file)
     return result
 
+
 def search_all(query, frmt='txt', file=False):
     '''Search all of UniProtKB (Swiss-Prot + TrEMBL).
 
@@ -91,6 +95,7 @@ def search_all(query, frmt='txt', file=False):
     '''
     result = _search(query, frmt=frmt, reviewed=True, file=file)
     return result
+
 
 def number_SP_hits(query):
     '''Search reviewed UniProtKB entries only (Swiss-Prot).
