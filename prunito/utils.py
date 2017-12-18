@@ -313,3 +313,7 @@ VALID_ID_MAPPINGS = {'ACC',
 
 class NoDataError(Exception):
     pass
+
+
+class ExcessiveDataError(Exception):
+    pass

@@ -8,6 +8,7 @@ from ...utils import (UNIPROT_KNOWLEDGEBASE,
                       UNIPROT_MAP,
                       VALID_ID_MAPPINGS,
                       NoDataError,
+                      ExcessiveDataError,
                       )
 
 
@@ -243,21 +244,23 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
         response.raise_for_status()
 
 
-def _search(query, frmt='txt', file_handle=False):
+def _search(query, frmt='txt', limit=500, result_size_only=False, file_handle=False):
     fmt = frmt.lower()
     _check_format(fmt)
     payload = {'query':query, 'format':fmt}
-    result = session.get(UNIPROT_KNOWLEDGEBASE, params=payload)
-    if result.ok:
-        if len(result.content) > 0:
-            if file_handle:
+    with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as result:
+        if int(result.headers['x-total-results']) > limit:
+            raise ExcessiveDataError('Number of hits exceeds limit.\nPlease adjust limit or query.')
+        if result.ok and result.text:
+            if result_size_only:
+                return int(result.headers['x-total-results'])
+            elif file_handle:
                 return io.StringIO(result.text)
             else:
-                return str(result.text)
+                return result.text
         else:
-            raise NoDataError('No data were retrieved.')
-    else:
-        result.raise_for_status()
+            msg = 'No data were retrieved.\nQuery returned: {}'
+            raise NoDataError(msg.format(result.status_code))
 
 
 def _check_format(fmt):
