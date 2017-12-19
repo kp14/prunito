@@ -31,14 +31,14 @@ def current_release():
                "random": "yes",
                'format': 'list',
                }
-    result = session.get(UNIPROT_KNOWLEDGEBASE, params=payload)
-    if result.ok:
-        return result.headers['x-uniprot-release'] # Returns string by default
-    else:
-        result.raise_for_status()
+    with session.get(UNIPROT_KNOWLEDGEBASE, params=payload) as result:
+        if result.ok:
+            return result.headers['x-uniprot-release'] # Returns string by default
+        else:
+            result.raise_for_status()
 
 
-def search_reviewed(query, frmt='txt', file_handle=False):
+def search_reviewed(query, **kwargs):
     '''Convenience function for searching reviewed UniProtKB only.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
@@ -54,9 +54,9 @@ def search_reviewed(query, frmt='txt', file_handle=False):
     Returns:
         str or None: Data, if any.
     '''
-    if 'reviewed:yes' not in query:
+    if 'reviewed:yes' not in query.lower():
         query += ' AND reviewed:yes'
-    result = _search(query, frmt=frmt, file_handle=file_handle)
+    result = search(query, **kwargs)
     return result
 
 
@@ -76,9 +76,9 @@ def search_unreviewed(query, frmt='txt', file_handle=False):
     Returns:
         str or None: Data, if any.
     '''
-    if 'reviewed:no' not in query:
+    if 'reviewed:no' not in query.lower():
         query += ' AND reviewed:no'
-    result = _search(query, frmt=frmt, file_handle=file_handle)
+    result = search(query, frmt=frmt, file_handle=file_handle)
     return result
 
 
@@ -103,21 +103,27 @@ def search(query, frmt='txt', limit=500, result_size_only=False, file_handle=Fal
     fmt = frmt.lower()
     _check_format(fmt)
     payload = {'query':query, 'format':fmt}
+    msg = ('No data were retrieved. '
+           'Query returned code: {}. '
+           'If the code was 200 the query probably had no hits.')
     with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as result:
-        if int(result.headers['x-total-results']) > limit:
-            msg = ('Number of hits exceeds limit. '
-                   'Limit: {0}. Hits: {1}. '
-                   'Please adjust limit or query.')
-            raise ExcessiveDataError(msg.format(str(limit), result.headers['x-total-results']))
-        if result.ok and result.text:
-            if result_size_only:
-                return int(result.headers['x-total-results'])
-            elif file_handle:
-                return io.StringIO(result.text)
+        if result.ok:
+            total_results = int(result.headers['x-total-results'])
+            if total_results > limit:
+                msg = ('Number of hits exceeds limit. '
+                       'Limit: {0}. Hits: {1}. '
+                       'Please adjust limit or query.')
+                raise ExcessiveDataError(msg.format(str(limit), result.headers['x-total-results']))
+            elif total_results == 0:
+                raise NoDataError(msg.format(result.status_code))
             else:
-                return result.text
+                if result_size_only:
+                    return int(result.headers['x-total-results'])
+                elif file_handle:
+                    return io.StringIO(result.text)
+                else:
+                    return result.text
         else:
-            msg = 'No data were retrieved.\nQuery returned: {}'
             raise NoDataError(msg.format(result.status_code))
 
 
@@ -132,7 +138,7 @@ def number_SP_hits(query):
     Returns:
         int: number of hits.
     '''
-    result = _search(query, frmt='list', file_handle=False)
+    result = search(query, frmt='list', file_handle=False)
     if result:
         hit_list = result.split('\n')
         number = len(hit_list) - 1
