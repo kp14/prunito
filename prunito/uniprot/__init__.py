@@ -6,7 +6,7 @@ from .parser_unirule import parse_rules
 from .rest.uniprotapi import (current_release,
                               search_reviewed,
                               search_unreviewed,
-                              search_all,
+                              search,
                               number_SP_hits,
                               retrieve_batch,
                               convert,

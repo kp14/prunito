@@ -39,7 +39,7 @@ def current_release():
 
 
 def search_reviewed(query, frmt='txt', file_handle=False):
-    '''Search reviewed UniProtKB (Swiss-Prot) entries only.
+    '''Convenience function for searching reviewed UniProtKB only.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
     on the uniprot.org website.
@@ -61,7 +61,7 @@ def search_reviewed(query, frmt='txt', file_handle=False):
 
 
 def search_unreviewed(query, frmt='txt', file_handle=False):
-    '''Search unreviewed UniProtKB (TrEMBL) entries only.
+    '''Convenience function for searching unreviewed UniProtKB only.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
     on the uniprot.org website.
@@ -82,26 +82,43 @@ def search_unreviewed(query, frmt='txt', file_handle=False):
     return result
 
 
-def search(query, frmt='txt', file_handle=False):
+def search(query, frmt='txt', limit=500, result_size_only=False, file_handle=False):
     '''Search UniProtKB.
 
-    Accepts standard UniProtKB query syntax, so queries can be tested
-    on the uniprot.org website. Unless reviewed=yes/no is specified as
-    part of the query, all of UniProtKB is searched, which means there
-    could be very many hits.
+        Accepts standard UniProtKB query syntax, so queries can be tested
+        on the uniprot.org website. Unless reviewed=yes/no is specified as
+        part of the query, all of UniProtKB is searched, which means there
+        could be very many hits.
 
-    Args:
-        query (str): UniProtKB query string.
-        frmt (str; optional): Format for results.
-            Can be txt, xml, rdf, fasta. Defaults to txt.
-        file_handle (bool): Whether to wrap returned string in StringIO.
-            Defaults to False.
+        Args:
+            query (str): UniProtKB query string.
+            frmt (str; optional): Format for results.
+                Can be txt, xml, rdf, fasta. Defaults to txt.
+            file_handle (bool): Whether to wrap returned string in StringIO.
+                Defaults to False.
 
-    Returns:
-        str or None: Data, if any.
-    '''
-    result = _search(query, frmt=frmt, file_handle=file_handle)
-    return result
+        Returns:
+            str or None: Data, if any.
+        '''
+    fmt = frmt.lower()
+    _check_format(fmt)
+    payload = {'query':query, 'format':fmt}
+    with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as result:
+        if int(result.headers['x-total-results']) > limit:
+            msg = ('Number of hits exceeds limit. '
+                   'Limit: {0}. Hits: {1}. '
+                   'Please adjust limit or query.')
+            raise ExcessiveDataError(msg.format(str(limit), result.headers['x-total-results']))
+        if result.ok and result.text:
+            if result_size_only:
+                return int(result.headers['x-total-results'])
+            elif file_handle:
+                return io.StringIO(result.text)
+            else:
+                return result.text
+        else:
+            msg = 'No data were retrieved.\nQuery returned: {}'
+            raise NoDataError(msg.format(result.status_code))
 
 
 def number_SP_hits(query):
@@ -242,25 +259,6 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
         return mapped
     else:
         response.raise_for_status()
-
-
-def _search(query, frmt='txt', limit=500, result_size_only=False, file_handle=False):
-    fmt = frmt.lower()
-    _check_format(fmt)
-    payload = {'query':query, 'format':fmt}
-    with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as result:
-        if int(result.headers['x-total-results']) > limit:
-            raise ExcessiveDataError('Number of hits exceeds limit.\nPlease adjust limit or query.')
-        if result.ok and result.text:
-            if result_size_only:
-                return int(result.headers['x-total-results'])
-            elif file_handle:
-                return io.StringIO(result.text)
-            else:
-                return result.text
-        else:
-            msg = 'No data were retrieved.\nQuery returned: {}'
-            raise NoDataError(msg.format(result.status_code))
 
 
 def _check_format(fmt):
