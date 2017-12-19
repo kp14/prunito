@@ -82,7 +82,7 @@ def search_unreviewed(query, frmt='txt', file_handle=False):
     return result
 
 
-def search(query, frmt='txt', limit=500, result_size_only=False, file_handle=False):
+def search(query, frmt='txt', limit=500, size=False, file_handle=False):
     '''Search UniProtKB.
 
         Accepts standard UniProtKB query syntax, so queries can be tested
@@ -94,11 +94,18 @@ def search(query, frmt='txt', limit=500, result_size_only=False, file_handle=Fal
             query (str): UniProtKB query string.
             frmt (str; optional): Format for results.
                 Can be txt, xml, rdf, fasta. Defaults to txt.
+            limit (int): Maxmimum number of hits to retrieve. Default is 500.
+            size (bool): Whether only the number of hits (the size of the results)
+                should be returned. If True an int will be returned.
             file_handle (bool): Whether to wrap returned string in StringIO.
                 Defaults to False.
 
         Returns:
-            str or None: Data, if any.
+            int, str or ioStringIO: Data, if any.
+
+        Raises:
+            NoDataError: If no results are returned.
+            ExcessiveDataError: If number of hits > limit.
         '''
     fmt = frmt.lower()
     _check_format(fmt)
@@ -117,7 +124,7 @@ def search(query, frmt='txt', limit=500, result_size_only=False, file_handle=Fal
             elif total_results == 0:
                 raise NoDataError(msg.format(result.status_code))
             else:
-                if result_size_only:
+                if size:
                     return int(result.headers['x-total-results'])
                 elif file_handle:
                     return io.StringIO(result.text)
@@ -125,26 +132,6 @@ def search(query, frmt='txt', limit=500, result_size_only=False, file_handle=Fal
                     return result.text
         else:
             raise NoDataError(msg.format(result.status_code))
-
-
-def number_SP_hits(query):
-    '''Search reviewed UniProtKB entries only (Swiss-Prot).
-
-    Accepts standard UniProtKB query syntax.
-
-    Args:
-        query (str): UniProtKB query string.
-
-    Returns:
-        int: number of hits.
-    '''
-    result = search(query, frmt='list', file_handle=False)
-    if result:
-        hit_list = result.split('\n')
-        number = len(hit_list) - 1
-    else:
-        number = 0
-    return number
 
 
 def retrieve_batch(ac_list, frmt='txt', file=False):
