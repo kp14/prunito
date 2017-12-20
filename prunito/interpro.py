@@ -6,7 +6,7 @@ import sys
 import time
 
 from .uniprot import search
-from .utils import EBI_HMMER, NoDataError, ExcessiveDataError
+from .utils import EBI_HMMER, NoDataError, ExcessiveDataError, WSResponse
 try:
     import venndy.draw as vd
 except ImportError:
@@ -47,16 +47,17 @@ def search_phmmer(seq, database='swissprot', fmt='json', hits=10, alignments=Fal
     url = '/'.join([EBI_HMMER, 'phmmer'])
     posted = interpro_session.post(url, data=payload, allow_redirects=False)
     if posted.ok:
-        time.sleep(3)
+        try:
+            url4results = posted.headers['location']
+        except KeyError:
+            raise
         output_values = {'output': fmt,
                          'range': '1,{}'.format(str(hits)),
                          'ali': alignments,
                          }
-        results = interpro_session.get(posted.url, params=output_values)
-        if fmt == 'json':
-            return results.json()
-        else:
-            return results.content.decode('utf-8')
+        return WSResponse(interpro_session.get(url4results, params=output_values))
+    else:
+        posted.raise_for_status()
 
 
 def draw_signature_overlaps(list_of_signatures, mode='save'):
