@@ -1,3 +1,4 @@
+import datetime
 import io
 import requests
 from collections import defaultdict
@@ -9,20 +10,45 @@ from ...utils import (UNIPROT_KNOWLEDGEBASE,
                       VALID_ID_MAPPINGS,
                       NoDataError,
                       ExcessiveDataError,
+                      WSResponse,
                       )
 
 
 session = requests.Session()
 
+class WSResponseUniprot(WSResponse):
+
+    def __init__(self, response):
+        super().__init__(response)
+
+    def release(self):
+        return self.response.headers['x-uniprot-release']
+
+    def date(self):
+        full_date = '%a, %d %b %Y %H:%M:%S GMT'
+        simple_date = '%d %b %Y'
+        date_in_header = self.response.headers['last-modified']
+        try:
+            return datetime.datetime.strptime(date_in_header, full_date)
+        except ValueError:
+            try:
+                return datetime.datetime.strptime(date_in_header[5:16], simple_date)
+            except ValueError:
+                return date_in_header
+
+    def size(self):
+        return int(self.response.headers['x-total-results'])
+
 
 def current_release():
-    """Get current public release of UniProtKB.
+    """Convenience function to get current public release of UniProtKB.
 
+    Each response returned by a UniProt query also contains this info.
     Releases are specified as <year>_<release>, e.g. 2016_02.
     There are 11 or 12 releases per calendar year.
 
-       Returns:
-           str: Release, e.g. 2016_02
+    Returns:
+        WSResponseUniprot object (use methods release() and date())
 
     """
     # Release number contained in request header
@@ -33,7 +59,7 @@ def current_release():
                }
     with session.get(UNIPROT_KNOWLEDGEBASE, params=payload) as result:
         if result.ok:
-            return result.headers['x-uniprot-release'] # Returns string by default
+            return WSResponseUniprot(result)
         else:
             result.raise_for_status()
 
@@ -56,11 +82,10 @@ def search_reviewed(query, **kwargs):
     '''
     if 'reviewed:yes' not in query.lower():
         query += ' AND reviewed:yes'
-    result = search(query, **kwargs)
-    return result
+    return search(query, **kwargs)
 
 
-def search_unreviewed(query, frmt='txt', file_handle=False):
+def search_unreviewed(query, **kwargs):
     '''Convenience function for searching unreviewed UniProtKB only.
 
     Accepts standard UniProtKB query syntax, so queries can be tested
@@ -78,11 +103,10 @@ def search_unreviewed(query, frmt='txt', file_handle=False):
     '''
     if 'reviewed:no' not in query.lower():
         query += ' AND reviewed:no'
-    result = search(query, frmt=frmt, file_handle=file_handle)
-    return result
+    return search(query, **kwargs)
 
 
-def search(query, frmt='txt', limit=500, size=False, file_handle=False):
+def search(query, frmt='txt', limit=500):
     '''Search UniProtKB.
 
         Accepts standard UniProtKB query syntax, so queries can be tested
@@ -95,10 +119,6 @@ def search(query, frmt='txt', limit=500, size=False, file_handle=False):
             frmt (str; optional): Format for results.
                 Can be txt, xml, rdf, fasta. Defaults to txt.
             limit (int): Maxmimum number of hits to retrieve. Default is 500.
-            size (bool): Whether only the number of hits (the size of the results)
-                should be returned. If True an int will be returned.
-            file_handle (bool): Whether to wrap returned string in StringIO.
-                Defaults to False.
 
         Returns:
             int, str or ioStringIO: Data, if any.
@@ -110,28 +130,18 @@ def search(query, frmt='txt', limit=500, size=False, file_handle=False):
     fmt = frmt.lower()
     _check_format(fmt)
     payload = {'query':query, 'format':fmt}
-    msg = ('No data were retrieved. '
-           'Query returned code: {}. '
-           'If the code was 200 the query probably had no hits.')
-    with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as result:
+    with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as r:
+        result = WSResponseUniprot(r)
         if result.ok:
-            total_results = int(result.headers['x-total-results'])
-            if total_results > limit:
-                msg = ('Number of hits exceeds limit. '
-                       'Limit: {0}. Hits: {1}. '
-                       'Please adjust limit or query.')
-                raise ExcessiveDataError(msg.format(str(limit), result.headers['x-total-results']))
-            elif total_results == 0:
-                raise NoDataError(msg.format(result.status_code))
+            if result.size() > limit:
+                raise ExcessiveDataError(limit, result.size())
+            elif result.size() == 0:
+                raise NoDataError(result.status_code)
             else:
-                if size:
-                    return int(result.headers['x-total-results'])
-                elif file_handle:
-                    return io.StringIO(result.text)
-                else:
-                    return result.text
+                _ = result.content
+                return result
         else:
-            raise NoDataError(msg.format(result.status_code))
+            raise NoDataError(result.status_code)
 
 
 def retrieve_batch(ac_list, frmt='txt', file=False):
@@ -149,15 +159,12 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
     '''
     payload = {'query':' '.join(ac_list),
                'format':frmt}
-    result = session.get(UNIPROT_BATCH, params=payload)
+    result = WSResponseUniprot(session.get(UNIPROT_BATCH, params=payload))
     if result.ok:
         if len(result.content) > 0:
-            if file:
-                return io.StringIO(result.content.decode())
-            else:
-                return str(result.content, encoding="ascii")
+            return result
         else:
-            return None
+            raise NoDataError(result.status_code)
     else:
         result.raise_for_status()
 
@@ -180,12 +187,12 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
                'to': target_fmt,
                }
     files = {'data': open(path, 'r', encoding=encoding)}
-    response = session.post(UNIPROT_CONVERT,
-                             data=payload,
-                             files=files
-                             )
+    response = WSResponseUniprot(session.post(UNIPROT_CONVERT,
+                                              data=payload,
+                                              files=files
+                                             ))
     if response.ok:
-        return response.text
+        return response
     else:
         response.raise_for_status()
 
@@ -213,45 +220,55 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
 
     Args:
         id_list (list): Identifiers to be mapped. Identifiers should be strings.
-        source_fmt (str): Format of the provided identifiers. See UniProt help for allowed values.
-        target_fmt (str): Desired format of the identifiers. See UniProt help for allowed values.
+        source_fmt (str): Format of the provided identifiers. See UniProt help
+            for allowed values.
+        target_fmt (str): Desired format of the identifiers. See UniProt help
+            for allowed values.
 
     Returns:
-        dict: With source IDs as keys and a list of target IDs a values.
+        WSResponseUniprot: With map attribute, a dict with source IDs as keys
+            and a list of target IDs a values.
 
     Raises:
         ValueError: If invalid identifier formats are used.
         ValueError: If not at least source or target is UniProt accession/ID
     '''
-    if source_fmt.upper() not in VALID_ID_MAPPINGS or target_fmt.upper() not in VALID_ID_MAPPINGS:
-        msg = 'Invalid mapping source(s): {0}, {1}\nUse one of:\n{2}'.format(source_fmt.upper(),
-                                                                             target_fmt.upper(),
-                                                                             ', '.join(VALID_ID_MAPPINGS))
-        raise ValueError(msg)
-    if not source_fmt.upper() in ('ACC', 'ID'):
-        if not target_fmt.upper() in ('ACC', 'ID'):
-            raise ValueError('Source or target format has to be UniProt ACC or ID.')
+    _validate_mapping_partners(source_fmt, target_fmt)
     id_list = ' '.join(id_list)
     payload = {'from': source_fmt.upper(),
                'to': target_fmt.upper(),
                'format': 'tab',
                'query': id_list,
                }
-    response = session.get(UNIPROT_MAP, params=payload)
+    response = WSResponseUniprot(session.get(UNIPROT_MAP, params=payload))
     if response.ok:
-        mapped = defaultdict(list)
-        lines = iter(response.text.split('\n'))
-        lines.__next__() # skip header
-        for line in lines:
-            try:
-                source, target = line.strip().split('\t')
-            except ValueError:
-                pass
-            else:
-                mapped[source].append(target)
-        return mapped
+        response.map = _convert2dict(response)
+        return response
     else:
         response.raise_for_status()
+
+
+def _convert2dict(response):
+    """Convert the text body to a dict."""
+    mapped = defaultdict(list)
+    lines = iter(response.list())
+    lines.__next__()  # skip header
+    for line in lines:
+        try:
+            source, target = line.strip().split('\t')
+        except ValueError:
+            raise
+        else:
+            mapped[source].append(target)
+    return mapped
+
+
+def _validate_mapping_partners(source, target):
+    if source.upper() not in VALID_ID_MAPPINGS or target.upper() not in VALID_ID_MAPPINGS:
+        msg = 'Invalid mapping source(s): {0}, {1}. Use one of:\n{2}'
+        raise ValueError(msg.format(source.upper(), target.upper(), ', '.join(VALID_ID_MAPPINGS)))
+    if source.upper() not in ('ACC', 'ID') and target.upper() not in ('ACC', 'ID'):
+        raise ValueError('One of source or target format has to be UniProt ACC or ID.')
 
 
 def _check_format(fmt):

@@ -1,6 +1,6 @@
 """Utilities, regexs etc. for the biocuration package.
 """
-
+import io
 import re
 from enum import Enum
 
@@ -311,9 +311,61 @@ VALID_ID_MAPPINGS = {'ACC',
                     }
 
 
+class WSResponse():
+    """Wrapper round requests Response objects.
+
+    Allows to add convenience methods in particular for
+    different result formats. For example, specifying 'list'
+    as the format for a UniProtKB query can then actually return
+    a list via a list() method in addition to the text.
+    """
+
+    def __init__(self, response):
+        self.response = response
+
+    def __getattr__(self, item):
+        try:
+            return getattr(self.response, item)
+        except AttributeError:
+            return getattr(self, item)
+
+    def list(self):
+        """Return the text content as a Python list.
+
+        Returns:
+            list
+        """
+        l = self.text.strip().split('\n')
+        return [x for x in l if x]
+
+    def fobject(self):
+        """Return string content wrapped in ioStringIO.
+        Returns:
+            StringIO instance
+        """
+        return io.StringIO(self.text)
+
+
 class NoDataError(Exception):
-    pass
+
+    def __init__(self, status_code):
+        self.status_code = status_code
+
+    def __str__(self):
+        msg = ('No data were retrieved. '
+               'Query returned code: {}. '
+               'If the code was 200 the query probably had no hits.')
+        return msg.format(str(self.status_code))
 
 
 class ExcessiveDataError(Exception):
-    pass
+
+    def __init__(self, limit, actual):
+        self.limit = limit
+        self.actual = actual
+
+    def __str__(self):
+        msg = ('Number of hits exceeds limit. '
+               'Limit: {0}. Actual hits: {1}. '
+               'Please adjust limit or query.')
+        return msg.format(str(self.limit), str(self.actual))

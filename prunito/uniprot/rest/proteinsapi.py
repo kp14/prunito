@@ -1,8 +1,19 @@
 import requests
-from ...utils import PROTEINS_API_TAXONOMY, NoDataError
+from ...utils import PROTEINS_API_TAXONOMY, NoDataError, WSResponse
 
 
 session = requests.Session()
+
+class WSTaxResponse(WSResponse):
+    """Provides special methods for tax nodes."""
+
+    def __init__(self, response):
+        super().__init__(response)
+
+    def iter_nodes(self):
+        """Iterate over nodes in json content."""
+        for node in self.json()['taxonomies']:
+            yield node
 
 
 def get_info_on_taxID(taxID):
@@ -23,12 +34,11 @@ def get_info_on_taxID(taxID):
         NoDataError: If no valid data at all are returned.
     """
     headers = {'Accept': 'application/json'}
-    r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'id', str(taxID)]), headers=headers)
-    content = r.json()
+    r = WSResponse(session.get('/'.join([PROTEINS_API_TAXONOMY, 'id', str(taxID)]), headers=headers))
     if r.status_code == 400 or r.status_code == 404 or r.status_code == 500:
-        raise NoDataError(content['errorMessage'])
+        raise NoDataError(r.json()['errorMessage'])
     else:
-        return content
+        return r
 
 
 def get_info_on_taxIDs(taxIDs):
@@ -43,7 +53,7 @@ def get_info_on_taxIDs(taxIDs):
             Items in iterable can be string or integer.
 
     Yields:
-        dict: Data for each taxID
+        WSTaxResponse object
 
     Raises:
         ValueError: If taxIDs are not provided as list or tuple.
@@ -54,17 +64,16 @@ def get_info_on_taxIDs(taxIDs):
     else:
         ids_stringified = ','.join([str(item) for item in taxIDs])
         headers = {'Accept': 'application/json'}
-        r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers)
-        content = r.json()
+        r = WSTaxResponse(session.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers))
         try:
-            for node in content['taxonomies']:
-                yield node
+            _ = r.json()['taxonomies']
         except KeyError:
             try:
-                raise NoDataError(content['errorMessage'])
+                raise NoDataError(r.json()['errorMessage'])
             except KeyError:
-                raise NoDataError(content['errors'][0]['errorMessage'])
-
+                raise NoDataError(r.json()['errors'][0]['errorMessage'])
+        else:
+            return r
 
 
 def get_lineage_for_taxID(taxID):
@@ -82,10 +91,10 @@ def get_lineage_for_taxID(taxID):
         NoDataError: If the taxID is invalid or nonexistent.
     """
     headers = {'Accept': 'application/json'}
-    r = session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers)
-    content = r.json()
+    r = WSTaxResponse(session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers))
     try:
-        for node in content['taxonomies']:
-            yield node
+        _ = r.json()['taxonomies']
     except KeyError:
-        raise NoDataError(content['errorMessage'][0])
+        raise NoDataError(r.json()['errorMessage'][0])
+    else:
+        return r

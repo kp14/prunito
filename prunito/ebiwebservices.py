@@ -6,7 +6,7 @@ webservices. It also provides a base class that can be subclassed.
 import time
 from lxml import etree
 import requests
-from .utils import NoDataError
+from .utils import NoDataError, WSResponse
 
 session = requests.Session()
 
@@ -23,7 +23,6 @@ class EBIWebService():
         self._seconds_before_checking_again = 3
         self._finished = False
         self.job_id = None
-        self.result = None
 
     def get_parameters(self):
         """Retrieve a list of all parameters for the web service.
@@ -69,7 +68,6 @@ class EBIWebService():
         """Reset parameters before next call."""
         self._finished = False
         self.job_id = None
-        self.result = None
 
     def _start_job(self, data):
         """Start web service job.
@@ -116,7 +114,7 @@ class EBIWebService():
         """
         result_url = '/'.join([self._result_url, self.job_id, 'out'])
         result = session.get(result_url)
-        self.result = result.text
+        return WSResponse(result)
 
     def _run(self, data):
         self._start_job(data)
@@ -128,8 +126,7 @@ class EBIWebService():
     def __call__(self, *args, **kwargs):
         """Override to provide data and signature."""
         data = {}
-        self._run(data)
-        return self.result
+        return self._run(data)
 
 
 class EmbossTranseq(EBIWebService):
@@ -168,8 +165,7 @@ class EmbossTranseq(EBIWebService):
                 }
         for k, v in kwargs.items():
             data[k] = v
-        self._run(data)
-        return self.result
+        return self._run(data)
 
 
 class FASTASimilaritySearch(EBIWebService):
@@ -235,8 +231,7 @@ class FASTASimilaritySearch(EBIWebService):
                 }
         for k, v in kwargs.items():
             data[k] = v
-        self._run(data)
-        return self.result
+        return self._run(data)
 
 
 fasta_search = FASTASimilaritySearch()

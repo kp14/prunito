@@ -1,3 +1,4 @@
+import datetime
 import io
 import pytest
 from prunito.uniprot import (map_to_or_from_uniprot, search, current_release,
@@ -13,35 +14,39 @@ def test_map_to_or_from_uniprot_invalid_format():
 def test_map_to_or_from_uniprot_no_uniprot_specified():
     with pytest.raises(ValueError) as e_info:
         r = map_to_or_from_uniprot(['2KLE'], 'pdb_id', 'embl')
-    assert e_info.value.args[0] == 'Source or target format has to be UniProt ACC or ID.'
+    assert e_info.value.args[0] == 'One of source or target format has to be UniProt ACC or ID.'
 
 
 def test_map_to_or_from_uniprot():
     r = map_to_or_from_uniprot(['2KLE'], 'pdb_id', 'acc')
-    assert isinstance(r, dict)
-    assert r['2KLE'] == ['Q13563']
+    assert r.map['2KLE'] == ['Q13563']
 
 
-def test_current_release():
-    rel = current_release()
-    assert len(rel) == 7
-    assert rel[4] == '_'
-    assert rel.startswith('20')
+def test_current_release_as_attribute():
+    r = current_release()
+    assert len(r.release()) == 7
+    assert r.release()[4] == '_'
+    assert r.release().startswith('20')
+
+
+def test_current_release_as_date():
+    r = current_release()
+    assert isinstance(r.date(), datetime.datetime)
 
 
 def test_search_reviewed():
-    r = search_reviewed('name:tax-binding', size=True)
-    assert r == 1
+    r = search_reviewed('name:tax-binding')
+    assert r.size() == 1
 
 
 def test_search_reviewed_stringIO():
-    r = search_reviewed('name:tax-binding', file_handle=True)
-    assert isinstance(r, io.StringIO)
+    r = search_reviewed('name:tax-binding')
+    assert isinstance(r.fobject(), io.StringIO)
 
 
 def test_search_unreviewed_no_reviewed_specified():
     r = search_unreviewed('taxonomy:191813 AND name:cytochrome')
-    assert 'Unreviewed;' in r
+    assert 'Unreviewed;' in r.text
 
 
 def test_search_over_limit():

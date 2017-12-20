@@ -19,7 +19,7 @@ def test_get_info_on_taxID_string_id():
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/1425170"
               ]
             }
-    actual = up.get_info_on_taxID('9606') # taxID passed as str
+    actual = up.get_info_on_taxID('9606').json() # taxID passed as str
     for k, v in expected.items():
         assert actual[k] == v
 
@@ -50,7 +50,7 @@ def test_get_info_on_taxID_int_id():
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/1425170"
               ]
             }
-    actual = up.get_info_on_taxID(9606) # taxID passed as int
+    actual = up.get_info_on_taxID(9606).json() # taxID passed as int
     for k, v in expected.items():
         assert actual[k] == v
 
@@ -177,7 +177,7 @@ def test_tax_ids_info_several_ids_list():
               ]
 
     actual = up.get_info_on_taxIDs([9606,3202,176652,10090])
-    for tax in zip(expected, list(actual)):
+    for tax in zip(expected, list(actual.iter_nodes())):
         for k, v in tax[0].items():
             assert tax[1][k] == v
 
@@ -303,7 +303,7 @@ def test_tax_ids_info_several_ids_tuple():
                 }
               ]
     actual = up.get_info_on_taxIDs((9606,3202,176652,10090))
-    for tax in zip(expected, list(actual)):
+    for tax in zip(expected, list(actual.iter_nodes())):
         for k, v in tax[0].items():
             assert tax[1][k] == v
 
@@ -429,26 +429,23 @@ def test_tax_ids_info_several_ids_set():
                 }
               ]
     actual = up.get_info_on_taxIDs({9606,3202,176652,10090})
-    for tax in list(actual):
+    for tax in list(actual.iter_nodes()):
         assert tax['taxonomyId'] in {9606,3202,176652,10090}
 
 
 def test_get_info_on_taxIDs_string_input():
-    r = up.get_info_on_taxIDs('9606,10090')
     with pytest.raises(ValueError):
-        next(r)
+        r = up.get_info_on_taxIDs('9606,10090')
 
 
 def test_get_info_on_taxIDs_invalid_taxid():
-    r = up.get_info_on_taxIDs(['8UGH5'])
     with pytest.raises(NoDataError):
-        next(r)
+        r = up.get_info_on_taxIDs(['8UGH5'])
 
 
 def test_get_info_on_taxIDs_nonexisting_taxid():
-    r = up.get_info_on_taxIDs([960600000])
     with pytest.raises(NoDataError):
-        next(r)
+        r = up.get_info_on_taxIDs([960600000])
 
 
 def test_get_lineage_for_taxID():
@@ -583,7 +580,7 @@ def test_get_lineage_for_taxID():
                 }
               ]
     actual = up.get_lineage_for_taxID(9606)
-    actual_list = list(actual)
+    actual_list = list(actual.iter_nodes())
     assert len(expected) == len(actual_list)
     for item in zip(expected, actual_list):
         for k, v in item[0].items():
@@ -591,12 +588,10 @@ def test_get_lineage_for_taxID():
 
 
 def test_get_lineage_for_taxID_invalid_taxid():
-    r = up.get_lineage_for_taxID('*89HJ')
     with pytest.raises(NoDataError):
-        next(r)
+        r = up.get_lineage_for_taxID('*89HJ')
 
 
 def test_get_lineage_for_taxID_nonexisting_taxid():
-    r = up.get_lineage_for_taxID(1000010000000)
     with pytest.raises(NoDataError):
-        next(r)
+        r = up.get_lineage_for_taxID(1000010000000)

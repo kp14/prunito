@@ -5,8 +5,8 @@ import requests
 import sys
 import time
 
-from .uniprot import search_all
-from .utils import InterProXrefs, EBI_HMMER
+from .uniprot import search
+from .utils import EBI_HMMER, NoDataError, ExcessiveDataError
 try:
     import venndy.draw as vd
 except ImportError:
@@ -100,13 +100,13 @@ def uniprot_hits_for_interpro(signature):
         signature (str) : InterPro (member) database identifier
 
     Returns:
-        UniProtKB accessions (set)
+        set: UniProtKB accessions
     '''
-    result = search_all(signature, frmt='list')
-    if result:
-        result_set = set(result.strip().split('\n'))
+    try:
+        result = search(signature, frmt='list')
+    except NoDataError:
+        return set()
+    except ExcessiveDataError:
+        raise
     else:
-        result_set = set()
-        # print('Signature returned empty:{}'.format(signature))
-    return result_set
-
+        return set(result.list())
