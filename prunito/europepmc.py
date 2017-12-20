@@ -3,10 +3,10 @@
 import requests
 from collections import OrderedDict
 from urllib.parse import urlencode
-from .utils import EPMC_SEARCH
+from .utils import EPMC_SEARCH, WSResponse, NoDataError
 
 
-def search(query, fmt='json', result_type='lite', page_size=25):
+def search(query, result_type='lite', page_size=25):
     """Search publication database.
 
     The details of the search syntax are explain here:
@@ -18,8 +18,6 @@ def search(query, fmt='json', result_type='lite', page_size=25):
 
     Args:
         query (str): The Query.
-        fmt (str, optional): Format of returned data. Can be XML, JSON, DC.
-            Defaults to JSON.
         result_type (str, optional): Depth of returned data.
             Can be idlist, core, lite.
             idlist: returns a list of IDs and sources for the
@@ -30,20 +28,24 @@ def search(query, fmt='json', result_type='lite', page_size=25):
                 links, and MeSH terms.
         pageSize (int, optional): Specify the number of articles you wish to
             retrieve in each page. Max: 1000, Default: 25.
+
+    Returns:
+        WSResponse
     """
     # Normal dict did not work as parameters were shuffled
     payload = OrderedDict()
     payload['query'] = query
-    payload['format'] = fmt
+    payload['format'] = 'json'
     payload['resulttype'] = result_type
     payload['pageSize'] = page_size
-
-    result = requests.get(EPMC_SEARCH + urlencode(payload))
+    result = WSResponse(requests.get(EPMC_SEARCH + urlencode(payload)))
     if result.ok:
-        if fmt == 'json':
-            return result.json()
+        if not result.json()['hitCount'] == 0:
+            return result
         else:
-            return result.text
+            raise NoDataError(result.status_code)
+    else:
+        result.raise_for_status()
 
 
 def get_pmid_metadata(pmid):
@@ -59,11 +61,13 @@ def get_pmid_metadata(pmid):
         pmid (str or int): PubMed ID.
 
     Returns:
-        Metadata (dict) or None
+        WSResponse: Use the meta attribute.
     """
     query = 'ext_id:{} src:med'.format(str(pmid))
-    result = search(query, result_type='core')
-    if result['hitCount'] == 0:
-        return None
+    try:
+        result = search(query, result_type='core')
+    except NoDataError:
+        raise
     else:
-        return result['resultList']['result'][0]
+        result.meta = result.json()['resultList']['result'][0]
+        return result
