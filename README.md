@@ -18,7 +18,7 @@ part of UniProtKB (aka UniProtKB/TrEMBL).
 The [Proteins API](https://www.ebi.ac.uk/proteins/api/doc/) serves UniProt-associated data but from an EBI URL.
 It is used for retrieving taxonomy data.
 
-## Eureopean Nucleotide Archive (ENA)
+## European Nucleotide Archive (ENA)
 
 Retrieve CDS in FASTA format based on protein ID (pid).
 
