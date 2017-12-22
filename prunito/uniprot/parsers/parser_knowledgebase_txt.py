@@ -5,7 +5,7 @@ import logging
 import re
 from collections import defaultdict, namedtuple
 from .atomic import APile
-from ..utils import EC_REGEX
+from ...utils import EC_REGEX
 
 
 logging.basicConfig(level=logging.WARN)

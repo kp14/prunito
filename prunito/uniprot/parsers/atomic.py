@@ -10,7 +10,7 @@ annotations. I call these atomic annotations.
 import hashlib
 import re
 from collections import defaultdict
-from ..utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
+from ...utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
 
 
 ECO_PTRN = re.compile('ECO:[0-9]{7}')
