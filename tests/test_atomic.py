@@ -1,6 +1,6 @@
 import hashlib
 import pytest
-from prunito.uniprot import atomic
+from prunito.uniprot.parsers import atomic
 
 
 def test_actual_in_expected(actual, expected_list):
