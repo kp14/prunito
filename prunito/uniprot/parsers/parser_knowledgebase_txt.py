@@ -412,6 +412,13 @@ def parse_txt(handle):
         yield Record(bag)
 
 
+def parse_txt_compatible(handle):
+    import warnings
+    warnings.warn('parse_txt_compatible() is deprecated; use parse_txt().',
+                  DeprecationWarning)
+    parse_txt(handle)
+
+
 def parse_txt_atomic(handle):
     pile = APile()
     for entry in parse_txt(handle):
