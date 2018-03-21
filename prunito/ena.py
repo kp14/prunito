@@ -5,7 +5,7 @@ import requests
 from .utils import WSResponse
 
 
-from .utils import TRANSEQ_RUN, TRANSEQ_STATUS, TRANSEQ_RESULTS, ENA_DATA, NoDataError, ENA_IDENTIFIER_REGEX
+from .utils import ENA_DATA, NoDataError, ENA_IDENTIFIER_REGEX
 
 session = requests.Session()
 
