@@ -370,7 +370,7 @@ def _flatten_lists(lol):
     return flat
 
 
-def parse_txt(handle):
+def _parse(handle):
     bag, context = _set_up()
     if handle:
         ignore = False
@@ -408,7 +408,7 @@ def parse_txt(handle):
 
 
 def parse_txt_compatible(handle):
-    for bag in parse_txt(handle):
+    for bag in _parse(handle):
         yield Record(bag)
 
 
