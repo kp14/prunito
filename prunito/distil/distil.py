@@ -7,7 +7,7 @@ from ipywidgets import widgets
 
 # import from own modules/packages
 from .SwissProtRecordCollector import SwissProtRecordCollector
-from ..uniprot import parse_txt_compatible
+from ..uniprot import parse_txt
 from ..uniprot import search_all, search_reviewed
 from ..utils import Borg
 
@@ -61,7 +61,7 @@ class SPAnalysis(Borg):
             results = search_reviewed(query, frmt='txt', file_handle=True)
         else:
             results = search_all(query, frmt='txt', file=True)
-        entries = parse_txt_compatible(results)
+        entries = parse_txt(results)
         if not entries:
             sys.exit('No entries that could be parsed were retrieved. Check your query.')
         collector = SwissProtRecordCollector()

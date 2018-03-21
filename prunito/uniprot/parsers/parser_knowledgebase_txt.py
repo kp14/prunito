@@ -407,14 +407,14 @@ def _parse(handle):
         print('Nothing to parse. Are you sure the query returns anything?')
 
 
-def parse_txt_compatible(handle):
+def parse_txt(handle):
     for bag in _parse(handle):
         yield Record(bag)
 
 
 def parse_txt_atomic(handle):
     pile = APile()
-    for entry in parse_txt_compatible(handle):
+    for entry in parse_txt(handle):
         pile.consume(entry)
     return pile
 

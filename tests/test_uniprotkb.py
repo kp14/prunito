@@ -21,7 +21,7 @@ filename = 'one_sp_entry.txl'
 datafile = os.path.join(base_dir, 'SwissProt', filename)
 
 with open(datafile, "r", encoding="ascii") as data:
-    my_record = list(up.parse_txt_compatible(data))
+    my_record = list(up.parse_txt(data))
 
 
 with open(datafile, "r", encoding="ascii") as data:
@@ -209,5 +209,5 @@ def test_feature_compatibility():
 def test_ignore_lowercase_entries():
     datafile = os.path.join(base_dir, 'SwissProt', 'contains_lowercase.txl')
     with open(datafile, 'r') as infile:
-        entries = list(up.parse_txt_compatible(infile))
+        entries = list(up.parse_txt(infile))
         assert len(entries) == 23

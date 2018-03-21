@@ -8,11 +8,11 @@ import os
 import pytest
 
 from Bio import SwissProt
-from prunito.uniprot import parse_txt_compatible, parse_txt_atomic
+from prunito.uniprot import parse_txt, parse_txt_atomic
 
 
 #####################################################################
-# Test stuff for parse_txt_compatible
+# Test stuff for parse_txt
 #####################################################################
 
 # Import paths for data files
@@ -48,13 +48,13 @@ PROPS = ['entry_name',
          ]
 
 with open(datafile, "r", encoding="ascii") as data:
-    my_records = list(parse_txt_compatible(data))
+    my_records = list(parse_txt(data))
 
 
 with open(datafile, "r", encoding="ascii") as data:
     biopython_records = list(SwissProt.parse(data))
 #####################################################################
-# END - Test stuff for parse_txt_compatible
+# END - Test stuff for parse_txt
 #####################################################################
 
 #####################################################################
