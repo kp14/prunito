@@ -433,7 +433,8 @@ def parse_txt_compatible(handle):
     import warnings
     warnings.warn('parse_txt_compatible() is deprecated; use parse_txt().',
                   DeprecationWarning)
-    parse_txt(handle)
+    for entry in parse_txt(handle):
+        yield entry
 
 
 def parse_txt_atomic(handle):
