@@ -214,9 +214,60 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
     is only concerned with the actual mapping and not any further data. Those
     could be retrieved in a second call using search or batch retrieval.
 
-    See http://www.uniprot.org/help/programmatic_access#conversion for details.
+    See https://www.uniprot.org/help/api_idmapping for details.
     Note: The response.url field contains the URL from which to download
     the mapping, e.g. http://www.uniprot.org/mapping/M20160504763V34ZKX0.tab
+
+    Here is a list of some mapping source/targets (may be out of ate):
+    data set - value - direction
+    UniProtKB AC/ID	ACC+ID	from
+    UniProtKB AC	ACC	both
+    UniProtKB ID	ID	both
+    UniParc	UPARC	both
+    UniRef50	NF50	both
+    UniRef90	NF90	both
+    UniRef100	NF100	both
+    Gene name	GENENAME	both
+    CRC64	CRC64	both
+    EMBL/GenBank/DDBJ	EMBL_ID	both
+    EMBL/GenBank/DDBJ CDS	EMBL	both
+    Entrez Gene (GeneID)	P_ENTREZGENEID	both
+    RefSeq Nucleotide	REFSEQ_NT_ID	both
+    RefSeq Protein	P_REFSEQ_AC	both
+    PDB	PDB_ID	both
+    ChEMBL	CHEMBL_ID	both
+    Allergome	ALLERGOME_ID	both
+    MEROPS	MEROPS_ID	both
+    Ensembl Protein	ENSEMBL_PRO_ID	both
+    Ensembl Transcript	ENSEMBL_TRS_ID	both
+    Ensembl Genomes	ENSEMBLGENOME_ID	both
+    Ensembl Genomes Protein	ENSEMBLGENOME_PRO_ID	both
+    Ensembl Genomes Transcript	ENSEMBLGENOME_TRS_ID	both
+    GeneID (Entrez Gene)	P_ENTREZGENEID	both
+    KEGG	KEGG_ID	both
+    UCSC	UCSC_ID	both
+    VectorBase	VECTORBASE_ID	both
+    Araport	ARAPORT_ID	both
+    CCDS	CCDS_ID	both
+    dictyBase	DICTYBASE_ID	both
+    FlyBase	FLYBASE_ID	both
+    HGNC	HGNC_ID	both
+    HPA	HPA_ID	both
+    MGI	MGI_ID	both
+    MIM	MIM_ID	both
+    RGD	RGD_ID	both
+    SGD	SGD_ID	both
+    WormBase	WORMBASE_ID	both
+    WormBase Protein	WORMBASE_PRO_ID	both
+    WormBase Transcript	WORMBASE_TRS_ID	both
+    Xenbase	XENBASE_ID	both
+    ZFIN	ZFIN_ID	both
+    GeneTree	GENETREE_ID	both
+    OMA	OMA_ID	both
+    OrthoDB	ORTHODB_ID	both
+    TreeFam	TREEFAM_ID	both
+    BioCyc	BIOCYC_ID	both
+    Reactome	REACTOME_ID	both
 
     Args:
         id_list (list): Identifiers to be mapped. Identifiers should be strings.
