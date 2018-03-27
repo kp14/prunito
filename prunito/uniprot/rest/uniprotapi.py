@@ -78,7 +78,7 @@ def search_reviewed(query, **kwargs):
             Defaults to False.
 
     Returns:
-        str or None: Data, if any.
+        WSResponseUniprot object
     '''
     if 'reviewed:yes' not in query.lower():
         query += ' AND reviewed:yes'
@@ -99,7 +99,7 @@ def search_unreviewed(query, **kwargs):
             Defaults to False.
 
     Returns:
-        str or None: Data, if any.
+        WSResponseUniprot object
     '''
     if 'reviewed:no' not in query.lower():
         query += ' AND reviewed:no'
@@ -121,7 +121,7 @@ def search(query, frmt='txt', limit=500):
             limit (int): Maximum number of hits to retrieve. Default is 500.
 
         Returns:
-            int, str or ioStringIO: Data, if any.
+            WSResponseUniprot object
 
         Raises:
             NoDataError: If no results are returned.
