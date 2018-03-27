@@ -362,6 +362,32 @@ class Reference():
                 c_tuples.append((key, val))
         return c_tuples
 
+
+def parse_txt(handle):
+    for bag in _parse(handle):
+        yield Record(bag)
+
+
+def parse_txt_compatible(handle):
+    import warnings
+    warnings.warn('parse_txt_compatible() is deprecated; use parse_txt().',
+                  DeprecationWarning)
+    parse_txt(handle)
+
+
+def parse_txt_atomic(handle):
+    pile = APile()
+    for entry in parse_txt(handle):
+        pile.consume(entry)
+    return pile
+
+def _set_up():
+    bag = defaultdict(list)
+    bag['RF'] = {}
+    context = None
+    return bag, context
+
+
 def _flatten_lists(lol):
     '''Flatten list of lists.'''
     flat = []
@@ -406,30 +432,6 @@ def _parse(handle):
     else:
         print('Nothing to parse. Are you sure the query returns anything?')
 
-
-def parse_txt(handle):
-    for bag in _parse(handle):
-        yield Record(bag)
-
-
-def parse_txt_compatible(handle):
-    import warnings
-    warnings.warn('parse_txt_compatible() is deprecated; use parse_txt().',
-                  DeprecationWarning)
-    parse_txt(handle)
-
-
-def parse_txt_atomic(handle):
-    pile = APile()
-    for entry in parse_txt(handle):
-        pile.consume(entry)
-    return pile
-
-def _set_up():
-    bag = defaultdict(list)
-    bag['RF'] = {}
-    context = None
-    return bag, context
 
 def _extract_ref_number(line):
     pattern = re.compile('(\[[0-9]+\])')
