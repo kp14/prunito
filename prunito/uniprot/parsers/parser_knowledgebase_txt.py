@@ -361,11 +361,36 @@ class Reference():
 
 
 def parse_txt(handle):
+    """Parse the UniProtKB flat file format.
+
+    All the line types currently found in UniProtKB entries are  parsed,
+    including ** comments which are sometimes found.
+
+    Args:
+        handle: a file object for a file containing one or more UniProtKB
+            entries
+
+    Yields:
+        Record instances; these are compatible to BioPython's
+        Record objects but offer extra convenience methods.
+    """
     for bag in _parse(handle):
         yield Record(bag)
 
 
 def parse_txt_compatible(handle):
+    """Parse the UniProtKB flat file format.
+
+    All the line types currently found in UniProtKB entries are  parsed,
+    including ** comments which are sometimes found.
+
+    Args:
+        handle: a file object
+
+    Yields:
+        Record instances; these are compatible to BioPython's
+        Record objects but offer extra convenience methods.
+    """
     import warnings
     warnings.warn('parse_txt_compatible() is deprecated; use parse_txt().',
                   DeprecationWarning)
