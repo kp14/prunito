@@ -335,24 +335,8 @@ class WSResponse():
         Returns:
             list
         """
-        l = self.text.strip().split('\n')
+        l = self.response.text.strip().split('\n')
         return [x for x in l if x]
-
-    def json(self):
-        """Return the response content as decoded JSON.
-
-        Returns:
-            decoded JSON object
-        """
-        return self.response.json()
-
-    def text(self):
-        """Return response content as text.
-
-        Returns:
-            str
-        """
-        return self.response.text
 
     def as_file_object(self):
         """Return string content wrapped in ioStringIO.
