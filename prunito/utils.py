@@ -326,7 +326,11 @@ class WSResponse():
             return getattr(self, item)
 
     def list(self):
-        """Return the text content as a Python list.
+        """Return the response text content as a Python list.
+
+        Obviously, this only makes sense if the content is list-like
+        in the first place. Like when you download a list of UniProt
+        accessions.
 
         Returns:
             list
@@ -334,7 +338,23 @@ class WSResponse():
         l = self.text.strip().split('\n')
         return [x for x in l if x]
 
-    def fobject(self):
+    def json(self):
+        """Return the response content as decoded JSON.
+
+        Returns:
+            decoded JSON object
+        """
+        return self.response.json()
+
+    def text(self):
+        """Return response content as text.
+
+        Returns:
+            str
+        """
+        return self.response.text
+
+    def as_file_object(self):
         """Return string content wrapped in ioStringIO.
         Returns:
             StringIO instance
