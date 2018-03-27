@@ -14,12 +14,51 @@ logging.basicConfig(level=logging.WARN)
 Feature = namedtuple('Feature', ['type', 'start', 'end', 'description', 'ftid'])
 
 
-class Record:
-    '''Class emulating biopython.SwissProt.Record.
+class Record():
+    """Representation of a UniProtKB entry.
 
-    All fields biopython.SwissProt.Record provides are provided, too.
-    Addinitional ones also, for convenience.
-    '''
+    All fields that biopython.SwissProt.Record provides are provided, too.
+    Additional ones also, for convenience.
+
+    Attributes:
+        entry_name (str): Entry mnemonic taken from ID line.
+        data_class (str): Which UniProtKb dataset, either Reviewed or Unreviewed.
+        molecule_type: None.
+        sequence_length (int): Number of amino acids in sequence.
+        accessions (list<str>): List of all the accession numbers.
+        created (tuple): Tuple of a date string and version.
+        sequence_update (tuple):  Tuple of a date string and version.
+        annotation_update (tuple):  Tuple of a date string and version.
+        primary_accession (str): Entry's primary accession, i.e., the one to use.
+        description (str): All name fields in one string.
+        recommended_full_name (str): Primary protein name used by UniProtKB.
+        ec_numbers (list<str>): List of all EC (Enzyme Commission) numbers in entry.
+        gene_name (str): All gene/gene synonym/ORF fields in one string.
+        primary_gene_name (str): Primary gene name used by UniProtKB.
+        organism (str): Source species (and possibly strain) of sequence.
+        organelle (str): Organelle sequence is encoded in.
+        organism_classification (list<str>): List of taxon nodes, usually starts
+            with a superkingdom and ends with a genus. Note that the lineage in
+            flat files is abbreviated.
+        taxonomy_id (str): NCBI taxonomy ID of source species.
+        host_organism (str): Host organism, for viruses etc.
+        host taxonomy_id (str): NCBI taxonomy ID of host organism.
+        references (list<Reference instance>): List of Reference objects. These
+            are mostly publications but can also be direct submission to UniProt.
+        all_pubmed_ids (list<str>): List of all PubMed IDs present in entry.
+        comments (list<str>): List of UniProtKB comment strings. They look like
+            TYPE: Some text here.
+        cross_references (list<tuple>): List of tuples representing a cross-
+            reference each. Example: (EMBL; AAGW02052878, -, NOT_ANNOTATED_CDS, Genomic_DNA).
+            Length varies with cross-reference between 3-5.
+        keywords (list<str>): List of keywords.
+        seqinfo (tuple): Tuple with values (sequence length, molecular weight, CRC64 checksum)
+        features (list<Feature instance>): List of Feature objects describing residue-specific
+            annotations.
+        sequence (str): Amino acid sequence (primary structure) of protein.
+        isoforms (tuple): Isoforms as tuples (name, sequence)
+    """
+
     def __init__(self, bag):
         self._bag = bag
         self._features = []
