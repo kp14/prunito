@@ -11,9 +11,6 @@ from ...utils import EC_REGEX
 logging.basicConfig(level=logging.WARN)
 
 
-LINE_ENDINGS = ' \n\r'
-
-
 Feature = namedtuple('Feature', ['type', 'start', 'end', 'description', 'ftid'])
 
 
