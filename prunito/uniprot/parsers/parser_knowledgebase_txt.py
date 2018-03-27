@@ -361,7 +361,7 @@ class Reference():
 
 
 def parse_txt(handle):
-    """Parse the UniProtKB flat file format.
+    """Parse entries from the UniProtKB flat file format.
 
     All the line types currently found in UniProtKB entries are  parsed,
     including ** comments which are sometimes found.
@@ -379,7 +379,7 @@ def parse_txt(handle):
 
 
 def parse_txt_compatible(handle):
-    """Parse the UniProtKB flat file format.
+    """Parse entries from the UniProtKB flat file format.
 
     All the line types currently found in UniProtKB entries are  parsed,
     including ** comments which are sometimes found.
@@ -398,6 +398,20 @@ def parse_txt_compatible(handle):
 
 
 def parse_txt_atomic(handle):
+    """Parse annotations from the UniProtKB flat file format.
+
+    All the line types currently found in UniProtKB entries are  parsed,
+    including ** comments which are sometimes found.
+
+    Args:
+        handle: a file object for a file containing one or more UniProtKB
+            entries
+
+    Yields:
+        APile instance; this is a container for Annotation instances,
+        where each Annotations consists of a Statement, Evidence attached
+        to an entity.
+    """
     pile = APile()
     for entry in parse_txt(handle):
         pile.consume(entry)
