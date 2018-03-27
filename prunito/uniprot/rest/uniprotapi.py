@@ -118,7 +118,7 @@ def search(query, frmt='txt', limit=500):
             query (str): UniProtKB query string.
             frmt (str; optional): Format for results.
                 Can be txt, xml, rdf, fasta. Defaults to txt.
-            limit (int): Maxmimum number of hits to retrieve. Default is 500.
+            limit (int): Maximum number of hits to retrieve. Default is 500.
 
         Returns:
             int, str or ioStringIO: Data, if any.
