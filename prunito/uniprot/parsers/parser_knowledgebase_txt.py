@@ -3,6 +3,7 @@
 import itertools
 import logging
 import re
+import textwrap
 from collections import defaultdict, namedtuple
 from .atomic import APile
 from ...utils import EC_REGEX
@@ -14,7 +15,7 @@ logging.basicConfig(level=logging.WARN)
 Feature = namedtuple('Feature', ['type', 'start', 'end', 'description', 'ftid'])
 
 
-class Record():
+class Record(object):
     """Representation of a UniProtKB entry.
 
     All fields that biopython.SwissProt.Record provides are provided, too.
@@ -56,7 +57,6 @@ class Record():
         features (list<Feature instance>): List of Feature objects describing residue-specific
             annotations.
         sequence (str): Amino acid sequence (primary structure) of protein.
-        isoforms (tuple): Isoforms as tuples (name, sequence)
     """
 
     def __init__(self, bag):
@@ -204,10 +204,10 @@ class Record():
         """Return all PMIDs found in the references of an entry."""
         id_list = []
         for ref in self.references:
-          for source in ref.references:
-              name, identifier = source
-              if name == 'PubMed':
-                  id_list.append(identifier)
+            for source in ref.references:
+                name, identifier = source
+                if name == 'PubMed':
+                    id_list.append(identifier)
         return id_list
 
     @property
@@ -250,7 +250,7 @@ class Record():
                         self._features.append(tuple(current))
                         current = featureline.copy()
                     else:
-                        current  = featureline.copy()
+                        current = featureline.copy()
                 else:
                     if featureline[3].startswith('/FTId'):
                         current[4] = featureline[3][6:-1]
@@ -266,15 +266,71 @@ class Record():
 
     @property
     def sequence(self):
+        """Amino acid sequence (primary structure) of protein.
+
+        This behaves like the equivalent attribute in BioPython's Record.
+        See also method as_fasta().
+        """
         gapped_seq = ''.join(self._bag['  '])
         seq = gapped_seq.replace(' ', '')
         return seq
 
-    @property
-    def isoforms(self):
+    def _format_as_fasta(self, header, seq, width=60):
+        """Generate FASTA format
+
+        Parameters:
+            header (str): Fully formed FASTA header, starting with >
+            seq (str): Amino acid sequence.
+            width (int): Where to wrap the sequence. Default: 60.
+
+        Returns:
+            FASTA-formatted sequence (str)
         """
-        Generates isoforms.
-        :return: tuple (name, sequence)
+        lines = [header]
+        lines.extend(textwrap.wrap(seq, width=width))
+        return '\n'.join(lines)
+
+    def _provide_fasta_header(self, isoform_name=''):
+        data_class_mapper = {'Reviewed': 'sp',
+                             'Unreviewed': 'tr'}
+        header_template = '>{0}|{1}|{2} {3} OS={4} OX={5}'
+        if not isoform_name:
+            acc = self.primary_accession
+            name = self.recommended_full_name
+        else:
+            acc = '{0}-{1}'.format(self.primary_accession,
+                                   isoform_name)
+            name = 'Isoform {0} of {1}'.format(isoform_name,
+                                               self.recommended_full_name)
+        header = header_template.format(data_class_mapper[self.data_class],
+                                        acc,
+                                        self.entry_name,
+                                        name,
+                                        self.organism,
+                                        self.taxonomy_id)
+        return header
+
+    def as_fasta(self):
+        """Amino acid sequence (primary structure) of protein in FASTA format.
+
+        The FASTA header follows the UniProt style somewhat:
+        >data class|primary accession|ID|name|species|taxid
+
+        Returns:
+            FASTA-formatted sequence (str); no trailing new line
+        """
+        header = self._provide_fasta_header()
+        return self._format_as_fasta(header, self.sequence)
+
+    def isoforms(self, fasta=True):
+        """Generates isoforms, if any.
+
+        Parameters:
+            fasta (bool): Whether to return seq in FASTA format.
+                Defaults to True.
+
+        Yields:
+            (FASTA-formatted) sequence (str)
         """
         slen = len(self.sequence)
         iso = defaultdict(dict)
@@ -320,11 +376,14 @@ class Record():
                     temp.extend(list(block[2]))
             data['seq'] = ''.join(temp)
         for iso_name, data in iso.items():
-            qualified_iso_name = '{0}-{1}'.format(self.primary_accession, iso_name)
-            yield (qualified_iso_name, data['seq'])
+            if fasta:
+                header = self._provide_fasta_header(isoform_name=iso_name)
+                yield self._format_as_fasta(header, data['seq'])
+            else:
+                yield data['seq']
 
 
-class Reference():
+class Reference(object):
 
     def __init__(self, num, data):
         self._num = num
