@@ -39,9 +39,9 @@ def test_search_reviewed():
     assert r.size() == 1
 
 
-def test_search_reviewed_stringIO():
-    r = search_reviewed('name:tax-binding')
-    assert isinstance(r.fobject(), io.StringIO)
+# def test_search_reviewed_stringIO():
+#     r = search_reviewed('name:tax-binding')
+#     assert isinstance(r.fobject(), io.StringIO)
 
 
 def test_search_unreviewed_no_reviewed_specified():
