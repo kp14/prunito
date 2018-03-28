@@ -234,5 +234,31 @@ class FASTASimilaritySearch(EBIWebService):
         return self._run(data)
 
 
+class SeqChecksum(EBIWebService):
+    """Generate checksums for protein/nucleotide sequences."""
+
+    def __init__(self):
+        super().__init__('seqcksum')
+
+    def __call__(self, seq, cksmethod='spcrc', stype='protein', **kwargs):
+        """Generate checksums for protein/nucleotide sequences.
+
+        Parameters:
+            seq (str): Sequence in FASTA format.
+            cksmethod (str): Checksum method. Defaults to: CRC64-ISO (spcrc).
+                There are others, including other flavours of CRC, which
+                I am not sure about.
+            stype (str): Sequence type, protein or dna. Default: protein.
+        """
+        data = {'sequence': seq,
+                'cksmethod': cksmethod,
+                'stype': stype,
+                }
+        data.update(kwargs)
+        return self._run(data)
+
+
+
 fasta_search = FASTASimilaritySearch()
 translate = EmbossTranseq()
+checksum = SeqChecksum()
