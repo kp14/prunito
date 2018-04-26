@@ -10,6 +10,8 @@ from .utils import NoDataError, WSResponse
 
 session = requests.Session()
 
+EMAIL = ''
+
 class EBIWebService():
     """Base class for generic EBI web service access."""
 
@@ -110,7 +112,7 @@ class EBIWebService():
         """Return protein sequence.
 
         Returns:
-            str: Translations in FASTA format.
+            WSResponse
         """
         result_url = '/'.join([self._result_url, self.job_id, 'out'])
         result = session.get(result_url)
@@ -154,7 +156,7 @@ class EmbossTranseq(EBIWebService):
             trim (bool): Whether transeq should remove trailing * or X.
 
         Returns:
-             str: Protein sequences in FASTA format.
+             WSResponse
 
         Raises:
             NoDataError: If translation fails or any errors using webservice.
@@ -222,7 +224,7 @@ class FASTASimilaritySearch(EBIWebService):
                 Can be: protein, dna, rna.
 
         Returns:
-            str: Results
+            WSResponse
         """
         data = {'sequence': seq,
                 'program': program,
@@ -243,12 +245,15 @@ class SeqChecksum(EBIWebService):
     def __call__(self, seq, cksmethod='spcrc', stype='protein', **kwargs):
         """Generate checksums for protein/nucleotide sequences.
 
-        Parameters:
+        Args:
             seq (str): Sequence in FASTA format.
             cksmethod (str): Checksum method. Defaults to: CRC64-ISO (spcrc).
                 There are others, including other flavours of CRC, which
                 I am not sure about.
             stype (str): Sequence type, protein or dna. Default: protein.
+
+        Returns:
+            WSResponse
         """
         data = {'sequence': seq,
                 'cksmethod': cksmethod,
