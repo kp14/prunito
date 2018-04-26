@@ -30,7 +30,7 @@ with open(datafile, "r", encoding="ascii") as data:
 
 def test_wrong_format_paramater_for_search():
     with pytest.raises(ValueError):
-        up.search_all('test', frmt='xsd')
+        up.search('test', frmt='xsd')
 
 
 def test_uppercase_format_parameter_works_for_search():
@@ -38,7 +38,7 @@ def test_uppercase_format_parameter_works_for_search():
 
 
 def test_object_is_record_instance():
-    assert isinstance(my_record[0], up.parser_knowledgebase_txt.Record) == True
+    assert isinstance(my_record[0], up.parsers.parser_knowledgebase_txt.Record) == True
 
 
 def test_data_class():

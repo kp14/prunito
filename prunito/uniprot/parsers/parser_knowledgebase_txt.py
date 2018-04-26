@@ -5,8 +5,11 @@ import logging
 import re
 import textwrap
 from collections import defaultdict, namedtuple
+from functools import singledispatch
+from io import TextIOWrapper, StringIO
+from pathlib import Path
 from .atomic import APile
-from ...utils import EC_REGEX
+from ...utils import EC_REGEX, WSResponse
 
 
 logging.basicConfig(level=logging.WARN)
@@ -458,21 +461,45 @@ class Reference(object):
         return c_tuples
 
 
-def parse_txt(handle):
+@singledispatch
+def parse_txt(source):
     """Parse entries from the UniProtKB flat file format.
 
     All the line types currently found in UniProtKB entries are  parsed,
     including ** comments which are sometimes found.
 
     Args:
-        handle: a file object for a file containing one or more UniProtKB
-            entries
+        source: source containing one or more UniProtKB
+            entries. Can be a file object, file name/path string,
+            a pathlib.Path instance or a WSResponse object, i.e.,
+            the result of a prunito.uniprot.search() call can be
+            fed directly into the parser
 
     Yields:
         Record instances; these are compatible to BioPython's
         Record objects but offer extra convenience methods.
     """
-    for bag in _parse(handle):
+    raise NotImplementedError('Unsupported type of source.')
+
+
+@parse_txt.register(TextIOWrapper)
+@parse_txt.register(StringIO)
+def _(source):
+    for bag in _parse(source):
+        yield Record(bag)
+
+
+@parse_txt.register(str)
+@parse_txt.register(Path)
+def _(source):
+    with open(source, 'r') as infile:
+        for bag in _parse(infile):
+            yield Record(bag)
+
+
+@parse_txt.register(WSResponse)
+def _(source):
+    for bag in _parse(source.as_file_object()):
         yield Record(bag)
 
 
