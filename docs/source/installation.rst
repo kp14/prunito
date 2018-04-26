@@ -12,7 +12,7 @@ As usual, it probably best to install prunito and its dependencies into a dedica
 
     Using ``conda`` from the `Anaconda Python distribution <https://www.continuum.io/downloads>`_ :
 
-        * Create a new environment (env) called *divvy* which runs Python 3.6 and has ``pip`` installed::
+        * Create a new environment (env) called *prunito* which runs Python 3.6 and has ``pip`` installed::
 
             conda create -n prunito python=3.6 pip
 
