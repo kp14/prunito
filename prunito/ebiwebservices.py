@@ -10,10 +10,15 @@ from .utils import NoDataError, WSResponse
 
 session = requests.Session()
 
-EMAIL = ''
+def set_email(email):
+    """Provide an email address for EBI webservices."""
+    EBIWebService.email = email
+
 
 class EBIWebService():
     """Base class for generic EBI web service access."""
+
+    email = ''
 
     def __init__(self, service):
         self._service = service
@@ -81,7 +86,7 @@ class EBIWebService():
             HTTPError: Passed on from request.
         """
         self._reset()
-        data_all = {'email': 'kp14git@hotmail.com',}
+        data_all = {'email': EBIWebService.email,}
         data_all.update(data)
         job = session.post(self._run_url, data=data_all)
         if job.ok:
