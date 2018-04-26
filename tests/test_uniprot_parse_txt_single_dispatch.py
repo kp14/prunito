@@ -3,6 +3,7 @@ import pathlib
 import pytest
 from io import StringIO
 from prunito import uniprot as up
+from prunito.utils import WSResponse
 
 
 # Import paths for data files
@@ -25,6 +26,14 @@ def test_parser_with_StringIO():
         content = infile.read()
         stringio = StringIO(content)
     for record in up.parse_txt(stringio):
+        assert record.primary_accession == EXPECTED_ACC
+
+
+def test_parser_with_WSResponse():
+    mock = WSResponse(None)
+    with open(TEST_DATA_LOCATION, 'r') as infile:
+        mock.text = infile.read()
+    for record in up.parse_txt(mock):
         assert record.primary_accession == EXPECTED_ACC
 
 
