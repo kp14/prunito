@@ -4,6 +4,7 @@ This module provides concrete implementations for accessing EBI
 webservices. It also provides a base class that can be subclassed.
 """
 import time
+import warnings
 from lxml import etree
 import requests
 from .utils import NoDataError, WSResponse
@@ -124,11 +125,16 @@ class EBIWebService():
         return WSResponse(result)
 
     def _run(self, data):
-        self._start_job(data)
-        while not self._finished:
-            time.sleep(self._seconds_before_checking_again)
-            self._is_job_finished()
-        return self._retrieve_job_results()
+        if not EBIWebService.email:
+            print('No email address for EBI web service set.\n'
+                  'This is required for the services to work.\n'
+                  'Use set_email() to provide an email address.')
+        else:
+            self._start_job(data)
+            while not self._finished:
+                time.sleep(self._seconds_before_checking_again)
+                self._is_job_finished()
+            return self._retrieve_job_results()
 
     def __call__(self, *args, **kwargs):
         """Override to provide data and signature."""
@@ -249,6 +255,9 @@ class SeqChecksum(EBIWebService):
 
     def __call__(self, seq, cksmethod='spcrc', stype='protein', **kwargs):
         """Generate checksums for protein/nucleotide sequences.
+
+        The default method generates a CRC64 checksum like it is used in
+        UniProtKB.
 
         Args:
             seq (str): Sequence in FASTA format.
