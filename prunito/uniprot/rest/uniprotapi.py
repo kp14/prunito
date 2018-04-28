@@ -37,6 +37,10 @@ class WSResponseUniprot(WSResponse):
                 return date_in_header
 
     def size(self):
+        """Number of query hits."""
+        return self.__len__()
+
+    def __len__(self):
         return int(self.response.headers['x-total-results'])
 
 
