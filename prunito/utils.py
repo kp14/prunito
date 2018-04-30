@@ -355,17 +355,12 @@ class WSResponseUniprot(WSResponse):
     def release(self):
         return self.response.headers['x-uniprot-release']
 
-    def date(self):
-        full_date = '%a, %d %b %Y %H:%M:%S GMT'
-        simple_date = '%d %b %Y'
+    def date(self, as_text=True):
         date_in_header = self.response.headers['last-modified']
-        try:
-            return datetime.datetime.strptime(date_in_header, full_date)
-        except ValueError:
-            try:
-                return datetime.datetime.strptime(date_in_header[5:16], simple_date)
-            except ValueError:
-                return date_in_header
+        if as_text:
+            return date_in_header
+        else:
+            return _convert_date_string(date_in_header)
 
     def size(self):
         """Number of query hits."""
@@ -398,3 +393,13 @@ class ExcessiveDataError(Exception):
                'Limit: {0}. Actual hits: {1}. '
                'Please adjust limit or query.')
         return msg.format(str(self.limit), str(self.actual))
+
+
+def _convert_date_string(date_string):
+    """Try and convert date into datetime object"""
+    full_date = '%a, %d %b %Y %H:%M:%S GMT'
+    simple_date = '%d %b %Y'
+    try:
+        return datetime.datetime.strptime(date_string, full_date)
+    except ValueError:
+        return datetime.datetime.strptime(date_string[5:16], simple_date)
