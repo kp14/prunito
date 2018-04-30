@@ -422,10 +422,21 @@ class WSResponseEPMC(WSResponse):
 
 
 class WSResponseTax(WSResponse):
-    """Provides special methods for tax nodes."""
+    """Taxonomy nodes via Proteins API.
+
+    Query results are always retrieved as JSON. If
+    there are any hits at all, these are provided as a list
+    in the JSON which is why we can easily iterate over or
+    slice them. Note that other sequence operations might
+    not be supported.
+    """
 
     def __init__(self, response):
         super().__init__(response)
+
+    def size(self):
+        """Number of tax nodes contained in results."""
+        return self.__len__()
 
     def __len__(self):
         return len(self.response.json()['taxonomies'])
