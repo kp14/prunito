@@ -348,14 +348,38 @@ class WSResponse():
 
 
 class WSResponseUniprot(WSResponse):
+    """Results from uniprot.org REST API.
+
+    In addition to what WSResponse provides, a few custom methods are
+    implemented for getting the UniProtKB release date, the release
+    number or the number of hits in a query. Although search results
+    are basically sequence-like (and __len__ is implemented) making
+    all the sequence methods available would necessitate parsing the
+    results first which, given the various formats, is why it is not
+    implemented for now.
+
+    As WSResponse wraps requests.Response, attributes not found in the
+    former will be passed on to the latter. So, the results can be
+    accessed as text via the attribute `text`, the URL as `url` etc.
+    """
 
     def __init__(self, response):
         super().__init__(response)
 
     def release(self):
+        """Return UniProt release, eg. 2017_09."""
         return self.response.headers['x-uniprot-release']
 
     def date(self, as_text=True):
+        """Return date of UniProt release.
+
+        Args:
+            as_text (bool): Whether to return the date as a string.
+                If false, convert to datetime object.
+
+        Returns:
+            str or datetime object
+        """
         date_in_header = self.response.headers['last-modified']
         if as_text:
             return date_in_header
@@ -371,6 +395,14 @@ class WSResponseUniprot(WSResponse):
 
 
 class WSResponseEPMC(WSResponse):
+    """Results from europePMC REST API.
+
+    For europePMC, results are always retrieved as JSON. If
+    there are any hits at all, these are provided as a list
+    in the JSON which is why we can easily iterate over or
+    slice them. Note that other sequence operations might
+    not be supported.
+    """
 
     def __init__(self, response):
         super().__init__(response)
