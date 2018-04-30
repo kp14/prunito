@@ -16,31 +16,38 @@ session = requests.Session()
 
 
 def current_release():
-    """Convenience function to get current public release of UniProtKB.
+    """Get current public release of UniProtKB.
 
     Each response returned by a UniProt query also contains this info.
     Releases are specified as <year>_<release>, e.g. 2016_02.
     There are 11 or 12 releases per calendar year.
 
     Returns:
-        WSResponseUniprot object (use methods release() and date())
+        str
 
     """
     # Release number contained in request header
     # So we retrieve a random human entry and look up the value
-    payload = {"query": "organism:9606 AND reviewed:yes",
-               "random": "yes",
-               'format': 'list',
-               }
-    with session.get(UNIPROT_KNOWLEDGEBASE, params=payload) as result:
-        if result.ok:
-            return result.headers['x-uniprot-release']
-        else:
-            result.raise_for_status()
+    r = search_reviewed('*', random='yes', frmt='list')
+    return r.release()
+
+
+def current_release_date(as_text=True):
+    """Get date of current public release.
+
+    Args:
+        as_text (bool): Whether to return the date as a string.
+            If false, convert to datetime object.
+
+    Returns:
+        str or datetime object
+    """
+    r = search_reviewed('*', random='yes', frmt='list')
+    return r.date(as_text=as_text)
 
 
 def search_reviewed(query, **kwargs):
-    '''Convenience function for searching reviewed UniProtKB only.
+    '''Search reviewed UniProtKB only.
 
     See documentation for search() for details.
 
@@ -57,7 +64,7 @@ def search_reviewed(query, **kwargs):
 
 
 def search_unreviewed(query, **kwargs):
-    '''Convenience function for searching unreviewed UniProtKB only.
+    '''Search unreviewed UniProtKB only.
 
     See documentation for search() for details.
 
@@ -137,7 +144,10 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
             Defaults to False.
 
     Returns:
-        str or None: Data, if any.
+        WSResponseUniprot
+
+    Raises:
+        NoDataError
     '''
     payload = {'query':' '.join(ac_list),
                'format':frmt}
@@ -162,7 +172,7 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
         target_fmt (str): Target format. Default: xml.
 
     Returns:
-        str: Converted data.
+        WSResponseUniprot
     '''
     payload = {'type': 'uniprot',
                'from': source_fmt,
