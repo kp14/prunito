@@ -13,7 +13,7 @@ session = requests.Session()
 def retrieve(identifier, fmt='fasta'):
     '''Retrieve data based on an ENA identifier.
 
-    This is intended for ENA accession numbers and proteinIDs but I guess it
+    This is intended for ENA accession numbers and protein IDs but I guess it
     should work for assembly metadata (e.g. GCA_001521735) or BioProject metadata
     (PRJNA301708), too. Not sure how useful the latter are though.
 
@@ -22,7 +22,7 @@ def retrieve(identifier, fmt='fasta'):
         fmt (str, optional): Retrieval format. Can be fasta, text, xml. Defaults to fasta.
 
     Returns:
-        Data linked to identifier (str)
+        WSResponse
 
     Raises:
         NoDataError: If no data are returned

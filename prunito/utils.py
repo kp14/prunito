@@ -346,6 +346,14 @@ class WSResponse():
         """
         return io.StringIO(self.text)
 
+    def __repr__(self):
+        return '<{0}(requests.get({1}))'.format(self.__class__.__qualname__,
+                                                self.response.url)
+
+    def __str__(self):
+        return '{0} instance based on request\n{1}'.format(self.__class__.__qualname__,
+                                                           self.response.url)
+
 
 class WSResponseUniprot(WSResponse):
     """Results from uniprot.org REST API.
