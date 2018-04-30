@@ -421,6 +421,22 @@ class WSResponseEPMC(WSResponse):
         return self.response.json()['resultList']['result'].__getitem__(item)
 
 
+class WSResponseTax(WSResponse):
+    """Provides special methods for tax nodes."""
+
+    def __init__(self, response):
+        super().__init__(response)
+
+    def __len__(self):
+        return len(self.response.json()['taxonomies'])
+
+    def __iter__(self):
+        return self.response.json()['taxonomies'].__iter__()
+
+    def __getitem__(self, item):
+        return self.response.json()['taxonomies'].__getitem__(item)
+
+
 class NoDataError(Exception):
 
     def __init__(self, status_code):

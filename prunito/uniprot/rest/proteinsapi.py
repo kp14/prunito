@@ -1,20 +1,12 @@
 import requests
-from ...utils import PROTEINS_API_TAXONOMY, NoDataError, WSResponse
+from ...utils import (PROTEINS_API_TAXONOMY,
+                      NoDataError,
+                      WSResponse,
+                      WSResponseTax
+                      )
 
 
 session = requests.Session()
-
-class WSTaxResponse(WSResponse):
-    """Provides special methods for tax nodes."""
-
-    def __init__(self, response):
-        super().__init__(response)
-
-    def iter_nodes(self):
-        """Iterate over nodes in json content."""
-        for node in self.json()['taxonomies']:
-            yield node
-
 
 def get_info_on_taxID(taxID):
     """Get details about one taxonomic node as identified by a taxID.
@@ -53,7 +45,7 @@ def get_info_on_taxIDs(taxIDs):
             Items in iterable can be string or integer.
 
     Yields:
-        WSTaxResponse object
+        WSResponseTax object
 
     Raises:
         ValueError: If taxIDs are not provided as list or tuple.
@@ -64,7 +56,7 @@ def get_info_on_taxIDs(taxIDs):
     else:
         ids_stringified = ','.join([str(item) for item in taxIDs])
         headers = {'Accept': 'application/json'}
-        r = WSTaxResponse(session.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers))
+        r = WSResponseTax(session.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers))
         try:
             _ = r.json()['taxonomies']
         except KeyError:
@@ -91,7 +83,7 @@ def get_lineage_for_taxID(taxID):
         NoDataError: If the taxID is invalid or nonexistent.
     """
     headers = {'Accept': 'application/json'}
-    r = WSTaxResponse(session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers))
+    r = WSResponseTax(session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers))
     try:
         _ = r.json()['taxonomies']
     except KeyError:
