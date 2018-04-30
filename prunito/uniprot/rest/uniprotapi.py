@@ -1,5 +1,3 @@
-import datetime
-import io
 import requests
 from collections import defaultdict
 
@@ -10,38 +8,11 @@ from ...utils import (UNIPROT_KNOWLEDGEBASE,
                       VALID_ID_MAPPINGS,
                       NoDataError,
                       ExcessiveDataError,
-                      WSResponse,
+                      WSResponseUniprot,
                       )
 
 
 session = requests.Session()
-
-class WSResponseUniprot(WSResponse):
-
-    def __init__(self, response):
-        super().__init__(response)
-
-    def release(self):
-        return self.response.headers['x-uniprot-release']
-
-    def date(self):
-        full_date = '%a, %d %b %Y %H:%M:%S GMT'
-        simple_date = '%d %b %Y'
-        date_in_header = self.response.headers['last-modified']
-        try:
-            return datetime.datetime.strptime(date_in_header, full_date)
-        except ValueError:
-            try:
-                return datetime.datetime.strptime(date_in_header[5:16], simple_date)
-            except ValueError:
-                return date_in_header
-
-    def size(self):
-        """Number of query hits."""
-        return self.__len__()
-
-    def __len__(self):
-        return int(self.response.headers['x-total-results'])
 
 
 def current_release():
