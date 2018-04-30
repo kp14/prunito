@@ -326,19 +326,6 @@ class WSResponse():
         except AttributeError:
             return getattr(self, item)
 
-    def list(self):
-        """Return the response text content as a Python list.
-
-        Obviously, this only makes sense if the content is list-like
-        in the first place. Like when you download a list of UniProt
-        accessions.
-
-        Returns:
-            list
-        """
-        l = self.response.text.strip().split('\n')
-        return [x for x in l if x]
-
     def as_file_object(self):
         """Return string content wrapped in ioStringIO.
         Returns:
