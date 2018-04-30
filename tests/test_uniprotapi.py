@@ -1,5 +1,6 @@
 import datetime
 import io
+import re
 import pytest
 from prunito.uniprot import (map_to_or_from_uniprot, search, current_release,
                              search_reviewed, search_unreviewed)
@@ -21,6 +22,11 @@ def test_map_to_or_from_uniprot():
     r = map_to_or_from_uniprot(['2KLE'], 'pdb_id', 'acc')
     assert r.map['2KLE'] == ['Q13563']
 
+
+def test_current_release():
+    regex = '20[0-9]{2}_[0,1][1-9]'
+    r = current_release()
+    assert re.match(regex, r)
 
 def test_current_release_as_attribute():
     r = current_release()

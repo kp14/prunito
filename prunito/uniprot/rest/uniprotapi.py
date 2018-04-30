@@ -34,7 +34,7 @@ def current_release():
                }
     with session.get(UNIPROT_KNOWLEDGEBASE, params=payload) as result:
         if result.ok:
-            return WSResponseUniprot(result)
+            return result.headers['x-uniprot-release']
         else:
             result.raise_for_status()
 
@@ -42,15 +42,11 @@ def current_release():
 def search_reviewed(query, **kwargs):
     '''Convenience function for searching reviewed UniProtKB only.
 
-    Accepts standard UniProtKB query syntax, so queries can be tested
-    on the uniprot.org website.
+    See documentation for search() for details.
 
     Args:
         query (str): UniProtKB query string.
-        frmt (str; optional): Format for results.
-            Can be txt, xml, rdf, fasta. Defaults to txt.
-        file_handle (bool): Whether to wrap returned string in StringIO.
-            Defaults to False.
+        **kwargs: Various parameters for the REST API.
 
     Returns:
         WSResponseUniprot object
@@ -63,15 +59,11 @@ def search_reviewed(query, **kwargs):
 def search_unreviewed(query, **kwargs):
     '''Convenience function for searching unreviewed UniProtKB only.
 
-    Accepts standard UniProtKB query syntax, so queries can be tested
-    on the uniprot.org website.
+    See documentation for search() for details.
 
     Args:
         query (str): UniProtKB query string.
-        frmt (str; optional): Format for results.
-            Can be txt, xml, rdf, fasta. Defaults to txt.
-        file_handle (bool): Whether to wrap returned string in StringIO.
-            Defaults to False.
+        **kwargs: Various parameters for the REST API.
 
     Returns:
         WSResponseUniprot object
@@ -81,7 +73,7 @@ def search_unreviewed(query, **kwargs):
     return search(query, **kwargs)
 
 
-def search(query, frmt='txt', limit=500):
+def search(query, frmt='txt', limit=500, **kwargs):
     '''Search UniProtKB.
 
         Accepts standard UniProtKB query syntax, so queries can be tested
@@ -89,11 +81,25 @@ def search(query, frmt='txt', limit=500):
         part of the query, all of UniProtKB is searched, which means there
         could be very many hits.
 
+        Additional parameters which can be used:
+        random: yes/no. Retrieve one random entry from query set.
+        columns: comma-separated list of UniProtKB field names for use with
+            tab-separated format. There must not be any empty spaces around the
+            commas. Example values: citation, clusters, comments,
+            ec, comment(FUNCTION), features, feature(ACTIVE SITE). For a
+            complete overview, go here: https://www.uniprot.org/help/uniprotkb_column_names
+        include: yes/no. Include isoform sequences when format=fasta.
+        compress: yes/no. Return results gzipped.
+        offset: integer. Offset of the first result, typically used together with
+            the limit parameter.
+
         Args:
             query (str): UniProtKB query string.
             frmt (str; optional): Format for results.
-                Can be txt, xml, rdf, fasta. Defaults to txt.
+                Can be txt, xml, rdf, fasta, tab, list. Defaults to txt.
             limit (int): Maximum number of hits to retrieve. Default is 500.
+            **kwargs: The REST API accepts a number of further parameters. See
+                doc string above for details.
 
         Returns:
             WSResponseUniprot object
@@ -105,6 +111,7 @@ def search(query, frmt='txt', limit=500):
     fmt = frmt.lower()
     _check_format(fmt)
     payload = {'query':query, 'format':fmt}
+    payload.update(**kwargs)
     with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as r:
         result = WSResponseUniprot(r)
         if result.ok:
