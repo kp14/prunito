@@ -370,6 +370,25 @@ class WSResponseUniprot(WSResponse):
         return int(self.response.headers['x-total-results'])
 
 
+class WSResponseEPMC(WSResponse):
+
+    def __init__(self, response):
+        super().__init__(response)
+
+    def size(self):
+        """Number of query hits."""
+        return self.__len__()
+
+    def __len__(self):
+        return self.response.json()['hitCount']
+
+    def __iter__(self):
+        return self.response.json()['resultList']['result'].__iter__()
+
+    def __getitem__(self, item):
+        return self.response.json()['resultList']['result'].__getitem__(item)
+
+
 class NoDataError(Exception):
 
     def __init__(self, status_code):

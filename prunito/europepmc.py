@@ -3,7 +3,7 @@
 import requests
 from collections import OrderedDict
 from urllib.parse import urlencode
-from .utils import EPMC_SEARCH, WSResponse, NoDataError
+from .utils import EPMC_SEARCH, WSResponseEPMC, NoDataError
 
 
 def search(query, result_type='lite', page_size=25):
@@ -30,7 +30,7 @@ def search(query, result_type='lite', page_size=25):
             retrieve in each page. Max: 1000, Default: 25.
 
     Returns:
-        WSResponse
+        WSResponseEPMC
     """
     # Normal dict did not work as parameters were shuffled
     payload = OrderedDict()
@@ -38,7 +38,7 @@ def search(query, result_type='lite', page_size=25):
     payload['format'] = 'json'
     payload['resulttype'] = result_type
     payload['pageSize'] = page_size
-    result = WSResponse(requests.get(EPMC_SEARCH + urlencode(payload)))
+    result = WSResponseEPMC(requests.get(EPMC_SEARCH + urlencode(payload)))
     if result.ok:
         if not result.json()['hitCount'] == 0:
             return result
