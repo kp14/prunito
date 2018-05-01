@@ -6,7 +6,7 @@ import sys
 import time
 
 from .uniprot import search
-from .utils import EBI_HMMER, NoDataError, WSResponse
+from .utils import EBI_HMMER, NoDataError, WSResponseHmmer
 try:
     import venndy.draw as vd
 except ImportError:
@@ -55,7 +55,7 @@ def search_phmmer(seq, database='swissprot', fmt='json', hits=10, alignments=Fal
                          'range': '1,{}'.format(str(hits)),
                          'ali': alignments,
                          }
-        return WSResponse(interpro_session.get(url4results, params=output_values))
+        return WSResponseHmmer(interpro_session.get(url4results, params=output_values))
     else:
         posted.raise_for_status()
 

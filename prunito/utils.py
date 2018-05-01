@@ -3,7 +3,13 @@
 import datetime
 import io
 import re
+import warnings
 from enum import Enum
+
+try:
+    import pandas as pd
+except ImportError:
+    warnings.warn('Pandas not available. Exporting to dataframes will not be possible.')
 
 ##############################################################
 # Base URLs for various resources
@@ -380,6 +386,85 @@ class WSResponseEPMC(WSResponse):
 
     def __getitem__(self, item):
         return self.response.json()['resultList']['result'].__getitem__(item)
+
+
+class WSResponseHmmer(WSResponse):
+    """Results from InterPro HMMER searches.
+
+    For these, results are always retrieved as JSON. If
+    there are any hits at all, these are provided as a list
+    in the JSON which is why we can easily iterate over or
+    slice them. Note that other sequence operations might
+    not be supported.
+    """
+
+    def __init__(self, response):
+        super().__init__(response)
+
+    def size(self):
+        """Number of query hits."""
+        return self.__len__()
+
+    def summary(self, as_dataframe=False):
+        """Return a summary of the hits.
+
+        A select few fields are collated in a tabular fashion.
+        These fields are UniProt accession, ID, protein name,
+        e-value, species and kingdom.
+
+        Returns:
+            str
+        """
+        return self.__str__()
+
+    def as_dataframe(self):
+        """Return a summary of the hits as a dataframe.
+
+        A select few fields are collated in a tabular fashion.
+        These fields are UniProt accession, ID, protein name,
+        e-value, species and kingdom.
+
+        Returns:
+            pandas.Dataframe
+        """
+        return pd.read_csv(self._collate_summary(), sep='\t', header=0)
+
+    def _collate_summary(self):
+        """Return a summary of the hits.
+
+        A select few fields are collated in a tabular fashion.
+        These fields are UniProt accession, ID, protein name,
+        e-value, species and kingdom.
+
+        Returns:
+            io.StringIO instance
+        """
+        field_names = ('acc2', 'acc', 'desc', 'species', 'kg', 'evalue')
+        summary = io.StringIO()
+        summary.write('\t'.join(field_names))
+        summary.write('\n')
+        for hit in self.__iter__():
+            fields = []
+            for fn in field_names:
+                fields.append(hit[fn])
+            fields.append('\n')
+            summary.write('\t'.join(fields))
+        summary.seek(0)
+        return summary
+
+    def __str__(self):
+        summary = self._collate_summary()
+        return summary.getvalue()
+
+
+    def __len__(self):
+        return len(self.response.json()['results']['hits'])
+
+    def __iter__(self):
+        return self.response.json()['results']['hits'].__iter__()
+
+    def __getitem__(self, item):
+        return self.response.json()['results']['hits'].__getitem__(item)
 
 
 class WSResponseTax(WSResponse):
