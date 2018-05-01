@@ -206,6 +206,19 @@ class InterProXrefs(Enum):
         '''
         self.regex = re.compile(pattern)
 
+
+GFF_COLUMNS = ('acc',
+               'source',
+               'type',
+               'start',
+               'end',
+               'score',
+               'strand',
+               'phase',
+               'attributes',
+               )
+
+
 VALID_ID_MAPPINGS = {'ACC',
                     'ID',
                     'UPARC',

@@ -1,15 +1,22 @@
-import requests
+import io
+import warnings
 from collections import defaultdict
+import requests
 from ..parsers.parser_knowledgebase_txt import parse_txt
 from ...utils import (UNIPROT_KNOWLEDGEBASE,
                       UNIPROT_BATCH,
                       UNIPROT_CONVERT,
                       UNIPROT_MAP,
+                      GFF_COLUMNS,
                       VALID_ID_MAPPINGS,
                       NoDataError,
                       WSResponse,
                       _convert_date_string,
                       )
+try:
+    import pandas as pd
+except ImportError:
+    warnings.warn('Pandas not available. Exporting to dataframes will not be possible.')
 
 
 session = requests.Session()
@@ -20,11 +27,11 @@ class WSResponseUniprot(WSResponse):
 
     In addition to what WSResponse provides, a few custom methods are
     implemented for getting the UniProtKB release date, the release
-    number or the number of hits in a query. Although search results
-    are basically sequence-like (and __len__ is implemented) making
-    all the sequence methods available would necessitate parsing the
-    results first which, given the various formats, is why it is not
-    implemented for now.
+    number or the number of hits in a query. As search results
+    are basically sequence-like--we expect one or more hits after all--
+    __len__ is implemented as well as __iter__ for formats we can easily
+    parse. For tabular data, export as a dataframe is possible if pandas
+    is available.
 
     As WSResponse wraps requests.Response, attributes not found in the
     former will be passed on to the latter. So, the results can be
@@ -39,18 +46,18 @@ class WSResponseUniprot(WSResponse):
         """Return UniProt release, eg. 2017_09."""
         return self.response.headers['x-uniprot-release']
 
-    def date(self, as_text=True):
+    def date(self, as_datetime=False):
         """Return date of UniProt release.
 
         Args:
-            as_text (bool): Whether to return the date as a string.
-                If false, convert to datetime object.
+            as_datetime (bool): Whether to return the date as a datetime object.
+                If true, convert to datetime object.
 
         Returns:
             str or datetime object
         """
         date_in_header = self.response.headers['last-modified']
-        if as_text:
+        if not as_datetime:
             return date_in_header
         else:
             return _convert_date_string(date_in_header)
@@ -58,6 +65,29 @@ class WSResponseUniprot(WSResponse):
     def size(self):
         """Number of query hits."""
         return self.__len__()
+
+    def as_dataframe(self):
+        """Return tabular results as dataframe.
+
+        This is only relevant for formats list, tab and gff.
+
+        Returns:
+            pandas.Dataframe
+        """
+        if self._iter_type == 'list':
+            return pd.read_csv(self.as_file_object(), sep=',', header=None)
+        elif self._iter_type == 'tab':
+            return pd.read_csv(self.as_file_object(), sep='\t', header=0)
+        elif self._iter_type == 'gff':
+            temp = io.StringIO()
+            for line in self.as_file_object():
+                if not line.startswith('#'):
+                    temp.write(line)
+            temp.seek(0)
+            return pd.read_csv(temp, sep='\t', header=None, names=GFF_COLUMNS)
+        else:
+            msg = 'Dataframes not supported for non-tabular data: {}'.format(self._iter_type)
+            raise NotImplementedError(msg)
 
     def __len__(self):
         return int(self.response.headers['x-total-results'])
@@ -83,7 +113,6 @@ def current_release():
 
     Returns:
         str
-
     """
     # Release number contained in request header
     # So we retrieve a random human entry and look up the value
@@ -91,18 +120,21 @@ def current_release():
     return r.release()
 
 
-def current_release_date(as_text=True):
+def current_release_date(as_datetime=False):
     """Get date of current public release.
 
+    The current release date is available from every UniProt
+    query result. So this is just a convenience function.
+
     Args:
-        as_text (bool): Whether to return the date as a string.
-            If false, convert to datetime object.
+        as_datetime (bool): Whether to return the date as a datetime object.
+            If true, convert to datetime object.
 
     Returns:
         str or datetime object
     """
     r = search_reviewed('*', random='yes', frmt='list')
-    return r.date(as_text=as_text)
+    return r.date(as_text=as_datetime)
 
 
 def search_reviewed(query, **kwargs):
