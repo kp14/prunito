@@ -42,4 +42,5 @@ be taken care of by running the usual pip command:
 
 * `requests <http://docs.python-requests.org/en/master/>`_
 * `lxml <http://lxml.de/>`_
+* `pandas <https://pandas.pydata.org/>`_ (optional)
 * `venndy <https://github.com/kp14/venndy>`_ (optional)

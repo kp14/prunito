@@ -8,14 +8,21 @@ Welcome to prunito's documentation!
 A package providing tools for accessing and working with protein sequences and associated data.
 The focus is on data from the `UniProt Knowledgebase <https://www.uniprot.org>`_.
 This is reflected in the package name which is an anagram of UniProt.
-In addition to UniProt data, a few tools for accessing and/or working data from `EuropePMC <https://europepmc.org/>`_,
-`InterPro <https://www.ebi.ac.uk/interpro/>`_ and `ENA <https://www.ebi.ac.uk/ena>`_ are provided.
+UniProt has two sets of REST services, `uniprot.org <https://www.uniprot.org>`_ and the newer
+`proteins API <https://www.ebi.ac.uk/proteins/api/doc/>`_.
+Additionally, a few tools for accessing services or working with data from the following resources are provided:
+
+* `EuropePMC <https://europepmc.org/>`_
+* `InterPro <https://www.ebi.ac.uk/interpro/>`_
+* `ENA <https://www.ebi.ac.uk/ena>`_
+* `EBI web services <https://www.ebi.ac.uk/seqdb/confluence/display/JDSAT/Job+Dispatcher+Sequence+Analysis+Tools+Home>`_
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
    installation
+   uniprot_searching
    uniprot_ff_parser
    api
 
