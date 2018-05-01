@@ -67,8 +67,8 @@ class WSResponseUniprot(WSResponse):
             for entry in parse_txt(self):
                 yield entry
         elif self._iter_type in ('tab', 'list', 'gff'):
-            for line in self.text.split('\n'):
-                yield line
+            for line in self.as_file_object():
+                yield line.strip()
         else:
             msg = 'Iteration not implemented for format: '.format(self._iter_type)
             raise NotImplementedError(msg)
