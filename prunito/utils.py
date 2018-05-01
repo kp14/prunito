@@ -408,19 +408,6 @@ class NoDataError(Exception):
         return msg.format(str(self.status_code))
 
 
-class ExcessiveDataError(Exception):
-
-    def __init__(self, limit, actual):
-        self.limit = limit
-        self.actual = actual
-
-    def __str__(self):
-        msg = ('Number of hits exceeds limit. '
-               'Limit: {0}. Actual hits: {1}. '
-               'Please adjust limit or query.')
-        return msg.format(str(self.limit), str(self.actual))
-
-
 def _convert_date_string(date_string):
     """Try and convert date into datetime object"""
     full_date = '%a, %d %b %Y %H:%M:%S GMT'

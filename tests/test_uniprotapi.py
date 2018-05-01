@@ -4,7 +4,7 @@ import re
 import pytest
 from prunito.uniprot import (map_to_or_from_uniprot, search, current_release,
                              search_reviewed, search_unreviewed)
-from prunito.utils import NoDataError, ExcessiveDataError
+from prunito.utils import NoDataError
 
 
 def test_map_to_or_from_uniprot_invalid_format():
@@ -53,11 +53,6 @@ def test_search_reviewed():
 def test_search_unreviewed_no_reviewed_specified():
     r = search_unreviewed('taxonomy:191813 AND name:cytochrome')
     assert 'Unreviewed;' in r.text
-
-
-def test_search_over_limit():
-    with pytest.raises(ExcessiveDataError):
-        _ = search('name:kinase')
 
 
 def test_search_no_results():

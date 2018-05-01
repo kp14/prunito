@@ -7,7 +7,6 @@ from ...utils import (UNIPROT_KNOWLEDGEBASE,
                       UNIPROT_MAP,
                       VALID_ID_MAPPINGS,
                       NoDataError,
-                      ExcessiveDataError,
                       WSResponse,
                       _convert_date_string,
                       )
@@ -140,7 +139,7 @@ def search_unreviewed(query, **kwargs):
     return search(query, **kwargs)
 
 
-def search(query, frmt='txt', limit=500, **kwargs):
+def search(query, frmt='txt', limit=2000, **kwargs):
     '''Search UniProtKB.
 
         Accepts standard UniProtKB query syntax, so queries can be tested
@@ -164,7 +163,7 @@ def search(query, frmt='txt', limit=500, **kwargs):
             query (str): UniProtKB query string.
             frmt (str; optional): Format for results.
                 Can be txt, xml, rdf, fasta, tab, list. Defaults to txt.
-            limit (int): Maximum number of hits to retrieve. Default is 500.
+            limit (int): Maximum number of hits to retrieve. Default is 2000.
             **kwargs: The REST API accepts a number of further parameters. See
                 doc string above for details.
 
@@ -173,23 +172,21 @@ def search(query, frmt='txt', limit=500, **kwargs):
 
         Raises:
             NoDataError: If no results are returned.
-            ExcessiveDataError: If number of hits > limit.
         '''
     fmt = frmt.lower()
     _check_format(fmt)
-    payload = {'query':query, 'format':fmt}
+    payload = {'query':query, 'format':fmt, 'limit':limit}
     payload.update(**kwargs)
     with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as r:
         result = WSResponseUniprot(r)
         result._iter_type = fmt
         if result.ok:
             if result.size() > limit:
-                raise ExcessiveDataError(limit, result.size())
-            elif result.size() == 0:
-                raise NoDataError(result.status_code)
-            else:
-                _ = result.content
-                return result
+                msg = ('Partial dataset retrieved. Size: {0}. Retrieved: {1}.\n'
+                      'Consider increasing the limit and/or using offset.')
+                print(msg.format(result.size(), limit))
+            _ = result.content
+            return result
         else:
             raise NoDataError(result.status_code)
 

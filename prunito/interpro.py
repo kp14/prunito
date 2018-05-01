@@ -6,7 +6,7 @@ import sys
 import time
 
 from .uniprot import search
-from .utils import EBI_HMMER, NoDataError, ExcessiveDataError, WSResponse
+from .utils import EBI_HMMER, NoDataError, WSResponse
 try:
     import venndy.draw as vd
 except ImportError:
@@ -107,7 +107,5 @@ def uniprot_hits_for_interpro(signature):
         result = search(signature, frmt='list')
     except NoDataError:
         return set()
-    except ExcessiveDataError:
-        raise
     else:
-        return set(result.list())
+        return set(result)
