@@ -8,7 +8,7 @@ import time
 from .uniprot import search
 from .utils import EBI_HMMER, NoDataError, WSResponseHmmer
 try:
-    import venndy.draw as vd
+    import venndy as vd
 except ImportError:
     import warnings
     msg = ('Package venndy not installed. '
@@ -80,7 +80,7 @@ def draw_signature_overlaps(list_of_signatures, mode='save'):
 
     if mode == 'ipython':
         try:
-            from IPython.display import SVG
+            from IPython.core.display import SVG
             return SVG(data=rendered_diagram)
         except ImportError:
             sys.exit('Drawing depends on IPython.')
