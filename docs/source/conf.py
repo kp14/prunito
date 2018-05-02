@@ -5,6 +5,7 @@
 # This file does only contain a selection of the most common options. For a
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/stable/config
+import prunito
 
 # -- Path setup --------------------------------------------------------------
 
@@ -24,9 +25,9 @@ copyright = '2018, kp14'
 author = 'kp14'
 
 # The short X.Y version
-version = ''
+version = prunito.__version__
 # The full version, including alpha/beta/rc tags
-release = '0.91.0'
+release = prunito.__version__
 
 
 # -- General configuration ---------------------------------------------------
@@ -72,6 +73,16 @@ exclude_patterns = []
 
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
+
+# --------- MY STUFF -----------------------------------------------------
+rst_epilog = """
+.. |up| replace:: UniProt
+.. _up: https://www.uniprot.org
+.. |upkb| replace:: UniProtKB
+.. _upkb: https://www.uniprot.org
+.. |papi| replace:: Proteins API
+.. _papi: https://www.ebi.ac.uk/proteins/api
+"""
 
 
 # -- Options for HTML output -------------------------------------------------

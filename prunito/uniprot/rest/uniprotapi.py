@@ -180,16 +180,17 @@ def search(query, frmt='txt', limit=2000, **kwargs):
         could be very many hits.
 
         Additional parameters which can be used:
-        random: yes/no. Retrieve one random entry from query set.
-        columns: comma-separated list of UniProtKB field names for use with
-            tab-separated format. There must not be any empty spaces around the
-            commas. Example values: citation, clusters, comments,
-            ec, comment(FUNCTION), features, feature(ACTIVE SITE). For a
-            complete overview, go here: https://www.uniprot.org/help/uniprotkb_column_names
-        include: yes/no. Include isoform sequences when format=fasta.
-        compress: yes/no. Return results gzipped.
-        offset: integer. Offset of the first result, typically used together with
-            the limit parameter.
+
+        * random: yes/no. Retrieve one random entry from query set.
+        * columns: comma-separated list of UniProtKB field names for use with
+          tab-separated format. There must not be any empty spaces around the
+          commas. Example values: citation, clusters, comments,
+          ec, comment(FUNCTION), features, feature(ACTIVE SITE). For a
+          complete overview, go here: https://www.uniprot.org/help/uniprotkb_column_names
+        * include: yes/no. Include isoform sequences when format=fasta.
+        * compress: yes/no. Return results gzipped.
+        * offset: integer. Offset of the first result, typically used together with
+          the limit parameter.
 
         Args:
             query (str): UniProtKB query string.

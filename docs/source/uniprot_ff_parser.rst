@@ -1,4 +1,4 @@
-.. uniprot_ff_parser:
+.. _uniprot_ff_parser:
 
 UniProtKB flat file parser
 ==========================
