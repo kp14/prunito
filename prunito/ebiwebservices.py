@@ -2,6 +2,9 @@
 
 This module provides concrete implementations for accessing EBI
 webservices. It also provides a base class that can be subclassed.
+
+Swagger docs:
+https://www.ebi.ac.uk/Tools/common/tools/help/index.html
 """
 import time
 import warnings
