@@ -6,10 +6,10 @@
 Welcome to prunito's documentation!
 ===================================
 A package providing tools for accessing and working with protein sequences and associated data.
-The focus is on data from the `UniProt Knowledgebase <https://www.uniprot.org>`_.
+The focus is on data from the |upkb|_.
 This is reflected in the package name which is an anagram of UniProt.
 UniProt has two sets of REST services, `uniprot.org <https://www.uniprot.org>`_ and the newer
-`proteins API <https://www.ebi.ac.uk/proteins/api/doc/>`_.
+|papi|_.
 Additionally, a few tools for accessing services or working with data from the following resources are provided:
 
 * `EuropePMC <https://europepmc.org/>`_
@@ -22,6 +22,7 @@ Additionally, a few tools for accessing services or working with data from the f
    :caption: Contents:
 
    installation
+   quick_start
    uniprot_searching
    uniprot_ff_parser
    api
