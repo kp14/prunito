@@ -1,7 +1,7 @@
 .. _quick_start:
 
 Quick start
-==========
+===========
 
 First, import the relevant package:
 

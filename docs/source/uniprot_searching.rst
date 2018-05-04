@@ -86,6 +86,13 @@ A few example queries:
     result = up.search_reviewed('name:laccase', frmt='tab', columns='id,entry name,comment(FUNCTION),ec')
 
 
+.. _looking-at-results:
+
+Looking at results
+------------------
+
+
+
 .. _mapping-identifiers:
 
 Mapping identifiers

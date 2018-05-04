@@ -23,6 +23,7 @@ Additionally, a few tools for accessing services or working with data from the f
 
    installation
    quick_start
+   result_model
    uniprot_searching
    uniprot_ff_parser
    uniprot_classic_api
