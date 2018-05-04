@@ -25,7 +25,7 @@ Additionally, a few tools for accessing services or working with data from the f
    quick_start
    result_model
    uniprot_searching
-   uniprot_ff_parser
+   uniprot_parsers
    uniprot_classic_api
    uniprot_proteins_api
    utilities_api
