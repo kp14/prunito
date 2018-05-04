@@ -4,7 +4,7 @@ Installing prunito
 ==================
 
 Prunito is packaged as a wheel and can be installed using `pip <https://pip.pypa.io/en/stable/>`_.
-This will also install all the dependencies.
+This will also install all the (mandatory) dependencies.
 Python >=3.6 is required.
 As usual, it probably best to install prunito and its dependencies into a dedicated virtual environment.
 
@@ -12,13 +12,13 @@ As usual, it probably best to install prunito and its dependencies into a dedica
 
     Using ``conda`` from the `Anaconda Python distribution <https://www.continuum.io/downloads>`_ :
 
-        * Create a new environment (env) called *prunito* which runs Python 3.6 and has ``pip`` installed::
+        * Create a new environment (e.g. called *myenv*) which runs Python 3.6 and has ``pip`` installed::
 
-            conda create -n prunito python=3.6 pip
+            conda create -n myenv python=3.6 pip
 
         * Activate the env::
 
-            conda activate prunito
+            conda activate myenv
 
     Using *venv* in a regular Python installation. Python is usually available out of the box on Linux:
 
@@ -26,9 +26,9 @@ As usual, it probably best to install prunito and its dependencies into a dedica
 
             python --version
 
-        * Create a new environment (env) called *prunito*. ``ensurepip`` will bootstrap pip into the env::
+        * Create a new environment (e.g. called *myenv*). ``ensurepip`` will bootstrap pip into the env::
 
-            pyvenv /path/to/new/virtual/environment/prunito
+            pyvenv /path/to/new/virtual/environment/myenv
 
 #. Install prunito with its dependencies::
 

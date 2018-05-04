@@ -61,15 +61,15 @@ especially when learning.
 There is a `help page <https://www.uniprot.org/help/advanced_search>`_ listing all the possible fields for the
 advanced search.
 
-There is really only one function for searching, :py:func:`prunito.uniprot.rest.uniprotapi.search`.
+There is really only one function for searching, ``search()``.
 A query string is the only mandatory parameter.
 In that case full |upkb| entries in text (flat file) format are retrieved.
 The default limit is 2000 entries; this can be changed, of course.
 
 For convenience, methods limiting results to reviewed (i.e. Swiss-Prot) or unreviewed (i.e. TrEMBL) entries can be
 used.
-Unsurprisingly, these are :py:func:`prunito.uniprot.rest.uniprotapi.search_reviewed` and
-:py:func:`prunito.uniprot.rest.uniprotapi.search_unreviewed`.
+Unsurprisingly, these are ``search_reviewed`` and ``search_unreviewed``.
+Refer to the :ref:`uniprot_classic_api` docs for more information.
 
 A few example queries:
 
@@ -110,6 +110,7 @@ Identifiers that could not be mapped will be silently ignored, i.e., there won't
 in the result set.
 
 A full list of sources, targets and their abbreviations can be found `here <https://www.uniprot.org/help/api_idmapping>`_.
+Refer to the :ref:`uniprot_classic_api` docs for more information.
 
 .. _converting-formats:
 
@@ -119,6 +120,7 @@ Converting between different UniProt formats
 I don't think this is used much.
 One could, for example, convert the text version of a |up| entry into XML.
 The text entry would have to be without any errors though for this to work.
+Refer to the :ref:`uniprot_classic_api` docs for more information.
 
 .. _retrieving-batches:
 
@@ -126,6 +128,7 @@ Retrieving batches of entries
 -----------------------------
 
 If one already has a list of |up| accessions these can be retrieved using the batch functionality.
+Refer to the :ref:`uniprot_classic_api` docs for more information.
 
 .. code-block:: python
 
@@ -143,6 +146,7 @@ taxonomy IDs are given.
 Here, the |papi| comes to the rescue, allowing e.g. retrieval of information on particular nodes or
 entire lineages of a given taxonomy node, including IDs.
 Results from |papi| are always retreived in JSON format and taxonomy nodes can be iterated over.
+Refer to the :ref:`uniprot_proteins_api` docs for more information.
 
 .. code-block:: python
 
