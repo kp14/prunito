@@ -68,7 +68,7 @@ The default limit is 2000 entries; this can be changed, of course.
 
 For convenience, methods limiting results to reviewed (i.e. Swiss-Prot) or unreviewed (i.e. TrEMBL) entries can be
 used.
-Unsurprisingly, these are ``search_reviewed`` and ``search_unreviewed``.
+Unsurprisingly, these are ``search_reviewed()`` and ``search_unreviewed()``.
 Refer to the :ref:`uniprot_classic_api` docs for more information.
 
 A few example queries:
@@ -91,6 +91,7 @@ A few example queries:
 Looking at results
 ------------------
 
+The section on :ref:`dealing with results <result_model>` explains the basics.
 
 
 .. _mapping-identifiers:
@@ -106,15 +107,13 @@ mapping from PDB to Ensembl is s two-step process.
 
 .. code-block:: python
 
+    # Map PDB -> UniProt
     up_from_pdb = up.map_to_or_from_uniprot(['1YWT', '3SMN', '4F3L', '1ES7', '2KDD'], 'PDB_ID', 'ACC')
+    # Map UniProt -> Ensembl
     ensembl = up.map_to_or_from_uniprot(up_from_pdb.target_ids(), 'ACC', 'ENSEMBL_ID')
 
-Results for mapping calls are returned as a table with two columns, *From* and *To*.
-This table can be accessed as text via ``up_from_pdb.text``, the lines can be iterated over but,
-for convenience, a dictionary of the results is prepared as ``up_from_pdb.as_dict()`` and the
-target IDs as ``up_from_pdb.target_ids()``.
-Identifiers that could not be mapped will be silently ignored, i.e., there won't be any mappings
-in the result set.
+From the result, the target IDs that the original set has been mapped to, are available as
+a list via ``up_from_pdb.target_ids()``.
 
 A full list of sources, targets and their abbreviations can be found `here <https://www.uniprot.org/help/api_idmapping>`_.
 Refer to the :ref:`uniprot_classic_api` docs for more information.
