@@ -243,6 +243,7 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
     payload = {'query':' '.join(ac_list),
                'format':frmt}
     result = WSResponseUniprot(session.get(UNIPROT_BATCH, params=payload))
+    result._iter_type = frmt
     if result.ok:
         if len(result.content) > 0:
             return result
@@ -375,6 +376,7 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
                'query': id_list,
                }
     response = WSResponseUniprot(session.get(UNIPROT_MAP, params=payload))
+    response._iter_type = 'tab'
     if response.ok:
         response.map = _convert2dict(response)
         return response
@@ -385,9 +387,8 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
 def _convert2dict(response):
     """Convert the text body to a dict."""
     mapped = defaultdict(list)
-    lines = iter(response.list())
-    lines.__next__()  # skip header
-    for line in lines:
+    lines = list(response)
+    for line in lines[1:]: # skip header
         try:
             source, target = line.strip().split('\t')
         except ValueError:

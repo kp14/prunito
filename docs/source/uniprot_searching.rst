@@ -102,6 +102,12 @@ mapping from PDB to Ensembl is s two-step process.
     up_from_pdb = up.map_to_or_from_uniprot(['1abc', '5ukz', '3tui'], 'PDB_ID', 'ACC')
     ensembl = up.map_to_or_from_uniprot(list(up_from_pdb), 'ACC', 'ENSEMBL_ID')
 
+Results for mapping calls are returned as a table with two columns, *From* and *To*.
+This table can be accessed as text via up_from_pdb.text, the lines can be iterated over but,
+for convenience, a dictionary of the results is prepared as up_from_pdb.map.
+Identifiers that could not be mapped will be silently ignored, i.e., there won't be any mappings
+in the result set.
+
 A full list of sources, targets and their abbreviations can be found `here <https://www.uniprot.org/help/api_idmapping>`_.
 
 .. _converting-formats:
@@ -121,9 +127,68 @@ Retrieving batches of entries
 If one already has a list of |up| accessions these can be retrieved using the batch functionality.
 
 .. code-block:: python
+
     result = up.retrieve_batch(['P12345', 'P12344'], frmt='txt')
 
 .. _getting-taxonomy:
 
 Retrieving taxonomy data
 ------------------------
+
+Although |up| entries contain taxonomy data--an NCBI taxonomy ID, a species name and an abbreviated lineage--
+extracting the information from, say, the text version is cumbersome.
+In addition, the information will be incomplete (abbreviated lineage) and for nodes in the lineage no
+taxonomy IDs are given.
+Here, the |papi| comes to the rescue, allowing e.g. retrieval of information on particular nodes or
+entire lineages of a given taxonomy node, including IDs.
+Results from |papi| are always retreived in JSON format and taxonomy nodes can be iterated over.
+
+.. code-block:: python
+
+    from prunito import uniprot as up
+
+    result = up.get_lineage_for_taxID('9606'):
+    for node in result:
+        print(node)
+
+.. parsed-literal::
+
+    {'taxonomyId': 9606, 'scientificName': 'Homo sapiens'}
+    {'taxonomyId': 9605, 'scientificName': 'Homo'}
+    {'taxonomyId': 207598, 'scientificName': 'Homininae'}
+    {'taxonomyId': 9604, 'scientificName': 'Hominidae'}
+    ...
+
+Details of a single taxonomy ID can also be retrieved:
+
+.. code-block:: python
+
+    hs = up.get_info_on_taxID('9606')
+    print(hs.json())
+
+.. parsed-literal::
+
+    {'childrenLinks': ['https://www.ebi.ac.uk/proteins/api/taxonomy/id/741158',
+                   'https://www.ebi.ac.uk/proteins/api/taxonomy/id/63221'],
+     'commonName': 'Human',
+     'mnemonic': 'HUMAN',
+     'parentLink': 'https://www.ebi.ac.uk/proteins/api/taxonomy/id/9605',
+     'rank': 'species',
+     'scientificName': 'Homo sapiens',
+     'siblingsLinks': ['https://www.ebi.ac.uk/proteins/api/taxonomy/id/1425170'],
+     'superregnum': 'E',
+     'taxonomyId': 9606}
+
+If the same is needed for several IDs:
+
+.. code-block:: python
+
+    several_nodes = up.get_info_on_taxIDs(['9606', '6237', '83333'])
+    for node in several:
+        print(node['scientificName'], node['taxonomyId'], len(node['childrenLinks']))
+
+.. parsed-literal::
+
+    Homo sapiens 9606 2
+    Caenorhabditis 6237 51
+    Escherichia coli (strain K12) 83333 13
