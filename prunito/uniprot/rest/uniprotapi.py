@@ -1,4 +1,5 @@
 import io
+import itertools
 import warnings
 from collections import defaultdict
 import requests
@@ -102,6 +103,36 @@ class WSResponseUniprot(WSResponse):
         else:
             msg = 'Iteration not implemented for format: '.format(self._iter_type)
             raise NotImplementedError(msg)
+
+
+class WSResponseUniprotMapping(WSResponseUniprot):
+    """Results from calling UniProt identifier mapping."""
+
+    def __init__(self, response):
+        super().__init__(response)
+
+    def as_dict(self):
+        """Return mapping results as a dictionary."""
+        mapped = defaultdict(list)
+        lines = list(self)
+        for line in lines[1:]:  # skip header
+            try:
+                source, target = line.strip().split('\t')
+            except ValueError:
+                raise
+            else:
+                mapped[source].append(target)
+        return mapped
+
+    def target_ids(self):
+        """Return mapped-to target IDs as a list.
+
+        Elements in the list will be unique.
+
+        Returns:
+            list (str)
+        """
+        return list(set(itertools.chain.from_iterable(self.as_dict().values())))
 
 
 def current_release():
@@ -375,27 +406,12 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
                'format': 'tab',
                'query': id_list,
                }
-    response = WSResponseUniprot(session.get(UNIPROT_MAP, params=payload))
+    response = WSResponseUniprotMapping(session.get(UNIPROT_MAP, params=payload))
     response._iter_type = 'tab'
     if response.ok:
-        response.map = _convert2dict(response)
         return response
     else:
         response.raise_for_status()
-
-
-def _convert2dict(response):
-    """Convert the text body to a dict."""
-    mapped = defaultdict(list)
-    lines = list(response)
-    for line in lines[1:]: # skip header
-        try:
-            source, target = line.strip().split('\t')
-        except ValueError:
-            raise
-        else:
-            mapped[source].append(target)
-    return mapped
 
 
 def _validate_mapping_partners(source, target):

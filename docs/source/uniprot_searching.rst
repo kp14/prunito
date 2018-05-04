@@ -99,12 +99,13 @@ mapping from PDB to Ensembl is s two-step process.
 
 .. code-block:: python
 
-    up_from_pdb = up.map_to_or_from_uniprot(['1abc', '5ukz', '3tui'], 'PDB_ID', 'ACC')
-    ensembl = up.map_to_or_from_uniprot(list(up_from_pdb), 'ACC', 'ENSEMBL_ID')
+    up_from_pdb = up.map_to_or_from_uniprot(['1YWT', '3SMN', '4F3L', '1ES7', '2KDD'], 'PDB_ID', 'ACC')
+    ensembl = up.map_to_or_from_uniprot(up_from_pdb.target_ids(), 'ACC', 'ENSEMBL_ID')
 
 Results for mapping calls are returned as a table with two columns, *From* and *To*.
-This table can be accessed as text via up_from_pdb.text, the lines can be iterated over but,
-for convenience, a dictionary of the results is prepared as up_from_pdb.map.
+This table can be accessed as text via ``up_from_pdb.text``, the lines can be iterated over but,
+for convenience, a dictionary of the results is prepared as ``up_from_pdb.as_dict()`` and the
+target IDs as ``up_from_pdb.target_ids()``.
 Identifiers that could not be mapped will be silently ignored, i.e., there won't be any mappings
 in the result set.
 
