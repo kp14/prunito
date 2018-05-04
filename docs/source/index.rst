@@ -28,6 +28,7 @@ Additionally, a few tools for accessing services or working with data from the f
    uniprot_ff_parser
    uniprot_classic_api
    uniprot_proteins_api
+   utilities_api
 
 
 

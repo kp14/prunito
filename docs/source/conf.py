@@ -85,7 +85,10 @@ rst_epilog = """
 .. _papi: https://www.ebi.ac.uk/proteins/api
 """
 
-intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/3', None),
+    'requests': ('http://docs.python-requests.org/en/master/', None),
+}
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
