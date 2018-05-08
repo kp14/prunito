@@ -5,7 +5,7 @@
 # This file does only contain a selection of the most common options. For a
 # full list see the documentation:
 # http://www.sphinx-doc.org/en/stable/config
-import prunito
+
 
 # -- Path setup --------------------------------------------------------------
 
@@ -25,9 +25,9 @@ copyright = '2018, kp14'
 author = 'kp14'
 
 # The short X.Y version
-version = prunito.__version__
+version = ''
 # The full version, including alpha/beta/rc tags
-release = prunito.__version__
+release = ''
 
 
 # -- General configuration ---------------------------------------------------
