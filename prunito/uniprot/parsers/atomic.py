@@ -10,12 +10,94 @@ annotations. I call these atomic annotations.
 import hashlib
 import re
 from collections import defaultdict
+import peewee
 from ...utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
 
 
 ECO_PTRN = re.compile('ECO:[0-9]{7}')
 
-class Evidence(object):
+db = peewee.SqliteDatabase(':memory:')
+
+class MyBaseModel(peewee.Model):
+    class Meta:
+        database = db
+
+
+class Entity(MyBaseModel):
+    identifier = peewee.CharField(max_length=50, unique=True)
+
+
+class Statement(MyBaseModel):
+    type = peewee.CharField(max_length=50)
+    value = peewee.BlobField()
+    start = peewee.IntegerField(default=0)
+    end = peewee.IntegerField(default=0)
+    # checksum = peewee.CharField(max_length=100, unique=True)
+
+    class Meta:
+        indexes = (
+            # Specify a unique multi-column index on from/to-user.
+            (('type', 'value', 'start', 'end'), True),
+        )
+
+    def __unicode__(self):
+        return '{}-{}'.format(self.type, self.value)
+
+
+class Evidence(MyBaseModel):
+    code = peewee.CharField(max_length=11, default='ECO:0000000')
+    source = peewee.CharField(max_length=50, default='')
+    # checksum = peewee.CharField(max_length=100, unique=True, default=_checksum_ev)
+
+    class Meta:
+        indexes = (
+            # Specify a unique multi-column index on from/to-user.
+            (('code', 'source'), True),
+        )
+
+    def is_sim(self):
+        return self.code == 'ECO:0000250'
+
+    def is_exp(self):
+        return self.code == 'ECO:0000269'
+
+    def _is_auto(self):
+        return self.code in ['ECO:0000256', 'ECO:0000259', 'ECO:0000244']
+
+    def __unicode__(self):
+        return '{}-{}'.format(str(self.code), str(self.source))
+
+
+class Annotation(MyBaseModel):
+    entity = peewee.ForeignKeyField(Entity, backref='annotations')
+    statement = peewee.ForeignKeyField(Statement)
+    evidence = peewee.ForeignKeyField(Evidence)
+
+    class Meta:
+        indexes = (
+            # Specify a unique multi-column index on from/to-user.
+            (('entity', 'statement', 'evidence'), True),
+        )
+
+    def value(self):
+        return self.statement.value
+
+    def type(self):
+        return self.statement.field_type
+
+    def evidence_code(self):
+        return self.evidence.code
+
+    def source(self):
+        return self.evidence.source
+
+    def __unicode__(self):
+        return '{0}, {1}, {2}'.format(self.entity.identifier,
+                                      self.statement.__unicode__(),
+                                      self.evidence.__unicode__())
+
+
+class EvidenceOld(object):
     """Evidence as defined by Evidence Code Ontology.
     
     Args:
@@ -55,7 +137,7 @@ class Evidence(object):
         return hashlib.md5(s.encode()).hexdigest()
 
 
-class Statement(object):
+class StatementOld(object):
     """A statement or assertion that can be made about an entity.
     
     Args:
@@ -88,7 +170,7 @@ class Statement(object):
         return hashlib.md5(s.encode()).hexdigest()
 
 
-class Annotation(object):
+class AnnotationOld(object):
     """An annotation as used in UniProtKB.
     
     Args:
