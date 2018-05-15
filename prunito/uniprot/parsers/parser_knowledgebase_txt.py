@@ -8,7 +8,6 @@ from collections import defaultdict, namedtuple
 from functools import singledispatch
 from io import TextIOWrapper, StringIO
 from pathlib import Path
-from .atomic import APile
 from ...utils import EC_REGEX, WSResponse
 
 
@@ -521,29 +520,6 @@ def parse_txt_compatible(handle):
                   DeprecationWarning)
     for entry in parse_txt(handle):
         yield entry
-
-
-def parse_txt_atomic(source):
-    """Parse annotations from the UniProtKB flat file format.
-
-    All the line types currently found in UniProtKB entries are  parsed,
-    including ** comments which are sometimes found.
-
-    source: source containing one or more UniProtKB
-            entries. Can be a file object, file name/path string,
-            a pathlib.Path instance or a WSResponse object, i.e.,
-            the result of a prunito.uniprot.search() call can be
-            fed directly into the parser
-
-    Returns:
-        APile instance; this is a container for Annotation instances,
-        where each Annotations consists of a Statement, Evidence attached
-        to an entity.
-    """
-    pile = APile()
-    for entry in parse_txt(source):
-        pile.consume(entry)
-    return pile
 
 
 def _set_up():
