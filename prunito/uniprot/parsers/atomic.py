@@ -107,15 +107,19 @@ def parse_txt_atomic(source):
     UniProtKB entries are  parsed, including ** comments which are
     sometimes found.
 
-    source: source containing one or more UniProtKB
-            entries. Can be a file object, file name/path string,
-            a pathlib.Path instance or a WSResponse object, i.e.,
-            the result of a prunito.uniprot.search() call can be
-            fed directly into the parser
+    TODO: parser for cofactor
+    TODO: include keywords (but they are not really annotations but labels)
+
+    Args:
+        source: source containing one or more UniProtKB
+                entries. Can be a file object, file name/path string,
+                a pathlib.Path instance or a WSResponse object, i.e.,
+                the result of a prunito.uniprot.search() call can be
+                fed directly into the parser
 
     Returns:
-
-
+            Model classes should be loaded to query the in-memory
+            database.
     """
     db.connect()
     db.create_tables([Entity, Statement, Evidence, Annotation])
