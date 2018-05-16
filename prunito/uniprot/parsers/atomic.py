@@ -27,6 +27,9 @@ class MyBaseModel(peewee.Model):
 
 class Entity(MyBaseModel):
     identifier = peewee.CharField(max_length=50, unique=True)
+    taxonomy_id = peewee.CharField()
+    organism = peewee.CharField()
+    name = peewee.CharField()
 
 
 class Statement(MyBaseModel):
@@ -124,7 +127,10 @@ def parse_txt_atomic(source):
     db.connect()
     db.create_tables([Entity, Statement, Evidence, Annotation])
     for entry in parse_txt(source):
-        entity, _ = Entity.get_or_create(identifier=entry.primary_accession)
+        entity, _ = Entity.get_or_create(identifier=entry.primary_accession,
+                                         taxonomy_id=entry.taxonomy_id,
+                                         organism=entry.organism,
+                                         name=entry.recommended_full_name)
         for comment in entry.comments:
             typ, value = comment.split(': ', maxsplit=1)
             parser2use = _get_specific_parser(comment)
