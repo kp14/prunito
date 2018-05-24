@@ -35,14 +35,12 @@ class Entity(MyBaseModel):
 class Statement(MyBaseModel):
     type = peewee.CharField(max_length=50)
     value = peewee.BlobField()
-    start = peewee.IntegerField(default=0)
-    end = peewee.IntegerField(default=0)
     # checksum = peewee.CharField(max_length=100, unique=True)
 
     class Meta:
         indexes = (
             # Specify a unique multi-column index on from/to-user.
-            (('type', 'value', 'start', 'end'), True),
+            (('type', 'value'), True),
         )
 
     def __unicode__(self):
@@ -77,11 +75,13 @@ class Annotation(MyBaseModel):
     entity = peewee.ForeignKeyField(Entity, backref='annotations')
     statement = peewee.ForeignKeyField(Statement)
     evidence = peewee.ForeignKeyField(Evidence)
+    start = peewee.IntegerField(default=0)
+    end = peewee.IntegerField(default=0)
 
     class Meta:
         indexes = (
             # Specify a unique multi-column index on from/to-user.
-            (('entity', 'statement', 'evidence'), True),
+            (('entity', 'statement', 'evidence', 'start', 'end'), True),
         )
 
     def value(self):
@@ -182,7 +182,7 @@ def _parse_feature(feature, entity):
             text = description
             evs = None
     value = typ + ' ' + text
-    statement , _ = Statement.get_or_create(type=typ, value=value, start=start, end=end)
+    statement , _ = Statement.get_or_create(type=typ, value=value)
     if evs:
         evidences = []
         for token in evs.rstrip('}.').split(', '):
@@ -195,12 +195,16 @@ def _parse_feature(feature, entity):
         for ev in evidences:
             yield Annotation(entity=entity,
                              statement=statement,
-                             evidence=ev)
+                             evidence=ev,
+                             start=start,
+                             end=end)
     else:
         ev, _ = Evidence.get_or_create()
         yield Annotation(entity=entity,
                          statement=statement,
-                         evidence=ev)
+                         evidence=ev,
+                         start=start,
+                         end=end)
 
 
 def _parse_freetext(typ, value, entity):
