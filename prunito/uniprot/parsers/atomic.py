@@ -15,6 +15,32 @@ from ...utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
 
 ECO_PTRN = re.compile('ECO:[0-9]{7}')
 
+class Entity(object):
+    """Biological entity which has annotations."""
+
+    def __init__(self):
+        self.identifier = None
+        self.name = None
+        self.taxonomy_id = None
+        self.organism = None
+        self.sequence = None
+
+    @classmethod
+    def from_prunito(cls, record):
+        """Create instance from a prunito Record object.
+        """
+        instance = cls()
+        instance.identifier = record.primary_accession
+        instance.name = record.recommended_full_name
+        instance.organism = record.organism
+        instance.taxonomy_id = record.taxonomy_id
+        instance.sequence = record.sequence
+        return instance
+
+    def __str__(self):
+        return '{0}|{1}'.format(self.identifier, self.taxonomy_id)
+
+
 class Evidence(object):
     """Evidence as defined by Evidence Code Ontology.
     
@@ -27,7 +53,7 @@ class Evidence(object):
     def __init__(self, code='ECO:0000000', source=None):
         if not re.match(ECO_PTRN, code):
             self.code='ECO:0000000'
-            raise ValueError('Invalid ECO code: {}'.format(code))
+            # raise ValueError('Invalid ECO code: {}'.format(code))
         else:
             self.code = code
         self.source = source
@@ -92,7 +118,7 @@ class Annotation(object):
     """An annotation as used in UniProtKB.
     
     Args:
-        entity (str): The entity an annotation is attached to, a UniProtKB accession.
+        entity (:obj:`Entity`): The entity an annotation is attached to, a UniProtKB accession.
         stmnt (:obj:`Statement`): The value/type of the annotation statement, e.g. Has xyz activity.
         evidence (:obj:`Evidence`, optional): Evidence for the statement.
     
@@ -134,7 +160,7 @@ class Annotation(object):
             return None
 
     def __str__(self):
-        return '{en}: {st} - {ev}'.format(en=self.entity,
+        return '{en}: {st} - {ev}'.format(en=self.entity.__str__(),
                                           st=self._statement.__str__(),
                                           ev=self.evidence.__str__(),
                                           )
@@ -272,6 +298,7 @@ class AtomicParser():
 
     def __init__(self, entry):
         self.entry = entry
+        self.entity = Entity.from_prunito(entry)
         self._mapper = {'intera': self._parse_interaction,
                        'subcel': self._parse_subcellular_location,
                        'cofact': self._parse_cofactor,
@@ -291,34 +318,24 @@ class AtomicParser():
         for feature in self.entry.features:
             for annotation in self._parse_feature(feature):
                 yield annotation
+        for kw in self.entity.keywords:
+            yield Annotation(self.entity,
+                             Statement(kw, 'keyword'),
+                             )
 
     def _parse_feature(self, feature):
         typ, start, stop, description, _ = feature
-        try:
-            text, evs = description.split('. {')
-        except ValueError:
-            if description.startswith('{'):
-                text = ''
-                evs = description[1:]
-            else:
-                text = description
-                evs = None
+        evidences = extract_evidences(description)
+        text = extract_ft_description(description)
         value = typ + ' ' + text
-        if evs:
-            evidences = []
-            for token in evs.rstrip('}.').split(', '):
-                try:
-                    code, source = token.split('|')
-                except ValueError:
-                    code, source = token, None
-                evidences.append(Evidence(code=code, source=source))
-            for ev in evidences:
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(value, typ),
-                                 evidence=ev)
-        else:
-            yield Annotation(self.entry.primary_accession,
+        if not evidences:
+            yield Annotation(self.entity,
                              Statement(value, typ))
+        else:
+            for e in evidences:
+                yield Annotation(self.entity,
+                                 Statement(value, typ),
+                                 evidence=e)
 
     def _parse_freetext(self, typ, value):
         """Extract Annotations from freetext comments.
@@ -330,7 +347,7 @@ class AtomicParser():
         Return:
               Annotation instances
         """
-        evidences = self._extract_evidences(value)
+        evidences = extract_evidences(value)
         # There might not be any tags, we provide a token one
         if not evidences:
             evidences.append(Evidence())
@@ -353,52 +370,39 @@ class AtomicParser():
             text = s.split(' (PubMed:')[0]
             for ev in evidences:
                 if ev.source in s:
-                    yield Annotation(self.entry.primary_accession,
+                    yield Annotation(self.entity,
                                       Statement(text, typ),
                                       evidence=ev)
         for s in from_sim:
             text = s.split(' (By sim')[0]
             sim_tags = [tag for tag in evidences if tag.is_sim()]
             if len(sim_tags) == 1:
-                yield Annotation(self.entry.primary_accession,
+                yield Annotation(self.entity,
                                  Statement(text, typ),
                                  evidence=sim_tags[0])
             else:
-                yield Annotation(self.entry.primary_accession,
+                yield Annotation(self.entity,
                                  Statement(text, typ),
                                  evidence=Evidence(code='ECO:0000250'))
         for s in from_unclear:
             text = s.rstrip('. ')
             if not from_sim and not from_pubmed and len(evidences) == 1:# 1 tag applicable to all
-                yield Annotation(self.entry.primary_accession,
+                yield Annotation(self.entity,
                                  Statement(text, typ),
                                  evidence=evidences[0])
             elif len(evidences) > 1 and len(set([e.code for e in evidences])) == 1:# 1 type of tag applicable to all but unclear source
                 this_code = evidences[0].code
-                yield Annotation(self.entry.primary_accession,
+                yield Annotation(self.entity,
                                  Statement(text, typ),
                                  evidence=Evidence(code=this_code))
             elif len(evidences) > 1 and len(set([e.code for e in evidences])) > 1 and from_sim:
                 code = list(set([e.code for e in evidences if not e.code == 'ECO:0000250']))[0]# a hack
-                yield Annotation(self.entry.primary_accession,
+                yield Annotation(self.entity,
                                  Statement(text, typ),
                                  evidence=Evidence(code=code))
             else:
-                yield Annotation(self.entry.primary_accession,
+                yield Annotation(self.entity,
                                  Statement(text, typ))
-
-
-
-    def _extract_evidences(self, blob):
-        evidences = []
-        for match in re.finditer(UNIPROT_EVIDENCE_REGEX, blob):
-            ev_string = match.group()
-            try:
-                code, source = ev_string.split('|')
-            except ValueError:
-                code, source = ev_string, None
-            evidences.append(Evidence(code=code, source=source))
-        return evidences
 
     def _automatic_tags(self, list_of_evidences):
         auto_only = [tag for tag in list_of_evidences if tag.is_auto()]
@@ -417,38 +421,6 @@ class AtomicParser():
             if tag.source == pubmed:
                 return tag
                 break
-
-        # body_and_ev = value.split(' {')
-        # try:
-        #     body, ev = body_and_ev
-        # except ValueError:
-        #     print('Weird splitting pattern for comment: {} {}'.format(typ, value))
-        # else:
-        #     # handle evidences
-        #     evidences = []
-        #     for token in ev.rstrip('}.').split(', '):
-        #         try:
-        #             code, source = token.split('|')
-        #         except ValueError:
-        #             code, source = token, None
-        #         evidences.append(Evidence(code=code, source=source))
-        #     # handle statements
-        #     stmts = re.split('\. ', body)
-        #     for stmt in stmts:
-        #         text = re.split('\(PubMed:', stmt, 1)[0]
-        #         if len(evidences) == 1:
-        #             anno = Annotation(self.entry.primary_accession,
-        #                               Statement(text, typ),
-        #                               evidence=ev)
-        #             yield anno
-        #         else:
-        #             for ev in evidences:
-        #                 if ev.source in stmt:
-        #                     anno = Annotation(self.entry.primary_accession,
-        #                                       Statement(text, typ),
-        #                                       evidence=ev)
-        #                     yield anno
-
 
     def _parse_subcellular_location(self, typ, value):
         """Extract Annotations from subcellular location comments.
@@ -484,11 +456,11 @@ class AtomicParser():
                         code, source = token, None
                     evidences.append(Evidence(code=code, source=source))
                 for ev in evidences:
-                    yield Annotation(self.entry.primary_accession,
+                    yield Annotation(self.entity,
                                      Statement(loc, typ),
                                      evidence=ev)
             else:
-                yield Annotation(self.entry.primary_accession,
+                yield Annotation(self.entity,
                                  Statement(loc, typ))
 
 
@@ -516,3 +488,31 @@ class AtomicParser():
                   Annotation instances
             """
         pass
+
+    def _parse_keywords(self):
+        pass
+
+
+def extract_evidences(blob):
+    evidences = []
+    for match in re.finditer(UNIPROT_EVIDENCE_REGEX, blob):
+        ev_string = match.group()
+        try:
+            code, source = ev_string.split('|')
+        except ValueError:
+            code, source = ev_string, None
+        evidences.append(Evidence(code=code, source=source))
+    return evidences
+
+
+def extract_ft_description(blob):
+    if blob.startswith('{'):
+        return ''
+    else:
+        try:
+            text, _ = blob.split('. {')
+        except ValueError:
+            return blob
+        else:
+            return text
+
