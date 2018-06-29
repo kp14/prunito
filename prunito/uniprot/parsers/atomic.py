@@ -360,40 +360,65 @@ def _parse_subcellular_location(typ, value, entity):
     Return:
           Annotation instances
     """
+    locations, note = _split_subcellular_location(value)
     note = '' #TODO: Handle the Note
-    try:
-        locations_all, note = value.split('. Note=')
-    except ValueError: # there is no Note
-        locations = value.split('. ')
-    else:
-        locations = locations_all.split('. ')
     for location in locations:
-        try:
-            loc, evs = location.split(' {')
-        except ValueError:
-            loc = location
-            evs = None
-        statement, _ = Statement.get_or_create(type=typ, value=loc)
-        if evs:
-            evidences = []
-            for token in evs.rstrip('}.').split(', '):
-                try:
-                    code, source = token.split('|')
-                except ValueError:
-                    code, source = token, ''
-                ev, _ = Evidence.get_or_create(code=code, source=source)
-                evidences.append(ev)
-            for ev in evidences:
+        for component in _split_into_components(location):
+            try:
+                loc, evs = component.split(' {')
+            except ValueError:
+                loc = location
+                evs = None
+            statement, _ = Statement.get_or_create(type=typ, value=loc)
+            if evs:
+                evidences = []
+                for token in evs.rstrip('}.').split(', '):
+                    try:
+                        code, source = token.split('|')
+                    except ValueError:
+                        code, source = token, ''
+                    ev, _ = Evidence.get_or_create(code=code, source=source)
+                    evidences.append(ev)
+                for ev in evidences:
+                    yield Annotation(entity=entity,
+                                     statement=statement,
+                                     evidence=ev)
+            else:
+                ev, _ = Evidence.get_or_create()
                 yield Annotation(entity=entity,
                                  statement=statement,
                                  evidence=ev)
-        else:
-            ev, _ = Evidence.get_or_create()
-            yield Annotation(entity=entity,
-                             statement=statement,
-                             evidence=ev)
     if note:
         yield from _parse_freetext('SUBCELLULAR LOCATION', note, entity)
+
+
+def _split_subcellular_location(sub_cell_comment):
+    """Split subcellular location comment into principal components.
+
+    These are locations and possibly a free-text note. A location
+    has up to three parts - location, topology, orientation.
+
+    Returns:
+        locations (list(str)): a list of locations
+        note (str): free text note.
+    """
+    note = ''
+    try:
+        locations_all, note = sub_cell_comment.split('. Note=')
+    except ValueError:  # there is no Note
+        locations = sub_cell_comment.split('. ')
+    else:
+        locations = locations_all.split('. ')
+    return locations, note
+
+
+def _split_into_components(location):
+    """Subcellular locations may have several parts.
+
+    The location, topology and orientation, each with their
+    own evidence.
+    """
+    return location.split('; ')
 
 
 def _parse_cofactor(typ, value, entity):
