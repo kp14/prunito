@@ -28,11 +28,11 @@ UNIPROT_KEYWORD = '/'.join([UNIPROT_BASE, 'keywords'])
 # Example: http://www.uniprot.org/taxonomy/?query=bactus
 UNIPROT_TAXONOMY = '/'.join([UNIPROT_BASE, 'taxonomy'])
 
-UNIPROT_BATCH = '/'.join([UNIPROT_BASE, 'batch'])
+UNIPROT_BATCH = '/'.join([UNIPROT_BASE, 'uploadlists'])
 
 UNIPROT_CONVERT = '/'.join([UNIPROT_BASE, 'convert'])
 
-UNIPROT_MAP = '/'.join([UNIPROT_BASE, 'mapping'])
+UNIPROT_MAP = '/'.join([UNIPROT_BASE, 'uploadlists'])
 
 UNIPROT_UNIRULE = '/'.join([UNIPROT_BASE, 'unirule'])
 
