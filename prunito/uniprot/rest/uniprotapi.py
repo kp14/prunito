@@ -255,15 +255,13 @@ def search(query, frmt='txt', limit=2000, **kwargs):
             raise NoDataError(result.status_code)
 
 
-def retrieve_batch(ac_list, frmt='txt', file=False):
+def retrieve_batch(ac_list, frmt='txt'):
     '''Batch retrieval of uniProtKB entries.
 
     Args:
         ac_list (list): UniProtKB accessions
         frmt (str; optional): Format for results.
             Can be txt, xml, rdf, fasta. Defaults to txt.
-        file (bool): Whether to wrap returned string in StringIO.
-            Defaults to False.
 
     Returns:
         WSResponseUniprot
@@ -271,8 +269,12 @@ def retrieve_batch(ac_list, frmt='txt', file=False):
     Raises:
         NoDataError
     '''
-    payload = {'query':' '.join(ac_list),
-               'format':frmt}
+    id_list = ' '.join(ac_list)
+    payload = {'from': 'ACC',
+               'to': 'ACC',
+               'format': frmt,
+               'query': id_list,
+               }
     result = WSResponseUniprot(session.get(UNIPROT_BATCH, params=payload))
     result._iter_type = frmt
     if result.ok:
