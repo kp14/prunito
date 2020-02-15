@@ -7,6 +7,7 @@ from setuptools import setup
 
 here = os.path.abspath(os.path.dirname(__file__))
 
+
 def read(*parts):
     # Taken from pip setup.py
     # intentionally *not* adding an encoding option to open, See:
@@ -23,6 +24,7 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
+
 long_description = read('README.md')
 
 setup(name='prunito',
@@ -30,26 +32,29 @@ setup(name='prunito',
       description='A collection of tools for protein biocuration.',
       long_description=long_description,
       classifiers=[
-        'Development Status :: 4 - Beta',
-        'License :: Public Domain',
-        'Programming Language :: Python :: 3.6',
-        'Topic :: Scientific/Engineering :: Visualization',
+          'Development Status :: 4 - Beta',
+          'License :: Public Domain',
+          'Programming Language :: Python :: 3.6',
+          'Topic :: Scientific/Engineering :: Visualization',
       ],
       url='https://github.com/kp14/prunito',
       author='kp14',
       author_email='',
       license='Public Domain',
-      packages=['prunito',
-                'prunito/distil',
-                'prunito/uniprot',
-                'prunito/uniprot/parsers',
-                'prunito/uniprot/rest',],
-      install_requires=['requests',
-                        'lxml',
-                        'pandas',
-                        ],
-      tests_require = [
-            'pytest',
-            'biopython',
-            ],
+      packages=[
+          'prunito',
+          'prunito/distil',
+          'prunito/uniprot',
+          'prunito/uniprot/parsers',
+          'prunito/uniprot/rest',
+      ],
+      install_requires=[
+          'requests',
+          'lxml',
+          'pandas',
+      ],
+      tests_require=[
+          'pytest',
+          'biopython',
+      ],
       include_package_data=True)
