@@ -7,20 +7,20 @@ from prunito.utils import WSResponse
 
 # Import paths for data files
 base_dir = os.path.dirname(__file__)
-filename = 'one_sp_entry.txl'
-TEST_DATA_LOCATION = os.path.join(base_dir, 'SwissProt', filename)
+filename = "one_sp_entry.txl"
+TEST_DATA_LOCATION = os.path.join(base_dir, "SwissProt", filename)
 
-EXPECTED_ACC = 'Q6E804'
+EXPECTED_ACC = "Q6E804"
 
 
 def test_parser_with_file_object():
-    with open(TEST_DATA_LOCATION, 'r') as infile:
+    with open(TEST_DATA_LOCATION, "r") as infile:
         for record in up.parse_txt(infile):
             assert record.primary_accession == EXPECTED_ACC
 
 
 def test_parser_with_StringIO():
-    with open(TEST_DATA_LOCATION, 'r') as infile:
+    with open(TEST_DATA_LOCATION, "r") as infile:
         content = infile.read()
         stringio = StringIO(content)
     for record in up.parse_txt(stringio):
@@ -29,7 +29,7 @@ def test_parser_with_StringIO():
 
 def test_parser_with_WSResponse():
     mock = WSResponse(None)
-    with open(TEST_DATA_LOCATION, 'r') as infile:
+    with open(TEST_DATA_LOCATION, "r") as infile:
         mock.text = infile.read()
     for record in up.parse_txt(mock):
         assert record.primary_accession == EXPECTED_ACC
@@ -53,7 +53,7 @@ def test_parser_with_unsupported_parameter_int():
 
 
 def test_parser_with_unsupported_parameter_dict():
-    d = {1: 'some'}
+    d = {1: "some"}
     with pytest.raises(NotImplementedError):
         for record in up.parse_txt(d):
             pass

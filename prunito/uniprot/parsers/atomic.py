@@ -12,7 +12,7 @@ import re
 from collections import defaultdict
 from ...utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
 
-ECO_PTRN = re.compile('ECO:[0-9]{7}')
+ECO_PTRN = re.compile("ECO:[0-9]{7}")
 
 
 class Evidence(object):
@@ -24,26 +24,26 @@ class Evidence(object):
         id: md5 signature
     """
 
-    def __init__(self, code='ECO:0000000', source=None):
+    def __init__(self, code="ECO:0000000", source=None):
         if not re.match(ECO_PTRN, code):
-            self.code = 'ECO:0000000'
-            raise ValueError('Invalid ECO code: {}'.format(code))
+            self.code = "ECO:0000000"
+            raise ValueError("Invalid ECO code: {}".format(code))
         else:
             self.code = code
         self.source = source
         self.id = self._calculate_id()
 
     def is_sim(self):
-        return self.code == 'ECO:0000250'
+        return self.code == "ECO:0000250"
 
     def is_exp(self):
-        return self.code == 'ECO:0000269'
+        return self.code == "ECO:0000269"
 
     def _is_auto(self):
-        return self.code in ['ECO:0000256', 'ECO:0000259', 'ECO:0000244']
+        return self.code in ["ECO:0000256", "ECO:0000259", "ECO:0000244"]
 
     def __str__(self):
-        return '{}-{}'.format(str(self.code), str(self.source))
+        return "{}-{}".format(str(self.code), str(self.source))
 
     def _calculate_id(self):
         """Calculate ID, a digest of object values.
@@ -76,7 +76,7 @@ class Statement(object):
         self.id = self._calculate_id()
 
     def __str__(self):
-        return '{}-{}'.format(self.type, self.value)
+        return "{}-{}".format(self.type, self.value)
 
     def _calculate_id(self):
         """Calculate digest of value and type.
@@ -134,10 +134,8 @@ class Annotation(object):
             return None
 
     def __str__(self):
-        return '{en}: {st} - {ev}'.format(
-            en=self.entity,
-            st=self._statement.__str__(),
-            ev=self.evidence.__str__(),
+        return "{en}: {st} - {ev}".format(
+            en=self.entity, st=self._statement.__str__(), ev=self.evidence.__str__(),
         )
 
     def __eq__(self, other):
@@ -262,7 +260,7 @@ class APile(object):
         return iter(self._annotations)
 
 
-class AtomicParser():
+class AtomicParser:
     """Parse Biopython-type record entries into atomic annotations.
 
     Args:
@@ -274,18 +272,17 @@ class AtomicParser():
     def __init__(self, entry):
         self.entry = entry
         self._mapper = {
-            'intera': self._parse_interaction,
-            'subcel': self._parse_subcellular_location,
-            'cofact': self._parse_cofactor,
-            'domain': self._parse_freetext,
-            'ptm': self._parse_freetext,
+            "intera": self._parse_interaction,
+            "subcel": self._parse_subcellular_location,
+            "cofact": self._parse_cofactor,
+            "domain": self._parse_freetext,
+            "ptm": self._parse_freetext,
         }
 
     def parse(self):
         for comment in self.entry.comments:
-            typ, value = comment.split(': ', maxsplit=1)
-            parser_func = self._mapper.get(typ[:6].lower(),
-                                           self._parse_freetext)
+            typ, value = comment.split(": ", maxsplit=1)
+            parser_func = self._mapper.get(typ[:6].lower(), self._parse_freetext)
             try:
                 for annotation in parser_func(typ, value):
                     yield annotation
@@ -298,30 +295,29 @@ class AtomicParser():
     def _parse_feature(self, feature):
         typ, start, stop, description, _ = feature
         try:
-            text, evs = description.split('. {')
+            text, evs = description.split(". {")
         except ValueError:
-            if description.startswith('{'):
-                text = ''
+            if description.startswith("{"):
+                text = ""
                 evs = description[1:]
             else:
                 text = description
                 evs = None
-        value = typ + ' ' + text
+        value = typ + " " + text
         if evs:
             evidences = []
-            for token in evs.rstrip('}.').split(', '):
+            for token in evs.rstrip("}.").split(", "):
                 try:
-                    code, source = token.split('|')
+                    code, source = token.split("|")
                 except ValueError:
                     code, source = token, None
                 evidences.append(Evidence(code=code, source=source))
             for ev in evidences:
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(value, typ),
-                                 evidence=ev)
+                yield Annotation(
+                    self.entry.primary_accession, Statement(value, typ), evidence=ev
+                )
         else:
-            yield Annotation(self.entry.primary_accession,
-                             Statement(value, typ))
+            yield Annotation(self.entry.primary_accession, Statement(value, typ))
 
     def _parse_freetext(self, typ, value):
         """Extract Annotations from freetext comments.
@@ -338,71 +334,85 @@ class AtomicParser():
         if not evidences:
             evidences.append(Evidence())
         # handling body of annotations
-        body = value.split(' {')[0]
-        statements = re.split('\. ', body)
+        body = value.split(" {")[0]
+        statements = re.split("\. ", body)
         from_pubmed = []
         from_sim = []
         from_unclear = []
         for statement in statements:
-            if 'PubMed:' in statement:
+            if "PubMed:" in statement:
                 from_pubmed.append(statement)
-            elif '(By similarity)' in statement:
+            elif "(By similarity)" in statement:
                 from_sim.append(statement)
-            elif '(Probable)' in statement:
+            elif "(Probable)" in statement:
                 from_pubmed.append(statement)
             else:
                 from_unclear.append(statement)
         for s in from_pubmed:
-            text = s.split(' (PubMed:')[0]
+            text = s.split(" (PubMed:")[0]
             for ev in evidences:
                 if ev.source in s:
-                    yield Annotation(self.entry.primary_accession,
-                                     Statement(text, typ),
-                                     evidence=ev)
+                    yield Annotation(
+                        self.entry.primary_accession, Statement(text, typ), evidence=ev
+                    )
         for s in from_sim:
-            text = s.split(' (By sim')[0]
+            text = s.split(" (By sim")[0]
             sim_tags = [tag for tag in evidences if tag.is_sim()]
             if len(sim_tags) == 1:
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(text, typ),
-                                 evidence=sim_tags[0])
+                yield Annotation(
+                    self.entry.primary_accession,
+                    Statement(text, typ),
+                    evidence=sim_tags[0],
+                )
             else:
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(text, typ),
-                                 evidence=Evidence(code='ECO:0000250'))
+                yield Annotation(
+                    self.entry.primary_accession,
+                    Statement(text, typ),
+                    evidence=Evidence(code="ECO:0000250"),
+                )
         for s in from_unclear:
-            text = s.rstrip('. ')
-            if not from_sim and not from_pubmed and len(
-                    evidences) == 1:  # 1 tag applicable to all
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(text, typ),
-                                 evidence=evidences[0])
-            elif len(evidences) > 1 and len(set([
-                    e.code for e in evidences
-            ])) == 1:  # 1 type of tag applicable to all but unclear source
+            text = s.rstrip(". ")
+            if (
+                not from_sim and not from_pubmed and len(evidences) == 1
+            ):  # 1 tag applicable to all
+                yield Annotation(
+                    self.entry.primary_accession,
+                    Statement(text, typ),
+                    evidence=evidences[0],
+                )
+            elif (
+                len(evidences) > 1 and len(set([e.code for e in evidences])) == 1
+            ):  # 1 type of tag applicable to all but unclear source
                 this_code = evidences[0].code
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(text, typ),
-                                 evidence=Evidence(code=this_code))
-            elif len(evidences) > 1 and len(set([e.code for e in evidences
-                                                ])) > 1 and from_sim:
+                yield Annotation(
+                    self.entry.primary_accession,
+                    Statement(text, typ),
+                    evidence=Evidence(code=this_code),
+                )
+            elif (
+                len(evidences) > 1
+                and len(set([e.code for e in evidences])) > 1
+                and from_sim
+            ):
                 code = list(
-                    set([
-                        e.code for e in evidences if not e.code == 'ECO:0000250'
-                    ]))[0]  # a hack
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(text, typ),
-                                 evidence=Evidence(code=code))
+                    set([e.code for e in evidences if not e.code == "ECO:0000250"])
+                )[
+                    0
+                ]  # a hack
+                yield Annotation(
+                    self.entry.primary_accession,
+                    Statement(text, typ),
+                    evidence=Evidence(code=code),
+                )
             else:
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(text, typ))
+                yield Annotation(self.entry.primary_accession, Statement(text, typ))
 
     def _extract_evidences(self, blob):
         evidences = []
         for match in re.finditer(UNIPROT_EVIDENCE_REGEX, blob):
             ev_string = match.group()
             try:
-                code, source = ev_string.split('|')
+                code, source = ev_string.split("|")
             except ValueError:
                 code, source = ev_string, None
             evidences.append(Evidence(code=code, source=source))
@@ -467,36 +477,35 @@ class AtomicParser():
         Return:
               Annotation instances
         """
-        note = ''  #TODO: Handle the Note
+        note = ""  # TODO: Handle the Note
         try:
-            locations_all, note = value.split('. Note=')
+            locations_all, note = value.split(". Note=")
         except ValueError:  # there is no Note
-            locations = value.split('. ')
+            locations = value.split(". ")
         else:
-            locations = locations_all.split('. ')
+            locations = locations_all.split(". ")
         if note:
-            yield from self._parse_freetext('SUBCELLULAR LOCATION', note)
+            yield from self._parse_freetext("SUBCELLULAR LOCATION", note)
         for location in locations:
             try:
-                loc, evs = location.split(' {')
+                loc, evs = location.split(" {")
             except ValueError:
                 loc = location
                 evs = None
             if evs:
                 evidences = []
-                for token in evs.rstrip('}.').split(', '):
+                for token in evs.rstrip("}.").split(", "):
                     try:
-                        code, source = token.split('|')
+                        code, source = token.split("|")
                     except ValueError:
                         code, source = token, None
                     evidences.append(Evidence(code=code, source=source))
                 for ev in evidences:
-                    yield Annotation(self.entry.primary_accession,
-                                     Statement(loc, typ),
-                                     evidence=ev)
+                    yield Annotation(
+                        self.entry.primary_accession, Statement(loc, typ), evidence=ev
+                    )
             else:
-                yield Annotation(self.entry.primary_accession,
-                                 Statement(loc, typ))
+                yield Annotation(self.entry.primary_accession, Statement(loc, typ))
 
     def _parse_cofactor(self, typ, value):
         """Extract Annotations from cofactor comments.

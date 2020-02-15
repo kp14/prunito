@@ -9,54 +9,53 @@ from enum import Enum
 try:
     import pandas as pd
 except ImportError:
-    warnings.warn(
-        'Pandas not available. Exporting to dataframes will not be possible.')
+    warnings.warn("Pandas not available. Exporting to dataframes will not be possible.")
 
 ##############################################################
 # Base URLs for various resources
 ##############################################################
 
-UNIPROT_BASE = 'http://www.uniprot.org'
+UNIPROT_BASE = "http://www.uniprot.org"
 
-EBI_BASE = 'https://www.ebi.ac.uk'
+EBI_BASE = "https://www.ebi.ac.uk"
 
 # Example: http://www.uniprot.org/uniprot/?query=name%3Dtest&sort=score
-UNIPROT_KNOWLEDGEBASE = '/'.join([UNIPROT_BASE, 'uniprot'])
+UNIPROT_KNOWLEDGEBASE = "/".join([UNIPROT_BASE, "uniprot"])
 
 # Example: http://www.uniprot.org/keywords/?query=antibiotic
-UNIPROT_KEYWORD = '/'.join([UNIPROT_BASE, 'keywords'])
+UNIPROT_KEYWORD = "/".join([UNIPROT_BASE, "keywords"])
 
 # Example: http://www.uniprot.org/taxonomy/?query=bactus
-UNIPROT_TAXONOMY = '/'.join([UNIPROT_BASE, 'taxonomy'])
+UNIPROT_TAXONOMY = "/".join([UNIPROT_BASE, "taxonomy"])
 
-UNIPROT_BATCH = '/'.join([UNIPROT_BASE, 'uploadlists'])
+UNIPROT_BATCH = "/".join([UNIPROT_BASE, "uploadlists"])
 
-UNIPROT_CONVERT = '/'.join([UNIPROT_BASE, 'convert'])
+UNIPROT_CONVERT = "/".join([UNIPROT_BASE, "convert"])
 
-UNIPROT_MAP = '/'.join([UNIPROT_BASE, 'uploadlists'])
+UNIPROT_MAP = "/".join([UNIPROT_BASE, "uploadlists"])
 
-UNIPROT_UNIRULE = '/'.join([UNIPROT_BASE, 'unirule'])
+UNIPROT_UNIRULE = "/".join([UNIPROT_BASE, "unirule"])
 
-PROTEINS_API_BASE = '/'.join([EBI_BASE, 'proteins/api'])
+PROTEINS_API_BASE = "/".join([EBI_BASE, "proteins/api"])
 
-PROTEINS_API_TAXONOMY = '/'.join([PROTEINS_API_BASE, 'taxonomy'])
+PROTEINS_API_TAXONOMY = "/".join([PROTEINS_API_BASE, "taxonomy"])
 
 # Example: http://www.ebi.ac.uk/interpro/search?q=kinase
-INTERPRO_SEARCH = '/'.join([EBI_BASE, 'interpro/search'])
+INTERPRO_SEARCH = "/".join([EBI_BASE, "interpro/search"])
 
 # EBI HMMER
-EBI_HMMER = '/'.join([EBI_BASE, 'Tools/hmmer/search'])
+EBI_HMMER = "/".join([EBI_BASE, "Tools/hmmer/search"])
 
 # Example: http://www.ebi.ac.uk/QuickGO/GTerm?id=GO:0006915
-QUICKGO_ID = '/'.join([EBI_BASE, 'QuickGO/GTerm'])
+QUICKGO_ID = "/".join([EBI_BASE, "QuickGO/GTerm"])
 
 # Example: http://www.ebi.ac.uk/QuickGO/GSearch?q=GO:0006915
-QUICKGO_SEARCH = '/'.join([EBI_BASE, 'QuickGO/GSearch'])
+QUICKGO_SEARCH = "/".join([EBI_BASE, "QuickGO/GSearch"])
 
 # Example: http://www.ebi.ac.uk/ena/data/view/AB107287&display=fasta
-ENA_DATA = '/'.join([EBI_BASE, 'ena/data/view'])
+ENA_DATA = "/".join([EBI_BASE, "ena/data/view"])
 
-EPMC_SEARCH = '/'.join([EBI_BASE, 'europepmc/webservices/rest/search/'])
+EPMC_SEARCH = "/".join([EBI_BASE, "europepmc/webservices/rest/search/"])
 
 ##############################################################
 # General purpose functions
@@ -64,7 +63,7 @@ EPMC_SEARCH = '/'.join([EBI_BASE, 'europepmc/webservices/rest/search/'])
 
 
 def is_value_in_iterable(val, iterable):
-    '''Test whther values is contained in iterable like list or set'''
+    """Test whther values is contained in iterable like list or set"""
     return val in iterable
 
 
@@ -77,17 +76,17 @@ def is_value_in_iterable(val, iterable):
 # Original: [O,P,Q][0-9][A-Z, 0-9]{3}[0-9] | [A-N,R-Z]([0-9][A-Z][A-Z, 0-9]{2}){1,2}[0-9]
 
 UNIPROT_ACCESSION = re.compile(
-    r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]'
+    r"[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]"
 )
 UNIPROT_ACCESSION_REGEX = UNIPROT_ACCESSION
-UNIPROT_ACCESSION_REGEX_STRING = r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]'
-UNIPROT_EVIDENCE_REGEX = re.compile(
-    r'ECO:[0-9]{7}(?:\|[A-Za-z-]*:[A-Za-z0-9]*)?')
-PUBMED_REGEX = re.compile(r'PubMed:[0-9]*')
-EC_REGEX = re.compile(r'[1-6]\.[0-9-]*\.[0-9-]*\.[0-9-]*')
-EC_INCOMPLETE_REGEX = re.compile(r'[1-6]\.[0-9-]*\.[0-9-]*\.-')
-ENA_IDENTIFIER_REGEX = re.compile(
-    r'[A-Z][0-9]{5}|[A-Z]{2}[0-9]{6}|[A-Z]{3}[0-9]{5}')
+UNIPROT_ACCESSION_REGEX_STRING = (
+    r"[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]"
+)
+UNIPROT_EVIDENCE_REGEX = re.compile(r"ECO:[0-9]{7}(?:\|[A-Za-z-]*:[A-Za-z0-9]*)?")
+PUBMED_REGEX = re.compile(r"PubMed:[0-9]*")
+EC_REGEX = re.compile(r"[1-6]\.[0-9-]*\.[0-9-]*\.[0-9-]*")
+EC_INCOMPLETE_REGEX = re.compile(r"[1-6]\.[0-9-]*\.[0-9-]*\.-")
+ENA_IDENTIFIER_REGEX = re.compile(r"[A-Z][0-9]{5}|[A-Z]{2}[0-9]{6}|[A-Z]{3}[0-9]{5}")
 
 ##############################################################
 # General purpose classes
@@ -101,6 +100,7 @@ class Borg(object):
     An alternative the Singleton DP, arguably more pythonic.
 
     """
+
     _shared = {}
 
     def __new__(cls, *args, **kwargs):
@@ -119,6 +119,7 @@ class UniProtComments(Enum):
 
        Order of comments os that used in flat files.
     """
+
     FUNCTION = 1
     CATALYTIC_ACTIVITY = 2
     COFACTOR = 3
@@ -150,7 +151,7 @@ class UniProtComments(Enum):
     WEB_RESOURCE = 29
 
     def __str__(self):
-        return self.name.replace('_', ' ')
+        return self.name.replace("_", " ")
 
 
 class UniProtFeatures(Enum):
@@ -158,6 +159,7 @@ class UniProtFeatures(Enum):
 
        Order of comments os that used in flat files.
     """
+
     INIT_MET = 1
     SIGNAL = 2
     PROPEP = 3
@@ -199,145 +201,148 @@ class UniProtFeatures(Enum):
 
 
 class InterProXrefs(Enum):
-    '''Enum representing InterPro corssrefs as found in UniProtKB.'''
-    Gene3D = '[0-9]\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
-    HAMAP = 'MF_[0-9]{5}_[A,B]{1}|MF_[0-9]{5}'
-    InterPro = 'IP[0-9]{9}'
-    PANTHER = 'PTHR[0-9]{5}:SF[0-9]{1,5}|PTHR[0-9]{5}'  # 'PTHR[0-9]{5}(?::SF[0-9]{1,5})?'
-    PIRSF = 'PIRSF[0-9]{6}'
-    PRINTS = 'PR[0-9]{5}'
-    PROSITE = 'PS[0-9]{5}'
-    Pfam = 'Pf[0-9]{5}'
-    ProDom = 'PD[0-9]{6}'
-    SMART = 'SM[0-9]{5}'
-    SUPFAM = 'SSF[0-9]{5}'
-    TIGRFAMs = 'TIGR[0-9]{5}'
+    """Enum representing InterPro corssrefs as found in UniProtKB."""
+
+    Gene3D = "[0-9]\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}"
+    HAMAP = "MF_[0-9]{5}_[A,B]{1}|MF_[0-9]{5}"
+    InterPro = "IP[0-9]{9}"
+    PANTHER = (
+        "PTHR[0-9]{5}:SF[0-9]{1,5}|PTHR[0-9]{5}"  # 'PTHR[0-9]{5}(?::SF[0-9]{1,5})?'
+    )
+    PIRSF = "PIRSF[0-9]{6}"
+    PRINTS = "PR[0-9]{5}"
+    PROSITE = "PS[0-9]{5}"
+    Pfam = "Pf[0-9]{5}"
+    ProDom = "PD[0-9]{6}"
+    SMART = "SM[0-9]{5}"
+    SUPFAM = "SSF[0-9]{5}"
+    TIGRFAMs = "TIGR[0-9]{5}"
 
     def __init__(self, pattern):
-        '''Get precompiled regexes as well:
+        """Get precompiled regexes as well:
 
         hamap_re = InterProXrefs.HAMAP.regex
         match = hamap_re.match('some string')
-        '''
+        """
         self.regex = re.compile(pattern)
 
 
 GFF_COLUMNS = (
-    'acc',
-    'source',
-    'type',
-    'start',
-    'end',
-    'score',
-    'strand',
-    'phase',
-    'attributes',
+    "acc",
+    "source",
+    "type",
+    "start",
+    "end",
+    "score",
+    "strand",
+    "phase",
+    "attributes",
 )
 
 VALID_ID_MAPPINGS = {
-    'ACC',
-    'ID',
-    'UPARC',
-    'NF50',
-    'NF90',
-    'NF100',
-    'GENENAME',
-    'EMBL_ID',
-    'EMBL',
-    'P_ENTREZGENEID',
-    'P_GI',
-    'PIR',
-    'REFSEQ_NT_ID',
-    'P_REFSEQ_AC',
-    'UNIGENE_ID',
-    'PDB_ID',
-    'DISPROT_ID',
-    'BIOGRID_ID',
-    'DIP_ID',
-    'MINT_ID',
-    'STRING_ID',
-    'CHEMBL_ID',
-    'DRUGBANK_ID',
-    'GUIDETOPHARMACOLOGY_ID',
-    'SWISSLIPIDS_ID',
-    'ALLERGOME_ID',
-    'ESTHER_ID',
-    'MEROPS_ID',
-    'MYCOCLAP_ID',
-    'PEROXIBASE_ID',
-    'REBASE_ID',
-    'TCDB_ID',
-    'BIOMUTA_ID',
-    'DMDM_ID',
-    'WORLD_2DPAGE_ID',
-    'DNASU_ID',
-    'ENSEMBL_ID',
-    'ENSEMBL_PRO_ID',
-    'ENSEMBL_TRS_ID',
-    'ENSEMBLGENOME_ID',
-    'ENSEMBLGENOME_PRO_ID',
-    'ENSEMBLGENOME_TRS_ID',
-    'GENEDB_ID',
-    'P_ENTREZGENEID',
-    'KEGG_ID',
-    'PATRIC_ID',
-    'UCSC_ID',
-    'VECTORBASE_ID',
-    'WBPARASITE_ID',
-    'ARACHNOSERVER_ID',
-    'CCDS_ID',
-    'CGD',
-    'CONOSERVER_ID',
-    'DICTYBASE_ID',
-    'ECHOBASE_ID',
-    'ECOGENE_ID',
-    'EUHCVDB_ID',
-    'EUPATHDB_ID',
-    'FLYBASE_ID',
-    'GENECARDS_ID',
-    'GENEREVIEWS_ID',
-    'H_INVDB_ID',
-    'HGNC_ID',
-    'HPA_ID',
-    'LEGIOLIST_ID',
-    'LEPROMA_ID',
-    'MAIZEGDB_ID',
-    'MGI_ID',
-    'MIM_ID',
-    'NEXTPROT_ID',
-    'ORPHANET_ID',
-    'PHARMGKB_ID',
-    'POMBASE_ID',
-    'PSEUDOCAP_ID',
-    'RGD_ID',
-    'SGD_ID',
-    'TAIR_ID',
-    'TUBERCULIST_ID',
-    'WORMBASE_ID',
-    'WORMBASE_PRO_ID',
-    'WORMBASE_TRS_ID',
-    'XENBASE_ID',
-    'ZFIN_ID',
-    'EGGNOG_ID',
-    'GENETREE_ID',
-    'HOGENOM_ID',
-    'HOVERGEN_ID',
-    'KO_ID',
-    'OMA_ID',
-    'ORTHODB_ID',
-    'TREEFAM_ID',
-    'BIOCYC_ID',
-    'REACTOME_ID',
-    'UNIPATHWAY_ID',
-    'CLEANEX_ID',
-    'COLLECTF_ID',
-    'CHITARS_ID',
-    'GENEWIKI_ID',
-    'GENOMERNAI_ID',
+    "ACC",
+    "ID",
+    "UPARC",
+    "NF50",
+    "NF90",
+    "NF100",
+    "GENENAME",
+    "EMBL_ID",
+    "EMBL",
+    "P_ENTREZGENEID",
+    "P_GI",
+    "PIR",
+    "REFSEQ_NT_ID",
+    "P_REFSEQ_AC",
+    "UNIGENE_ID",
+    "PDB_ID",
+    "DISPROT_ID",
+    "BIOGRID_ID",
+    "DIP_ID",
+    "MINT_ID",
+    "STRING_ID",
+    "CHEMBL_ID",
+    "DRUGBANK_ID",
+    "GUIDETOPHARMACOLOGY_ID",
+    "SWISSLIPIDS_ID",
+    "ALLERGOME_ID",
+    "ESTHER_ID",
+    "MEROPS_ID",
+    "MYCOCLAP_ID",
+    "PEROXIBASE_ID",
+    "REBASE_ID",
+    "TCDB_ID",
+    "BIOMUTA_ID",
+    "DMDM_ID",
+    "WORLD_2DPAGE_ID",
+    "DNASU_ID",
+    "ENSEMBL_ID",
+    "ENSEMBL_PRO_ID",
+    "ENSEMBL_TRS_ID",
+    "ENSEMBLGENOME_ID",
+    "ENSEMBLGENOME_PRO_ID",
+    "ENSEMBLGENOME_TRS_ID",
+    "GENEDB_ID",
+    "P_ENTREZGENEID",
+    "KEGG_ID",
+    "PATRIC_ID",
+    "UCSC_ID",
+    "VECTORBASE_ID",
+    "WBPARASITE_ID",
+    "ARACHNOSERVER_ID",
+    "CCDS_ID",
+    "CGD",
+    "CONOSERVER_ID",
+    "DICTYBASE_ID",
+    "ECHOBASE_ID",
+    "ECOGENE_ID",
+    "EUHCVDB_ID",
+    "EUPATHDB_ID",
+    "FLYBASE_ID",
+    "GENECARDS_ID",
+    "GENEREVIEWS_ID",
+    "H_INVDB_ID",
+    "HGNC_ID",
+    "HPA_ID",
+    "LEGIOLIST_ID",
+    "LEPROMA_ID",
+    "MAIZEGDB_ID",
+    "MGI_ID",
+    "MIM_ID",
+    "NEXTPROT_ID",
+    "ORPHANET_ID",
+    "PHARMGKB_ID",
+    "POMBASE_ID",
+    "PSEUDOCAP_ID",
+    "RGD_ID",
+    "SGD_ID",
+    "TAIR_ID",
+    "TUBERCULIST_ID",
+    "WORMBASE_ID",
+    "WORMBASE_PRO_ID",
+    "WORMBASE_TRS_ID",
+    "XENBASE_ID",
+    "ZFIN_ID",
+    "EGGNOG_ID",
+    "GENETREE_ID",
+    "HOGENOM_ID",
+    "HOVERGEN_ID",
+    "KO_ID",
+    "OMA_ID",
+    "ORTHODB_ID",
+    "TREEFAM_ID",
+    "BIOCYC_ID",
+    "REACTOME_ID",
+    "UNIPATHWAY_ID",
+    "CLEANEX_ID",
+    "COLLECTF_ID",
+    "CHITARS_ID",
+    "GENEWIKI_ID",
+    "GENOMERNAI_ID",
 }
 
 
-class WSResponse():
+class WSResponse:
     """Wrapper round requests Response objects.
 
     Allows to add convenience methods in particular for
@@ -363,12 +368,14 @@ class WSResponse():
         return io.StringIO(self.text)
 
     def __repr__(self):
-        return '<{0}(requests.get({1}))'.format(self.__class__.__qualname__,
-                                                self.response.url)
+        return "<{0}(requests.get({1}))".format(
+            self.__class__.__qualname__, self.response.url
+        )
 
     def __str__(self):
-        return '{0} instance based on request\n{1}'.format(
-            self.__class__.__qualname__, self.response.url)
+        return "{0} instance based on request\n{1}".format(
+            self.__class__.__qualname__, self.response.url
+        )
 
 
 class WSResponseEPMC(WSResponse):
@@ -389,13 +396,13 @@ class WSResponseEPMC(WSResponse):
         return self.__len__()
 
     def __len__(self):
-        return self.response.json()['hitCount']
+        return self.response.json()["hitCount"]
 
     def __iter__(self):
-        return self.response.json()['resultList']['result'].__iter__()
+        return self.response.json()["resultList"]["result"].__iter__()
 
     def __getitem__(self, item):
-        return self.response.json()['resultList']['result'].__getitem__(item)
+        return self.response.json()["resultList"]["result"].__getitem__(item)
 
 
 class WSResponseHmmer(WSResponse):
@@ -437,7 +444,7 @@ class WSResponseHmmer(WSResponse):
         Returns:
             pandas.Dataframe
         """
-        return pd.read_csv(self._collate_summary(), sep='\t', header=0)
+        return pd.read_csv(self._collate_summary(), sep="\t", header=0)
 
     def _collate_summary(self):
         """Return a summary of the hits.
@@ -449,16 +456,16 @@ class WSResponseHmmer(WSResponse):
         Returns:
             io.StringIO instance
         """
-        field_names = ('acc2', 'acc', 'desc', 'species', 'kg', 'evalue')
+        field_names = ("acc2", "acc", "desc", "species", "kg", "evalue")
         summary = io.StringIO()
-        summary.write('\t'.join(field_names))
-        summary.write('\n')
+        summary.write("\t".join(field_names))
+        summary.write("\n")
         for hit in self.__iter__():
             fields = []
             for fn in field_names:
                 fields.append(hit[fn])
-            fields.append('\n')
-            summary.write('\t'.join(fields))
+            fields.append("\n")
+            summary.write("\t".join(fields))
         summary.seek(0)
         return summary
 
@@ -467,13 +474,13 @@ class WSResponseHmmer(WSResponse):
         return summary.getvalue()
 
     def __len__(self):
-        return len(self.response.json()['results']['hits'])
+        return len(self.response.json()["results"]["hits"])
 
     def __iter__(self):
-        return self.response.json()['results']['hits'].__iter__()
+        return self.response.json()["results"]["hits"].__iter__()
 
     def __getitem__(self, item):
-        return self.response.json()['results']['hits'].__getitem__(item)
+        return self.response.json()["results"]["hits"].__getitem__(item)
 
 
 class WSResponseTax(WSResponse):
@@ -494,31 +501,32 @@ class WSResponseTax(WSResponse):
         return self.__len__()
 
     def __len__(self):
-        return len(self.response.json()['taxonomies'])
+        return len(self.response.json()["taxonomies"])
 
     def __iter__(self):
-        return self.response.json()['taxonomies'].__iter__()
+        return self.response.json()["taxonomies"].__iter__()
 
     def __getitem__(self, item):
-        return self.response.json()['taxonomies'].__getitem__(item)
+        return self.response.json()["taxonomies"].__getitem__(item)
 
 
 class NoDataError(Exception):
-
     def __init__(self, status_code):
         self.status_code = status_code
 
     def __str__(self):
-        msg = ('No data were retrieved. '
-               'Query returned code: {}. '
-               'If the code was 200 the query probably had no hits.')
+        msg = (
+            "No data were retrieved. "
+            "Query returned code: {}. "
+            "If the code was 200 the query probably had no hits."
+        )
         return msg.format(str(self.status_code))
 
 
 def _convert_date_string(date_string):
     """Try and convert date into datetime object"""
-    full_date = '%a, %d %b %Y %H:%M:%S GMT'
-    simple_date = '%d %b %Y'
+    full_date = "%a, %d %b %Y %H:%M:%S GMT"
+    simple_date = "%d %b %Y"
     try:
         return datetime.datetime.strptime(date_string, full_date)
     except ValueError:

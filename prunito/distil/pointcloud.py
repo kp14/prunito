@@ -39,7 +39,7 @@ def logistic_sigmoid(x, a):
     min_param_a = 0.0 + epsilon
     max_param_a = 1.0 - epsilon
     a = max(min_param_a, min(max_param_a, a))
-    a = (1 / (1 - a) - 1)
+    a = 1 / (1 - a) - 1
 
     A = 1.0 / (1.0 + exp(0 - ((x - 0.5) * a * 2.0)))
     B = 1.0 / (1.0 + exp(a))
@@ -116,9 +116,9 @@ def spherical_to_cartesian(spherical_vect):
 
     # The vector.
     cart_vect = []
-    cart_vect.append(spherical_vect[0] * cos(spherical_vect[2]) * sin_theta)  #x
-    cart_vect.append(spherical_vect[0] * sin(spherical_vect[2]) * sin_theta)  #y
-    cart_vect.append(spherical_vect[0] * cos(spherical_vect[1]))  #z
+    cart_vect.append(spherical_vect[0] * cos(spherical_vect[2]) * sin_theta)  # x
+    cart_vect.append(spherical_vect[0] * sin(spherical_vect[2]) * sin_theta)  # y
+    cart_vect.append(spherical_vect[0] * cos(spherical_vect[1]))  # z
 
     return cart_vect
 

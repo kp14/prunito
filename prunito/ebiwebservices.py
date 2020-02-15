@@ -20,18 +20,18 @@ def set_email(email):
     EBIWebService.email = email
 
 
-class EBIWebService():
+class EBIWebService:
     """Base class for generic EBI web service access."""
 
-    email = ''
+    email = ""
 
     def __init__(self, service):
         self._service = service
-        self._base_url = 'http://www.ebi.ac.uk/Tools/services/rest/'
+        self._base_url = "http://www.ebi.ac.uk/Tools/services/rest/"
         self.url = self._base_url + service
-        self._run_url = '/'.join([self.url, 'run'])
-        self._status_url = '/'.join([self.url, 'status'])
-        self._result_url = '/'.join([self.url, 'result'])
+        self._run_url = "/".join([self.url, "run"])
+        self._status_url = "/".join([self.url, "status"])
+        self._result_url = "/".join([self.url, "result"])
         self._seconds_before_checking_again = 3
         self._finished = False
         self.job_id = None
@@ -45,9 +45,9 @@ class EBIWebService():
         Returns:
             list of str: Parameters.
         """
-        tree = etree.parse('/'.join([self.url, 'parameters']))
+        tree = etree.parse("/".join([self.url, "parameters"]))
         params = []
-        for ele in tree.iterfind('./id'):
+        for ele in tree.iterfind("./id"):
             params.append(ele.text)
         return params
 
@@ -62,18 +62,18 @@ class EBIWebService():
         Returns:
             dict: Parameter details.
         """
-        tree = etree.parse('/'.join([self.url, 'parameterdetails', param]))
+        tree = etree.parse("/".join([self.url, "parameterdetails", param]))
         root = tree.getroot()
-        details = {'values': []}
+        details = {"values": []}
         for ele in root.iterchildren():
-            if ele.tag in {'name', 'description', 'type'}:
-                details[ele.tag] = ele.text.replace('\n\t', '')
-        for ele in tree.findall('.//value'):
+            if ele.tag in {"name", "description", "type"}:
+                details[ele.tag] = ele.text.replace("\n\t", "")
+        for ele in tree.findall(".//value"):
             l = []
-            for e in ele.iterchildren('value', 'label'):
+            for e in ele.iterchildren("value", "label"):
                 l.append(e.text)
             if l:
-                details['values'].append(tuple(l))
+                details["values"].append(tuple(l))
         return details
 
     def _reset(self):
@@ -92,7 +92,7 @@ class EBIWebService():
         """
         self._reset()
         data_all = {
-            'email': EBIWebService.email,
+            "email": EBIWebService.email,
         }
         data_all.update(data)
         job = session.post(self._run_url, data=data_all)
@@ -110,15 +110,15 @@ class EBIWebService():
         Raises:
             NoDataError: If job fails, returns an error or is gone.
         """
-        status_url = '/'.join([self._status_url, self.job_id])
+        status_url = "/".join([self._status_url, self.job_id])
         r = session.get(status_url)
         status = r.text
-        if status == 'FINISHED':
+        if status == "FINISHED":
             self._finished = True
-        elif status == 'RUNNING':
+        elif status == "RUNNING":
             self._finished = False
-        elif status in ('ERROR', 'FAILURE', 'NOT_FOUND'):
-            raise NoDataError('{0} returned: {1}'.format(self._service, status))
+        elif status in ("ERROR", "FAILURE", "NOT_FOUND"):
+            raise NoDataError("{0} returned: {1}".format(self._service, status))
 
     def _retrieve_job_results(self):
         """Return protein sequence.
@@ -126,15 +126,17 @@ class EBIWebService():
         Returns:
             WSResponse
         """
-        result_url = '/'.join([self._result_url, self.job_id, 'out'])
+        result_url = "/".join([self._result_url, self.job_id, "out"])
         result = session.get(result_url)
         return WSResponse(result)
 
     def _run(self, data):
         if not EBIWebService.email:
-            print('No email address for EBI web service set.\n'
-                  'This is required for the services to work.\n'
-                  'Use set_email() to provide an email address.')
+            print(
+                "No email address for EBI web service set.\n"
+                "This is required for the services to work.\n"
+                "Use set_email() to provide an email address."
+            )
         else:
             self._start_job(data)
             while not self._finished:
@@ -159,9 +161,9 @@ class EmbossTranseq(EBIWebService):
     """
 
     def __init__(self):
-        super().__init__('emboss_transeq')
+        super().__init__("emboss_transeq")
 
-    def __call__(self, seq, frame='1', trim=False, **kwargs):
+    def __call__(self, seq, frame="1", trim=False, **kwargs):
         """Translate a nucleotide sequence.
 
         Args:
@@ -179,9 +181,9 @@ class EmbossTranseq(EBIWebService):
             NoDataError: If translation fails or any errors using webservice.
         """
         data = {
-            'sequence': seq,
-            'frame': frame,
-            'trim': trim,
+            "sequence": seq,
+            "frame": frame,
+            "trim": trim,
         }
         for k, v in kwargs.items():
             data[k] = v
@@ -224,14 +226,16 @@ class FASTASimilaritySearch(EBIWebService):
     """
 
     def __init__(self):
-        super().__init__('fasta')
+        super().__init__("fasta")
 
-    def __call__(self,
-                 seq,
-                 program='fasta',
-                 database='uniprotkb_swissprot',
-                 stype='protein',
-                 **kwargs):
+    def __call__(
+        self,
+        seq,
+        program="fasta",
+        database="uniprotkb_swissprot",
+        stype="protein",
+        **kwargs
+    ):
         """Run a sequence similarity search using FASTA suite tools.
 
         The FASTA tools take many more arguments than listed below which are only the
@@ -250,10 +254,10 @@ class FASTASimilaritySearch(EBIWebService):
             WSResponse
         """
         data = {
-            'sequence': seq,
-            'program': program,
-            'database': database,
-            'stype': stype,
+            "sequence": seq,
+            "program": program,
+            "database": database,
+            "stype": stype,
         }
         for k, v in kwargs.items():
             data[k] = v
@@ -264,9 +268,9 @@ class SeqChecksum(EBIWebService):
     """Generate checksums for protein/nucleotide sequences."""
 
     def __init__(self):
-        super().__init__('seqcksum')
+        super().__init__("seqcksum")
 
-    def __call__(self, seq, cksmethod='spcrc', stype='protein', **kwargs):
+    def __call__(self, seq, cksmethod="spcrc", stype="protein", **kwargs):
         """Generate checksums for protein/nucleotide sequences.
 
         The default method generates a CRC64 checksum like it is used in
@@ -283,9 +287,9 @@ class SeqChecksum(EBIWebService):
             WSResponse
         """
         data = {
-            'sequence': seq,
-            'cksmethod': cksmethod,
-            'stype': stype,
+            "sequence": seq,
+            "cksmethod": cksmethod,
+            "stype": stype,
         }
         data.update(kwargs)
         return self._run(data)

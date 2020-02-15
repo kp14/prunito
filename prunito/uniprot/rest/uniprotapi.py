@@ -15,11 +15,11 @@ from ...utils import (
     WSResponse,
     _convert_date_string,
 )
+
 try:
     import pandas as pd
 except ImportError:
-    warnings.warn(
-        'Pandas not available. Exporting to dataframes will not be possible.')
+    warnings.warn("Pandas not available. Exporting to dataframes will not be possible.")
 
 session = requests.Session()
 
@@ -46,7 +46,7 @@ class WSResponseUniprot(WSResponse):
 
     def release(self):
         """Return UniProt release, eg. 2017_09."""
-        return self.response.headers['x-uniprot-release']
+        return self.response.headers["x-uniprot-release"]
 
     def date(self, as_datetime=False):
         """Return date of UniProt release.
@@ -58,7 +58,7 @@ class WSResponseUniprot(WSResponse):
         Returns:
             str or datetime object
         """
-        date_in_header = self.response.headers['last-modified']
+        date_in_header = self.response.headers["last-modified"]
         if not as_datetime:
             return date_in_header
         else:
@@ -76,35 +76,35 @@ class WSResponseUniprot(WSResponse):
         Returns:
             pandas.Dataframe
         """
-        if self._iter_type == 'list':
-            return pd.read_csv(self.as_file_object(), sep=',', header=None)
-        elif self._iter_type == 'tab':
-            return pd.read_csv(self.as_file_object(), sep='\t', header=0)
-        elif self._iter_type == 'gff':
+        if self._iter_type == "list":
+            return pd.read_csv(self.as_file_object(), sep=",", header=None)
+        elif self._iter_type == "tab":
+            return pd.read_csv(self.as_file_object(), sep="\t", header=0)
+        elif self._iter_type == "gff":
             temp = io.StringIO()
             for line in self.as_file_object():
-                if not line.startswith('#'):
+                if not line.startswith("#"):
                     temp.write(line)
             temp.seek(0)
-            return pd.read_csv(temp, sep='\t', header=None, names=GFF_COLUMNS)
+            return pd.read_csv(temp, sep="\t", header=None, names=GFF_COLUMNS)
         else:
-            msg = 'Dataframes not supported for non-tabular data: {}'.format(
-                self._iter_type)
+            msg = "Dataframes not supported for non-tabular data: {}".format(
+                self._iter_type
+            )
             raise NotImplementedError(msg)
 
     def __len__(self):
-        return int(self.response.headers['x-total-results'])
+        return int(self.response.headers["x-total-results"])
 
     def __iter__(self):
-        if self._iter_type == 'txt':
+        if self._iter_type == "txt":
             for entry in parse_txt(self):
                 yield entry
-        elif self._iter_type in ('tab', 'list', 'gff'):
+        elif self._iter_type in ("tab", "list", "gff"):
             for line in self.as_file_object():
                 yield line.strip()
         else:
-            msg = 'Iteration not implemented for format: '.format(
-                self._iter_type)
+            msg = "Iteration not implemented for format: ".format(self._iter_type)
             raise NotImplementedError(msg)
 
 
@@ -120,7 +120,7 @@ class WSResponseUniprotMapping(WSResponseUniprot):
         lines = list(self)
         for line in lines[1:]:  # skip header
             try:
-                source, target = line.strip().split('\t')
+                source, target = line.strip().split("\t")
             except ValueError:
                 raise
             else:
@@ -150,7 +150,7 @@ def current_release():
     """
     # Release number contained in request header
     # So we retrieve a random human entry and look up the value
-    r = search_reviewed('*', random='yes', frmt='list')
+    r = search_reviewed("*", random="yes", frmt="list")
     return r.release()
 
 
@@ -167,12 +167,12 @@ def current_release_date(as_datetime=False):
     Returns:
         str or datetime object
     """
-    r = search_reviewed('*', random='yes', frmt='list')
+    r = search_reviewed("*", random="yes", frmt="list")
     return r.date(as_text=as_datetime)
 
 
 def search_reviewed(query, **kwargs):
-    '''Search reviewed UniProtKB only.
+    """Search reviewed UniProtKB only.
 
     See documentation for search() for details.
 
@@ -182,14 +182,14 @@ def search_reviewed(query, **kwargs):
 
     Returns:
         WSResponseUniprot object
-    '''
-    if 'reviewed:yes' not in query.lower():
-        query += ' AND reviewed:yes'
+    """
+    if "reviewed:yes" not in query.lower():
+        query += " AND reviewed:yes"
     return search(query, **kwargs)
 
 
 def search_unreviewed(query, **kwargs):
-    '''Search unreviewed UniProtKB only.
+    """Search unreviewed UniProtKB only.
 
     See documentation for search() for details.
 
@@ -199,14 +199,14 @@ def search_unreviewed(query, **kwargs):
 
     Returns:
         WSResponseUniprot object
-    '''
-    if 'reviewed:no' not in query.lower():
-        query += ' AND reviewed:no'
+    """
+    if "reviewed:no" not in query.lower():
+        query += " AND reviewed:no"
     return search(query, **kwargs)
 
 
-def search(query, frmt='txt', limit=2000, **kwargs):
-    '''Search UniProtKB.
+def search(query, frmt="txt", limit=2000, **kwargs):
+    """Search UniProtKB.
 
         Accepts standard UniProtKB query syntax, so queries can be tested
         on the uniprot.org website. Unless reviewed=yes/no is specified as
@@ -239,18 +239,20 @@ def search(query, frmt='txt', limit=2000, **kwargs):
 
         Raises:
             NoDataError: If no results are returned.
-        '''
+        """
     fmt = frmt.lower()
     _check_format(fmt)
-    payload = {'query': query, 'format': fmt, 'limit': limit}
+    payload = {"query": query, "format": fmt, "limit": limit}
     payload.update(**kwargs)
     with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as r:
         result = WSResponseUniprot(r)
         result._iter_type = fmt
         if result.ok:
             if result.size() > limit:
-                msg = ('Partial dataset retrieved. Size: {0}. Retrieved: {1}.\n'
-                       'Consider increasing the limit and/or using offset.')
+                msg = (
+                    "Partial dataset retrieved. Size: {0}. Retrieved: {1}.\n"
+                    "Consider increasing the limit and/or using offset."
+                )
                 print(msg.format(result.size(), limit))
             _ = result.content
             return result
@@ -258,8 +260,8 @@ def search(query, frmt='txt', limit=2000, **kwargs):
             raise NoDataError(result.status_code)
 
 
-def retrieve_batch(ac_list, frmt='txt'):
-    '''Batch retrieval of uniProtKB entries.
+def retrieve_batch(ac_list, frmt="txt"):
+    """Batch retrieval of uniProtKB entries.
 
     Args:
         ac_list (list): UniProtKB accessions
@@ -271,13 +273,13 @@ def retrieve_batch(ac_list, frmt='txt'):
 
     Raises:
         NoDataError
-    '''
-    id_list = ' '.join(ac_list)
+    """
+    id_list = " ".join(ac_list)
     payload = {
-        'from': 'ACC',
-        'to': 'ACC',
-        'format': frmt,
-        'query': id_list,
+        "from": "ACC",
+        "to": "ACC",
+        "format": frmt,
+        "query": id_list,
     }
     result = WSResponseUniprot(session.get(UNIPROT_BATCH, params=payload))
     result._iter_type = frmt
@@ -290,8 +292,8 @@ def retrieve_batch(ac_list, frmt='txt'):
         result.raise_for_status()
 
 
-def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
-    '''Convert UniProt entries between different formats.
+def convert(path, source_fmt="txt", target_fmt="xml", encoding="ascii"):
+    """Convert UniProt entries between different formats.
 
     Currently, only single entries are supported.
 
@@ -302,15 +304,16 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
 
     Returns:
         WSResponseUniprot
-    '''
+    """
     payload = {
-        'type': 'uniprot',
-        'from': source_fmt,
-        'to': target_fmt,
+        "type": "uniprot",
+        "from": source_fmt,
+        "to": target_fmt,
     }
-    files = {'data': open(path, 'r', encoding=encoding)}
+    files = {"data": open(path, "r", encoding=encoding)}
     response = WSResponseUniprot(
-        session.post(UNIPROT_CONVERT, data=payload, files=files))
+        session.post(UNIPROT_CONVERT, data=payload, files=files)
+    )
     if response.ok:
         return response
     else:
@@ -318,7 +321,7 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
 
 
 def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
-    '''Map one set of identifiers to another.
+    """Map one set of identifiers to another.
 
     UniProt provides mappings to more than 100 databases it cross-references.
     The limitation of the service is that it only maps X -> UniProt or
@@ -403,18 +406,17 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
     Raises:
         ValueError: If invalid identifier formats are used.
         ValueError: If not at least source or target is UniProt accession/ID
-    '''
+    """
     _validate_mapping_partners(source_fmt, target_fmt)
-    id_list = ' '.join(id_list)
+    id_list = " ".join(id_list)
     payload = {
-        'from': source_fmt.upper(),
-        'to': target_fmt.upper(),
-        'format': 'tab',
-        'query': id_list,
+        "from": source_fmt.upper(),
+        "to": target_fmt.upper(),
+        "format": "tab",
+        "query": id_list,
     }
-    response = WSResponseUniprotMapping(session.get(UNIPROT_MAP,
-                                                    params=payload))
-    response._iter_type = 'tab'
+    response = WSResponseUniprotMapping(session.get(UNIPROT_MAP, params=payload))
+    response._iter_type = "tab"
     if response.ok:
         return response
     else:
@@ -422,30 +424,30 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
 
 
 def _validate_mapping_partners(source, target):
-    if source.upper() not in VALID_ID_MAPPINGS or target.upper(
-    ) not in VALID_ID_MAPPINGS:
-        msg = 'Invalid mapping source(s): {0}, {1}. Use one of:\n{2}'
+    if (
+        source.upper() not in VALID_ID_MAPPINGS
+        or target.upper() not in VALID_ID_MAPPINGS
+    ):
+        msg = "Invalid mapping source(s): {0}, {1}. Use one of:\n{2}"
         raise ValueError(
-            msg.format(source.upper(), target.upper(),
-                       ', '.join(VALID_ID_MAPPINGS)))
-    if source.upper() not in ('ACC', 'ID') and target.upper() not in ('ACC',
-                                                                      'ID'):
-        raise ValueError(
-            'One of source or target format has to be UniProt ACC or ID.')
+            msg.format(source.upper(), target.upper(), ", ".join(VALID_ID_MAPPINGS))
+        )
+    if source.upper() not in ("ACC", "ID") and target.upper() not in ("ACC", "ID"):
+        raise ValueError("One of source or target format has to be UniProt ACC or ID.")
 
 
 def _check_format(fmt):
     allowed_formats = (
-        'html',
-        'tab',
-        'xls',
-        'fasta',
-        'gff',
-        'txt',
-        'xml',
-        'rdf',
-        'list',
+        "html",
+        "tab",
+        "xls",
+        "fasta",
+        "gff",
+        "txt",
+        "xml",
+        "rdf",
+        "list",
     )
     if fmt not in allowed_formats:
-        msg = 'Allowed: {0}\nReceived: {1}'
+        msg = "Allowed: {0}\nReceived: {1}"
         raise ValueError(msg.format(allowed_formats, fmt))

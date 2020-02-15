@@ -1,5 +1,5 @@
 # coding: utf-8
-#import functools
+# import functools
 import itertools
 import logging
 import re
@@ -13,7 +13,7 @@ from ...utils import EC_REGEX, WSResponse
 
 logging.basicConfig(level=logging.WARN)
 
-Feature = namedtuple('Feature', ['type', 'start', 'end', 'description', 'ftid'])
+Feature = namedtuple("Feature", ["type", "start", "end", "description", "ftid"])
 
 
 class Record(object):
@@ -66,11 +66,11 @@ class Record(object):
 
     @property
     def entry_name(self):
-        return self._bag['ID'][0][0]
+        return self._bag["ID"][0][0]
 
     @property
     def data_class(self):
-        return self._bag['ID'][0][1].strip(';')
+        return self._bag["ID"][0][1].strip(";")
 
     @property
     def molecule_type(self):
@@ -78,36 +78,36 @@ class Record(object):
 
     @property
     def sequence_length(self):
-        return int(self._bag['ID'][0][2])
+        return int(self._bag["ID"][0][2])
 
     @property
     def accessions(self):
-        return list(itertools.chain(*self._bag['AC']))
+        return list(itertools.chain(*self._bag["AC"]))
 
     @property
     def created(self):
-        date, _ = self._bag['DT'][0].strip('.').split(', ')
+        date, _ = self._bag["DT"][0].strip(".").split(", ")
         return (date, 0)  # Version is always zero here
 
     @property
     def sequence_update(self):
-        date, version_string = self._bag['DT'][1].strip('.').split(', ')
+        date, version_string = self._bag["DT"][1].strip(".").split(", ")
         version_split = version_string.split()
         return (date, int(version_split[2]))
 
     @property
     def annotation_update(self):
-        date, version_string = self._bag['DT'][2].strip('.').split(', ')
+        date, version_string = self._bag["DT"][2].strip(".").split(", ")
         version_split = version_string.split()
         return (date, int(version_split[2]))
 
     @property
     def primary_accession(self):
-        return self._bag['AC'][0][0]
+        return self._bag["AC"][0][0]
 
     @property
     def description(self):
-        return ' '.join(self._bag['DE'])
+        return " ".join(self._bag["DE"])
 
     @property
     def recommended_full_name(self):
@@ -117,9 +117,9 @@ class Record(object):
         DE   RecName: Full= ...;
         Evidence tags are stripped out.
         """
-        rec_line = self._bag['DE'][0].strip(' ;')
-        assert rec_line.startswith('RecName')
-        name_part = rec_line.split(' {')[0]
+        rec_line = self._bag["DE"][0].strip(" ;")
+        assert rec_line.startswith("RecName")
+        name_part = rec_line.split(" {")[0]
         rec_name = name_part[14:]
         return rec_name
 
@@ -135,7 +135,7 @@ class Record(object):
     @property
     def gene_name(self):
 
-        return ' '.join(self._bag['GN'])
+        return " ".join(self._bag["GN"])
 
     @property
     def primary_gene_name(self):
@@ -147,56 +147,56 @@ class Record(object):
         Returns:
             str
         """
-        primary_gn = ''
+        primary_gn = ""
         try:
-            first_gn_token = self.gene_name.split(';')[0]
+            first_gn_token = self.gene_name.split(";")[0]
         except KeyError:
             pass
         else:
-            if first_gn_token.startswith('Name'):
-                primary_gn = first_gn_token[5:].split(' {')[0]
+            if first_gn_token.startswith("Name"):
+                primary_gn = first_gn_token[5:].split(" {")[0]
         return primary_gn
 
     @property
     def organism(self):
-        return ' '.join(self._bag['OS'])
+        return " ".join(self._bag["OS"])
 
     @property
     def organelle(self):
         try:
-            return self._bag['OG'][0]
+            return self._bag["OG"][0]
         except IndexError:
-            return ''
+            return ""
 
     @property
     def organism_classification(self):
-        return _flatten_lists(self._bag['OC'])
+        return _flatten_lists(self._bag["OC"])
 
     @property
     def taxonomy_id(self):
-        return self._bag['OX']
+        return self._bag["OX"]
 
     @property
     def host_organism(self):
         orgs = []
-        for oh_line in self._bag['OH']:
-            _, org = oh_line.strip('.').split('; ')
+        for oh_line in self._bag["OH"]:
+            _, org = oh_line.strip(".").split("; ")
             orgs.append(org)
         return orgs
 
     @property
     def host_taxonomy_id(self):
         ids = []
-        for oh_line in self._bag['OH']:
-            id_string, _ = oh_line.strip('.').split('; ')
-            _, taxid = id_string.split('=')
+        for oh_line in self._bag["OH"]:
+            id_string, _ = oh_line.strip(".").split("; ")
+            _, taxid = id_string.split("=")
             ids.append(taxid)
         return ids
 
     @property
     def references(self):
         ref_list = []
-        for num, data in self._bag['RF'].items():
+        for num, data in self._bag["RF"].items():
             ref_list.append(Reference(num, data))
         return ref_list
 
@@ -207,45 +207,45 @@ class Record(object):
         for ref in self.references:
             for source in ref.references:
                 name, identifier = source
-                if name == 'PubMed':
+                if name == "PubMed":
                     id_list.append(identifier)
         return id_list
 
     @property
-    #@functools.lru_cache(maxsize=1)
+    # @functools.lru_cache(maxsize=1)
     def comments(self):
-        concat = ' '.join(self._bag['CC'])
-        topics = concat.split('-!- ')
+        concat = " ".join(self._bag["CC"])
+        topics = concat.split("-!- ")
         topics = [x.strip() for x in topics]
         return topics[1:]
 
     @property
     def cross_references(self):
-        return self._bag['DR']
+        return self._bag["DR"]
 
     @property
     def keywords(self):
-        return _flatten_lists(self._bag['KW'])
+        return _flatten_lists(self._bag["KW"])
 
     @property
-    #@functools.lru_cache(maxsize=1)
+    # @functools.lru_cache(maxsize=1)
     def seqinfo(self):
-        tokens = self._bag['SQ'][0].split()
+        tokens = self._bag["SQ"][0].split()
         length = int(tokens[1])
         mol_weight = int(tokens[3])
         crc64 = tokens[5]
         return (length, mol_weight, crc64)
 
     @property
-    #@functools.lru_cache(maxsize=1)
+    # @functools.lru_cache(maxsize=1)
     def features(self):
         if self._features:
             return self._features
         else:
             current = None
-            ft_bag_len = len(self._bag['FT'])
-            for idx, featureline in enumerate(self._bag['FT']):
-                logging.debug('Looking at featureline: {}'.format(featureline))
+            ft_bag_len = len(self._bag["FT"])
+            for idx, featureline in enumerate(self._bag["FT"]):
+                logging.debug("Looking at featureline: {}".format(featureline))
                 if featureline[0]:
                     if current:
                         self._features.append(tuple(current))
@@ -253,14 +253,14 @@ class Record(object):
                     else:
                         current = featureline.copy()
                 else:
-                    if featureline[3].startswith('/FTId'):
+                    if featureline[3].startswith("/FTId"):
                         current[4] = featureline[3][6:-1]
                     else:
-                        if current[3].endswith('-'):
-                            add_space = ''
+                        if current[3].endswith("-"):
+                            add_space = ""
                         else:
-                            add_space = ' '
-                        current[3] += '{0}{1}'.format(add_space, featureline[3])
+                            add_space = " "
+                        current[3] += "{0}{1}".format(add_space, featureline[3])
                 if idx == ft_bag_len - 1:
                     self._features.append(Feature(*current))
             return self._features
@@ -272,8 +272,8 @@ class Record(object):
         This behaves like the equivalent attribute in BioPython's Record.
         See also method as_fasta().
         """
-        gapped_seq = ''.join(self._bag['  '])
-        seq = gapped_seq.replace(' ', '')
+        gapped_seq = "".join(self._bag["  "])
+        seq = gapped_seq.replace(" ", "")
         return seq
 
     def _format_as_fasta(self, header, seq, width=60):
@@ -289,21 +289,25 @@ class Record(object):
         """
         lines = [header]
         lines.extend(textwrap.wrap(seq, width=width))
-        return '\n'.join(lines)
+        return "\n".join(lines)
 
-    def _provide_fasta_header(self, isoform_name=''):
-        data_class_mapper = {'Reviewed': 'sp', 'Unreviewed': 'tr'}
-        header_template = '>{0}|{1}|{2} {3} OS={4} OX={5}'
+    def _provide_fasta_header(self, isoform_name=""):
+        data_class_mapper = {"Reviewed": "sp", "Unreviewed": "tr"}
+        header_template = ">{0}|{1}|{2} {3} OS={4} OX={5}"
         if not isoform_name:
             acc = self.primary_accession
             name = self.recommended_full_name
         else:
-            acc = '{0}-{1}'.format(self.primary_accession, isoform_name)
-            name = 'Isoform {0} of {1}'.format(isoform_name,
-                                               self.recommended_full_name)
-        header = header_template.format(data_class_mapper[self.data_class], acc,
-                                        self.entry_name, name, self.organism,
-                                        self.taxonomy_id)
+            acc = "{0}-{1}".format(self.primary_accession, isoform_name)
+            name = "Isoform {0} of {1}".format(isoform_name, self.recommended_full_name)
+        header = header_template.format(
+            data_class_mapper[self.data_class],
+            acc,
+            self.entry_name,
+            name,
+            self.organism,
+            self.taxonomy_id,
+        )
         return header
 
     def as_fasta(self):
@@ -331,27 +335,24 @@ class Record(object):
         slen = len(self.sequence)
         iso = defaultdict(dict)
         for ft in self.features:
-            if ft[0] == 'VAR_SEQ':
-                for match in re.findall('isoform [A-Za-z0-9-]+', ft[3]):
+            if ft[0] == "VAR_SEQ":
+                for match in re.findall("isoform [A-Za-z0-9-]+", ft[3]):
                     name = match[8:]
                     try:
-                        _ = iso[name]['blocks']
+                        _ = iso[name]["blocks"]
                     except KeyError:
-                        iso[name]['blocks'] = []
-                    if ft[3].startswith('Missing'):
-                        iso[name]['blocks'].append((ft[1] - 1, ft[2], '-'))
+                        iso[name]["blocks"] = []
+                    if ft[3].startswith("Missing"):
+                        iso[name]["blocks"].append((ft[1] - 1, ft[2], "-"))
                     else:
-                        _, change = ft[3].split(' -> ')
-                        change_no_iso = re.sub(' [(]in isoform .+[])]\.', '',
-                                               change)
-                        change_no_tags = re.sub(' [{].+[}]\.', '',
-                                                change_no_iso)
-                        aa_changes = change_no_tags.replace(' ', '')
-                        iso[name]['blocks'].append(
-                            (ft[1] - 1, ft[2], aa_changes))
+                        _, change = ft[3].split(" -> ")
+                        change_no_iso = re.sub(" [(]in isoform .+[])]\.", "", change)
+                        change_no_tags = re.sub(" [{].+[}]\.", "", change_no_iso)
+                        aa_changes = change_no_tags.replace(" ", "")
+                        iso[name]["blocks"].append((ft[1] - 1, ft[2], aa_changes))
         for isoform, data in iso.items():
             seq = [0]
-            for block in data['blocks']:
+            for block in data["blocks"]:
                 seq.append(block[0])
                 seq.append(block[1])
             seq.append(slen)
@@ -361,29 +362,28 @@ class Record(object):
                 if start >= stop:
                     pass
                 else:
-                    tpl = (start, stop, '+')
-                    data['blocks'].append(tpl)
-            data['blocks'].sort()
+                    tpl = (start, stop, "+")
+                    data["blocks"].append(tpl)
+            data["blocks"].sort()
             temp = []
-            for block in data['blocks']:
-                if block[2] == '+':
+            for block in data["blocks"]:
+                if block[2] == "+":
                     for idx in range(block[0], block[1]):
                         temp.append(self.sequence[idx])
-                elif block[2] == '-':
+                elif block[2] == "-":
                     pass
                 else:
                     temp.extend(list(block[2]))
-            data['seq'] = ''.join(temp)
+            data["seq"] = "".join(temp)
         for iso_name, data in iso.items():
             if fasta:
                 header = self._provide_fasta_header(isoform_name=iso_name)
-                yield self._format_as_fasta(header, data['seq'])
+                yield self._format_as_fasta(header, data["seq"])
             else:
-                yield data['seq']
+                yield data["seq"]
 
 
 class Reference(object):
-
     def __init__(self, num, data):
         self._num = num
         self._data = data
@@ -394,17 +394,17 @@ class Reference(object):
 
     @property
     def positions(self):
-        return self._data['RP']
+        return self._data["RP"]
         # pos = ' '.join(self._data['RP'])
         # return pos.strip('.')
 
     @property
     def comments(self):
-        return self._parse_rc_rx('RC')
+        return self._parse_rc_rx("RC")
 
     @property
     def references(self):
-        return self._parse_rc_rx('RX')
+        return self._parse_rc_rx("RX")
 
     @property
     def pmid(self):
@@ -413,16 +413,16 @@ class Reference(object):
         :return: PubMed ID, string
         """
         for source, identifier in self.references:
-            if source == 'PubMed':
+            if source == "PubMed":
                 return identifier
 
     @property
     def authors(self):
-        if len(self._data['RA']) == 1:
-            authors = self._data['RA'][0]
+        if len(self._data["RA"]) == 1:
+            authors = self._data["RA"][0]
         else:
-            authors = ' '.join(self._data['RA'])
-        return authors.rstrip(';')
+            authors = " ".join(self._data["RA"])
+        return authors.rstrip(";")
 
     @property
     def first_author(self):
@@ -430,29 +430,29 @@ class Reference(object):
         Return first author name of reference.
         :return: author name, string
         """
-        authors = self.authors.split(', ')
+        authors = self.authors.split(", ")
         return authors[0]
 
     @property
     def title(self):
-        title = ' '.join(self._data['RT'])
+        title = " ".join(self._data["RT"])
         return title.strip('";')
 
     @property
     def location(self):
-        return self._data['RL'][0]
+        return self._data["RL"][0]
 
     def _parse_rc_rx(self, context):
         context = context
         if len(self._data[context]) == 1:
             comments = self._data[context][0]
         else:
-            comments = ' '.join(self._data[context])
-        tokens = comments.split('; ')
+            comments = " ".join(self._data[context])
+        tokens = comments.split("; ")
         c_tuples = []
         for tok in tokens:
             if tok:
-                key, val = tok.rstrip(';').split('=')
+                key, val = tok.rstrip(";").split("=")
                 c_tuples.append((key, val))
         return c_tuples
 
@@ -475,7 +475,7 @@ def parse_txt(source):
         Record instances; these are compatible to BioPython's
         Record objects but offer extra convenience methods.
     """
-    raise NotImplementedError('Unsupported type of source.')
+    raise NotImplementedError("Unsupported type of source.")
 
 
 @parse_txt.register(TextIOWrapper)
@@ -488,7 +488,7 @@ def _(source):
 @parse_txt.register(str)
 @parse_txt.register(Path)
 def _(source):
-    with open(source, 'r') as infile:
+    with open(source, "r") as infile:
         for bag in _parse(infile):
             yield Record(bag)
 
@@ -513,8 +513,10 @@ def parse_txt_compatible(handle):
         Record objects but offer extra convenience methods.
     """
     import warnings
-    warnings.warn('parse_txt_compatible() is deprecated; use parse_txt().',
-                  DeprecationWarning)
+
+    warnings.warn(
+        "parse_txt_compatible() is deprecated; use parse_txt().", DeprecationWarning
+    )
     for entry in parse_txt(handle):
         yield entry
 
@@ -544,13 +546,13 @@ def parse_txt_atomic(source):
 
 def _set_up():
     bag = defaultdict(list)
-    bag['RF'] = {}
+    bag["RF"] = {}
     context = None
     return bag, context
 
 
 def _flatten_lists(lol):
-    '''Flatten list of lists.'''
+    """Flatten list of lists."""
     flat = []
     for sublist in lol:
         flat.extend(sublist)
@@ -563,41 +565,41 @@ def _parse(handle):
         ignore = False
         for line in handle:
             line_type, line = line[:2], line[5:]
-            if line_type in ['id', 'dt', 'ac']:
+            if line_type in ["id", "dt", "ac"]:
                 ignore = True
             stripped_line = line.rstrip()
             #        stripped_line = line
             try:
-                if line_type.startswith('R'):
-                    if line_type == 'RN':
+                if line_type.startswith("R"):
+                    if line_type == "RN":
                         number = _extract_ref_number(line)
                         context = number
-                        bag['RF'][context] = defaultdict(list)
+                        bag["RF"][context] = defaultdict(list)
                     else:
-                        bag['RF'][context][line_type].append(stripped_line)
+                        bag["RF"][context][line_type].append(stripped_line)
                 value = PARSER_MAP[line_type](stripped_line)
                 if value:
                     bag[line_type].append(value)
             except KeyError:
-                if line_type == '//':
+                if line_type == "//":
                     if not ignore:
                         yield bag
                         bag, context = _set_up()
                     else:
-                        logging.warning('Ignored lowercase entry.')
+                        logging.warning("Ignored lowercase entry.")
                         del bag
                         bag, context = _set_up()
                         ignore = False
                 else:
                     logging.debug("Unknown line type: {}".format(line_type))
     else:
-        print('Nothing to parse. Are you sure the query returns anything?')
+        print("Nothing to parse. Are you sure the query returns anything?")
 
 
 def _extract_ref_number(line):
-    pattern = re.compile('(\[[0-9]+\])')
+    pattern = re.compile("(\[[0-9]+\])")
     tokens = re.split(pattern, line)
-    number = int(tokens[1].strip('[]'))
+    number = int(tokens[1].strip("[]"))
     return number
 
 
@@ -611,8 +613,8 @@ def _parse_id(line):
 
 
 def _parse_accessions(line):
-    stripped_line = line.strip(';.')
-    tokens = stripped_line.split(';')
+    stripped_line = line.strip(";.")
+    tokens = stripped_line.split(";")
     accs = [x.strip() for x in tokens]
     return accs
 
@@ -628,13 +630,13 @@ def _parse_species(line):
     :returns: TODO
 
     """
-    species = line.split(' (')[0]
+    species = line.split(" (")[0]
     return species
 
 
 def _parse_taxonomy(line):
-    stripped_line = line.strip(';.')
-    tokens = stripped_line.split(';')
+    stripped_line = line.strip(";.")
+    tokens = stripped_line.split(";")
     nodes = [x.strip() for x in tokens]
     return nodes
 
@@ -646,32 +648,32 @@ def _parse_taxid(line):
     :returns: TODO
 
     """
-    _, id_string = line.strip(';').split('=')
+    _, id_string = line.strip(";").split("=")
     taxid = id_string.split()[0]
     return taxid
 
 
 def _parse_cc(line):
     stripped_line = line.strip()
-    if not stripped_line[0:3] in ['---', 'Cop', 'Dis']:
+    if not stripped_line[0:3] in ["---", "Cop", "Dis"]:
         return stripped_line
 
 
 def _parse_dr(line):
-    stripped_line = line.strip(';.')
-    tokens = stripped_line.split('; ')
+    stripped_line = line.strip(";.")
+    tokens = stripped_line.split("; ")
     return tuple(tokens)
 
 
 def _parse_kw(line):
-    stripped_line = line.strip(';.')
-    tokens = stripped_line.split(';')
+    stripped_line = line.strip(";.")
+    tokens = stripped_line.split(";")
     kwds = [x.strip() for x in tokens]
     return kwds
 
 
 def _parse_ft(line):
-    '''Parses components of a UniProt flatfile FT line.
+    """Parses components of a UniProt flatfile FT line.
 
     FT lines follow the following format:
     [FT   ]KEY      x      y       Description.
@@ -681,7 +683,7 @@ def _parse_ft(line):
 
     Returns:
     list
-    '''
+    """
     key = line[0:8].strip()
     start_ft = _try_parsing_as_int(line[10:15].strip())
     end_ft = _try_parsing_as_int(line[17:22].strip())
@@ -691,8 +693,8 @@ def _parse_ft(line):
     #         _parse_ft.previous[-1] = description[6:-1]
     #     else:
     #         _parse_ft.previous[3] += new_desc
-    featureline = [key, start_ft, end_ft, description, '']
-    logging.debug('Parsed FT: {}'.format(featureline))
+    featureline = [key, start_ft, end_ft, description, ""]
+    logging.debug("Parsed FT: {}".format(featureline))
     return featureline
 
 
@@ -722,5 +724,5 @@ PARSER_MAP = {
     "FT": _parse_ft,
     "**": _parse_generic,
     "SQ": _parse_generic,
-    "  ": _parse_generic
+    "  ": _parse_generic,
 }

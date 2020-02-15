@@ -10,33 +10,33 @@ from prunito.uniprot.parsers import atomic
 #     assert expected in actual_list
 
 EVS = [
-    ('ECO:0000269', '1234567'),
-    ('ECO:0000303', '2345678'),
-    ('ECO:0000305', '33456'),
-    ('ECO:0000269', 'Ref.2'),
+    ("ECO:0000269", "1234567"),
+    ("ECO:0000303", "2345678"),
+    ("ECO:0000305", "33456"),
+    ("ECO:0000269", "Ref.2"),
 ]
 
-DIGEST = hashlib.md5('{}-{}'.format(EVS[0][0], EVS[0][1]).encode()).hexdigest()
+DIGEST = hashlib.md5("{}-{}".format(EVS[0][0], EVS[0][1]).encode()).hexdigest()
 
 VALS = [
-    'Some text here.',
-    'Another sentence.',
-    'A little bit longer this time and no trailing full stop',
-    'A fourth statement.',
+    "Some text here.",
+    "Another sentence.",
+    "A little bit longer this time and no trailing full stop",
+    "A fourth statement.",
 ]
 
 TYPES = [
-    'FUNCTION',
-    'DOUBLE WORD',
-    'MASS SPECTROMETRY',
-    'SUBUNIT',
+    "FUNCTION",
+    "DOUBLE WORD",
+    "MASS SPECTROMETRY",
+    "SUBUNIT",
 ]
 
 ENTITIES = [
-    'A12345',
-    'B12345',
-    'C12345',
-    'D12345',
+    "A12345",
+    "B12345",
+    "C12345",
+    "D12345",
 ]
 
 
@@ -91,7 +91,7 @@ def acoll():
 
 def test_ev_code_invalid_eco():
     with pytest.raises(ValueError):
-        ev = atomic.Evidence(code='ECO:269')
+        ev = atomic.Evidence(code="ECO:269")
 
 
 def test_ev_id_generation(ev):
@@ -107,13 +107,13 @@ def test_ev_return_source(ev):
 
 
 def test_st_id_swapped_input(stmnt):
-    s = '{}-{}'.format(VALS[0], TYPES[0])
+    s = "{}-{}".format(VALS[0], TYPES[0])
     hash = hashlib.md5(s.encode()).hexdigest()
     assert stmnt.id != hash
 
 
 def test_st_id(stmnt):
-    s = '{}-{}'.format(TYPES[0], VALS[0])
+    s = "{}-{}".format(TYPES[0], VALS[0])
     hash = hashlib.md5(s.encode()).hexdigest()
     assert stmnt.id == hash
 
@@ -135,15 +135,13 @@ def test_anno_entity(anno):
 
 
 def test_anno_ev_code(anno):
-    assert anno.evidence_code == 'ECO:0000269'
+    assert anno.evidence_code == "ECO:0000269"
 
 
 def test_anno_str_representation(anno):
-    expected = '{en}: {stt}-{stv} - {evc}-{evs}'.format(en=ENTITIES[0],
-                                                        stt=TYPES[1],
-                                                        stv=VALS[1],
-                                                        evc=EVS[0][0],
-                                                        evs=EVS[0][1])
+    expected = "{en}: {stt}-{stv} - {evc}-{evs}".format(
+        en=ENTITIES[0], stt=TYPES[1], stv=VALS[1], evc=EVS[0][0], evs=EVS[0][1]
+    )
     assert anno.__str__() == expected
 
 

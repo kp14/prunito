@@ -41,7 +41,7 @@ class TaxGraph(DiGraph):
             else:
                 self.add_edge(node_list[idx - 1], node_list[idx], weight=1)
 
-    #overrides add_edge() from DiGraph
+    # overrides add_edge() from DiGraph
     def add_edge(self, u, v, attr_dict=None, **attr):
         """Add an edge between u and v.
 
@@ -77,8 +77,7 @@ class TaxGraph(DiGraph):
             try:
                 attr_dict.update(attr)
             except AttributeError:
-                raise NetworkXError(\
-                    "The attr_dict argument must be a dictionary.")
+                raise NetworkXError("The attr_dict argument must be a dictionary.")
         # add nodes
         if u not in self.succ:
             self.succ[u] = {}
@@ -115,7 +114,7 @@ class TaxGraph(DiGraph):
             print("Please check parameters for tree_data2json().")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     nodes = ["a", "b", "c"]
     tg = TaxGraph()
     tg.add_edges_from_ordered_nodes(nodes)

@@ -6,7 +6,7 @@ from urllib.parse import urlencode
 from .utils import EPMC_SEARCH, WSResponseEPMC, NoDataError
 
 
-def search(query, result_type='lite', page_size=25):
+def search(query, result_type="lite", page_size=25):
     """Search publication database.
 
     The details of the search syntax are explain here:
@@ -34,13 +34,13 @@ def search(query, result_type='lite', page_size=25):
     """
     # Normal dict did not work as parameters were shuffled
     payload = OrderedDict()
-    payload['query'] = query
-    payload['format'] = 'json'
-    payload['resulttype'] = result_type
-    payload['pageSize'] = page_size
+    payload["query"] = query
+    payload["format"] = "json"
+    payload["resulttype"] = result_type
+    payload["pageSize"] = page_size
     result = WSResponseEPMC(requests.get(EPMC_SEARCH + urlencode(payload)))
     if result.ok:
-        if not result.json()['hitCount'] == 0:
+        if not result.json()["hitCount"] == 0:
             return result
         else:
             raise NoDataError(result.status_code)
@@ -63,11 +63,11 @@ def get_pmid_metadata(pmid):
     Returns:
         WSResponse: Use the meta attribute.
     """
-    query = 'ext_id:{} src:med'.format(str(pmid))
+    query = "ext_id:{} src:med".format(str(pmid))
     try:
-        result = search(query, result_type='core')
+        result = search(query, result_type="core")
     except NoDataError:
         raise
     else:
-        result.meta = result.json()['resultList']['result'][0]
+        result.meta = result.json()["resultList"]["result"][0]
         return result
