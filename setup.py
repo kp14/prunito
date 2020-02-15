@@ -46,5 +46,10 @@ setup(name='prunito',
                 'prunito/uniprot/rest',],
       install_requires=['requests',
                         'lxml',
+                        'pandas',
                         ],
+      tests_require = [
+            'pytest',
+            'biopython',
+            ],
       include_package_data=True)
