@@ -6,12 +6,12 @@ from prunito.utils import NoDataError
 
 def test_retrieve_fasta():
     r = ena.retrieve("BAC67592", fmt="fasta")
-    assert r.startswith(">ENA|BAC67592")
+    assert r.text.startswith(">ENA|BAC67592")
 
 
 def test_retrieve_xml():
     r = ena.retrieve("BAC67592", fmt="xml")
-    assert r.startswith('<?xml version="1.0" encoding="UTF-8"?>')
+    assert r.text.startswith('<?xml version="1.0" encoding="UTF-8"?>')
 
 
 def test_retrieve_fasta_wrong_id():
@@ -21,7 +21,7 @@ def test_retrieve_fasta_wrong_id():
 
 def test_retrieve_embl():
     r = ena.retrieve("BAC67592", fmt="text")
-    assert r.startswith("ID   BAC67592;")
+    assert r.text.startswith("ID   BAC67592;")
 
 
 def test_retrieve_invalid_id():

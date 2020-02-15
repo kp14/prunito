@@ -355,10 +355,11 @@ class WSResponse:
         self.response = response
 
     def __getattr__(self, item):
-        try:
-            return getattr(self.response, item)
-        except AttributeError:
-            return getattr(self, item)
+        return getattr(self.response, item)
+        # try:
+        #     return getattr(self.response, item)
+        # except AttributeError:
+        #     return getattr(self, item)
 
     def as_file_object(self):
         """Return string content wrapped in ioStringIO.

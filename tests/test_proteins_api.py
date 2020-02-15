@@ -73,29 +73,25 @@ def test_tax_ids_info_several_ids_list():
             "rank": "genus",
             "parentLink": "https://www.ebi.ac.uk/proteins/api/taxonomy/id/3201",
             "childrenLinks": [
-                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/402631",
+                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/2269037",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/37392",
-                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/402630",
+                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/402631",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/1670782",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/1670783",
+                'https://www.ebi.ac.uk/proteins/api/taxonomy/id/2269043',
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/1670784",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/350782",
-                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/588650",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/588651",
-                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/1112838",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/362817",
-                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/362816",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/463576",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/362815",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/362814",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/248332",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/746483",
-                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/280831",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/746484",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/746485",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/280830",
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/746486",
-                "https://www.ebi.ac.uk/proteins/api/taxonomy/id/3203",
             ],
             "siblingsLinks": [
                 "https://www.ebi.ac.uk/proteins/api/taxonomy/id/402090",
@@ -169,7 +165,7 @@ def test_tax_ids_info_several_ids_list():
     ]
 
     actual = up.get_info_on_taxIDs([9606, 3202, 176652, 10090])
-    for tax in zip(expected, list(actual.iter_nodes())):
+    for tax in zip(expected, list(actual)):
         for k, v in tax[0].items():
             assert tax[1][k] == v
 
@@ -291,7 +287,7 @@ def test_tax_ids_info_several_ids_tuple():
         },
     ]
     actual = up.get_info_on_taxIDs((9606, 3202, 176652, 10090))
-    for tax in zip(expected, list(actual.iter_nodes())):
+    for tax in zip(expected, list(actual)):
         for k, v in tax[0].items():
             assert tax[1][k] == v
 
@@ -413,7 +409,7 @@ def test_tax_ids_info_several_ids_set():
         },
     ]
     actual = up.get_info_on_taxIDs({9606, 3202, 176652, 10090})
-    for tax in list(actual.iter_nodes()):
+    for tax in list(actual):
         assert tax["taxonomyId"] in {9606, 3202, 176652, 10090}
 
 
@@ -468,7 +464,7 @@ def test_get_lineage_for_taxID():
         {"taxonomyId": 1, "scientificName": "root"},
     ]
     actual = up.get_lineage_for_taxID(9606)
-    actual_list = list(actual.iter_nodes())
+    actual_list = list(actual)
     assert len(expected) == len(actual_list)
     for item in zip(expected, actual_list):
         for k, v in item[0].items():
