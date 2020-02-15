@@ -63,7 +63,9 @@ class SPAnalysis(Borg):
             results = search_all(query, frmt='txt', file=True)
         entries = parse_txt(results)
         if not entries:
-            sys.exit('No entries that could be parsed were retrieved. Check your query.')
+            sys.exit(
+                'No entries that could be parsed were retrieved. Check your query.'
+            )
         collector = SwissProtRecordCollector()
         for entry in entries:
             collector.collect_record(entry)
@@ -82,31 +84,33 @@ def run_notebook():
     query = widgets.Text(description="Query")
 
     # checkbox to select Swiss-Prot only searches
-    reviewed_check = widgets.Checkbox(description="Search reviewed",
-                                            value=True)
+    reviewed_check = widgets.Checkbox(description="Search reviewed", value=True)
 
     # slider for the ratio
     ratio_slider = widgets.FloatSlider(description="Ratio",
-                                             min=0.0,
-                                             max=1.0,
-                                             step=0.05,
-                                             value=0.9)
+                                       min=0.0,
+                                       max=1.0,
+                                       step=0.05,
+                                       value=0.9)
     # bundle them up...
-    controls = [query,
-                reviewed_check,
-                ratio_slider,
-                ]
+    controls = [
+        query,
+        reviewed_check,
+        ratio_slider,
+    ]
     #... and pass them to the container for display
     interface = widgets.Box(children=controls)
     display(interface)
 
     # Create the buttons...
     run_button = widgets.Button(description="Run", button_style='primary')
-    clear_cache_button = widgets.Button(description="Clear cache", button_style='warning')
+    clear_cache_button = widgets.Button(description="Clear cache",
+                                        button_style='warning')
     button_container = widgets.Box(children=[run_button, clear_cache_button])
 
     #... and display them; CSS changes have to be run after the display() function
     display(button_container)
+
     #button_container.remove_class('vbox')
     #button_container.add_class('hbox')
 

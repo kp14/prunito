@@ -2,7 +2,6 @@ import hashlib
 import pytest
 from prunito.uniprot.parsers import atomic
 
-
 # def test_actual_in_expected(actual, expected_list):
 #     assert actual in expected_list
 #
@@ -10,48 +9,50 @@ from prunito.uniprot.parsers import atomic
 # def test_expected_in_actual(expected, actual_list):
 #     assert expected in actual_list
 
-EVS = [('ECO:0000269', '1234567'),
-       ('ECO:0000303', '2345678'),
-       ('ECO:0000305', '33456'),
-       ('ECO:0000269', 'Ref.2'),
-       ]
-
+EVS = [
+    ('ECO:0000269', '1234567'),
+    ('ECO:0000303', '2345678'),
+    ('ECO:0000305', '33456'),
+    ('ECO:0000269', 'Ref.2'),
+]
 
 DIGEST = hashlib.md5('{}-{}'.format(EVS[0][0], EVS[0][1]).encode()).hexdigest()
 
+VALS = [
+    'Some text here.',
+    'Another sentence.',
+    'A little bit longer this time and no trailing full stop',
+    'A fourth statement.',
+]
 
-VALS = ['Some text here.',
-        'Another sentence.',
-        'A little bit longer this time and no trailing full stop',
-        'A fourth statement.',
-        ]
+TYPES = [
+    'FUNCTION',
+    'DOUBLE WORD',
+    'MASS SPECTROMETRY',
+    'SUBUNIT',
+]
 
-
-TYPES = ['FUNCTION',
-         'DOUBLE WORD',
-         'MASS SPECTROMETRY',
-         'SUBUNIT',
-         ]
-
-
-ENTITIES = ['A12345',
-            'B12345',
-            'C12345',
-            'D12345',
-            ]
+ENTITIES = [
+    'A12345',
+    'B12345',
+    'C12345',
+    'D12345',
+]
 
 
 def generate_annotations():
     annotations = []
-    selectors = [(0, 0, 0, 0),
-                 (0, 1, 0, 0),
-                 (0, 2, 1, 2),
-                 (1, 0, 1, 0),
-                 (1, 0, 2, 0),
-                 (2, 1, 0, 1),
-                 (2, 0, 0, 2),
-                 (3, 2, 1, 0),
-                 (3, 0, 2, 1),]
+    selectors = [
+        (0, 0, 0, 0),
+        (0, 1, 0, 0),
+        (0, 2, 1, 2),
+        (1, 0, 1, 0),
+        (1, 0, 2, 0),
+        (2, 1, 0, 1),
+        (2, 0, 0, 2),
+        (3, 2, 1, 0),
+        (3, 0, 2, 1),
+    ]
     for s in selectors:
         ent = ENTITIES[s[0]]
         s_val = VALS[s[1]]
@@ -152,5 +153,5 @@ def test_collection_constructor_alternative(acoll):
 
 def test_anno_compare(acoll):
     a1 = acoll.get_idx(0)
-    a2 =acoll.get_idx(6)
+    a2 = acoll.get_idx(6)
     assert a1 == a2

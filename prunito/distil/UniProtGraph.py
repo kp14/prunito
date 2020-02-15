@@ -4,6 +4,7 @@ from networkx.readwrite import json_graph
 import json
 from collections import Counter
 
+
 class TaxGraph(DiGraph):
     """Subclass of DiGraph to represent taxonomic trees.
 
@@ -38,7 +39,7 @@ class TaxGraph(DiGraph):
             if idx == 0:
                 self.add_edge("root", node_list[idx], weight=1)
             else:
-                self.add_edge(node_list[idx-1], node_list[idx], weight=1)
+                self.add_edge(node_list[idx - 1], node_list[idx], weight=1)
 
     #overrides add_edge() from DiGraph
     def add_edge(self, u, v, attr_dict=None, **attr):
@@ -71,7 +72,7 @@ class TaxGraph(DiGraph):
         """
         # set up attribute dict
         if attr_dict is None:
-            attr_dict=Counter(attr)
+            attr_dict = Counter(attr)
         else:
             try:
                 attr_dict.update(attr)
@@ -80,18 +81,18 @@ class TaxGraph(DiGraph):
                     "The attr_dict argument must be a dictionary.")
         # add nodes
         if u not in self.succ:
-            self.succ[u]={}
-            self.pred[u]={}
+            self.succ[u] = {}
+            self.pred[u] = {}
             self.node[u] = {}
         if v not in self.succ:
-            self.succ[v]={}
-            self.pred[v]={}
+            self.succ[v] = {}
+            self.pred[v] = {}
             self.node[v] = {}
         # add the edge
-        datadict=self.adj[u].get(v,{})
+        datadict = self.adj[u].get(v, {})
         datadict.update(attr_dict)
-        self.succ[u][v]=datadict
-        self.pred[v][u]=datadict
+        self.succ[u][v] = datadict
+        self.pred[v][u] = datadict
 
     def tree_data2json(self, save=False, path2file=None):
         """Return taxonmic TaxGraph in json format for use elsewhere.
@@ -106,16 +107,16 @@ class TaxGraph(DiGraph):
         """
         data = json_graph.tree_data(self, root="root")
         if save == False:
-            print( json.dumps(data, indent = 2))
+            print(json.dumps(data, indent=2))
         elif save == True and path2file is not None:
             with open(path2file, "w") as f:
                 json.dump(data, f)
         else:
-            print( "Please check parameters for tree_data2json().")
+            print("Please check parameters for tree_data2json().")
 
 
 if __name__ == '__main__':
     nodes = ["a", "b", "c"]
     tg = TaxGraph()
     tg.add_edges_from_ordered_nodes(nodes)
-    print( tg.degree(weight="weight"))
+    print(tg.degree(weight="weight"))

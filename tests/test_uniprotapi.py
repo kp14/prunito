@@ -9,13 +9,14 @@ from prunito.utils import NoDataError
 
 def test_map_to_or_from_uniprot_invalid_format():
     with pytest.raises(ValueError):
-        r = map_to_or_from_uniprot(['2KLE'], 'pdb', 'acc') # has to be pdb_id
+        r = map_to_or_from_uniprot(['2KLE'], 'pdb', 'acc')  # has to be pdb_id
 
 
 def test_map_to_or_from_uniprot_no_uniprot_specified():
     with pytest.raises(ValueError) as e_info:
         r = map_to_or_from_uniprot(['2KLE'], 'pdb_id', 'embl')
-    assert e_info.value.args[0] == 'One of source or target format has to be UniProt ACC or ID.'
+    assert e_info.value.args[
+        0] == 'One of source or target format has to be UniProt ACC or ID.'
 
 
 def test_map_to_or_from_uniprot():
@@ -27,6 +28,7 @@ def test_current_release():
     regex = '20[0-9]{2}_[0,1][1-9]'
     r = current_release()
     assert re.match(regex, r)
+
 
 def test_current_release_as_attribute():
     r = current_release()

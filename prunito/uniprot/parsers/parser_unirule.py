@@ -11,9 +11,7 @@ import re
 from lxml import etree
 from lxml import objectify
 
-
 logging.basicConfig(level=logging.WARN)
-
 
 NS = re.compile('\{http\:\/\/uniprot\.org\/unirule-[0-9]\.[0-9]\}')
 #NS = '{http://uniprot.org/unirule-1.0}'
@@ -60,7 +58,8 @@ class UniRule():
         returns:
         Datetime object
         '''
-        return datetime.datetime.strptime(self.meta['modified'][:10], '%Y-%m-%d')
+        return datetime.datetime.strptime(self.meta['modified'][:10],
+                                          '%Y-%m-%d')
 
     @property
     def id_pipeline(self):
@@ -139,8 +138,8 @@ class UniRule():
             must_not_have_txt = ', '.join(must_not_have)
         else:
             must_not_have_txt = '-'
-        return 'Must be (OR): {0}\nMust not be: {1}'.format(must_have_txt,
-                                                            must_not_have_txt)
+        return 'Must be (OR): {0}\nMust not be: {1}'.format(
+            must_have_txt, must_not_have_txt)
 
     def iter_conditions(self):
         '''Iterate over all conditions in main and cases.'''
@@ -176,9 +175,7 @@ class UniRule():
 
     def _is_from_pipeline(self, ppln):
         '''Helper method to determine pipeline of origin.'''
-        mapper = {'hamap': 'MF',
-                  'pir': 'PIR',
-                  'rulebase': 'RU'}
+        mapper = {'hamap': 'MF', 'pir': 'PIR', 'rulebase': 'RU'}
         ppln_low = ppln.lower()
         try:
             return self.meta['oldRuleNum'].startswith(mapper[ppln_low])
@@ -191,11 +188,8 @@ class UniRule():
                     'Number of condition sets: {1}\n'
                     'Number of annotations {2}\n'
                     'Number of cases: {3}\n')
-        string = template.format(self.meta['id'],
-                                 len(self.main.conditions),
-                                 len(self.main.annotations),
-                                 len(self.cases)
-                                 )
+        string = template.format(self.meta['id'], len(self.main.conditions),
+                                 len(self.main.annotations), len(self.cases))
         return string
 
 
@@ -218,8 +212,7 @@ class BasicRule():
     def __str__(self):
         template = ('Number of condition sets: {0}\n'
                     'Number of annotations: {1}\n')
-        string = template.format(len(self.conditions),
-                                 len(self.annotations))
+        string = template.format(len(self.conditions), len(self.annotations))
         return string
 
 
@@ -241,11 +234,11 @@ class SamFeature(BasicRule):
                     'Number of annotations: {1}\n'
                     'Trigger: {2}\n'
                     'Range: {3}\n')
-        string = template.format(len(self.conditions),
-                                 len(self.annotations),
+        string = template.format(len(self.conditions), len(self.annotations),
                                  self.trigger,
                                  '-'.join([self.min_hits, self.max_hits]))
         return string
+
 
 class Condition():
     '''Represents conditions as used in UniRule.
@@ -264,8 +257,8 @@ class Condition():
         return '{0}, {1}, {2}'.format(self.type, self.value, self.negative)
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-            and self.__dict__ == other.__dict__)
+        return (isinstance(other, self.__class__) and
+                self.__dict__ == other.__dict__)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -293,8 +286,8 @@ class Annotation():
         return self.__dict__.__str__()
 
     def __eq__(self, other):
-        return (isinstance(other, self.__class__)
-            and self.__dict__ == other.__dict__)
+        return (isinstance(other, self.__class__) and
+                self.__dict__ == other.__dict__)
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -328,13 +321,14 @@ def parse_rules(filename):
                     extract_case_conditions(case, uni)
                     extract_case_annotations(case, uni)
             except AttributeError:
-                logging.info('Rule appears to have no cases: {}'.format(rule_id))
+                logging.info(
+                    'Rule appears to have no cases: {}'.format(rule_id))
             try:
                 for sam_ft in rule.samFeatureSet:
                     sam = SamFeature()
                     for trig in rule.samFeatureSet.samTrigger.getchildren():
                         sam.trigger = NS.sub('', trig.tag)
-#                        sam.trigger = trig.tag.replace(NS, '')
+                        #                        sam.trigger = trig.tag.replace(NS, '')
                         sam.min_hits = trig.expectedHits.attrib['start']
                         sam.max_hits = trig.expectedHits.attrib['end']
                     try:
@@ -342,24 +336,27 @@ def parse_rules(filename):
                             condition_list = _extract_conditions(c_set)
                             sam.conditions.extend(condition_list)
                     except AttributeError:
-                        logging.info('SamFeature appears to have no extra conditions.')
+                        logging.info(
+                            'SamFeature appears to have no extra conditions.')
                     try:
                         for a in rule.samFeatureSet.annotations.annotation:
                             anno_list = _extract_annotations(a)
                             sam.annotations.extend(anno_list)
                     except AttributeError:
-                        logging.info('SamFeature appears to have no extra annotations.')
+                        logging.info(
+                            'SamFeature appears to have no extra annotations.')
                     uni.sam_features.append(sam)
             except AttributeError:
                 logging.info('Ruel appears to have no SAM features.')
             yield uni
+
 
 def extract_meta(rule, uni):
     uni.meta.update(rule.attrib)
     for info in rule.information.getchildren():
         try:
             key = NS.sub('', info.tag)
-#            key = info.tag.replace(NS, '')
+            #            key = info.tag.replace(NS, '')
             val = info.text
             uni.meta[key] = val
         except:
@@ -375,7 +372,8 @@ def extract_main_conditions(rule, uni):
 def extract_case_conditions(case, uni):
     for c_set in case.conditionSets.conditionSet:
         condition_list = _extract_conditions(c_set)
-        logging.info('Extracted condition list from case: {}'.format(condition_list))
+        logging.info(
+            'Extracted condition list from case: {}'.format(condition_list))
         uni.cases[-1].conditions.append(condition_list)
 
 
@@ -416,9 +414,11 @@ def extract_main_annotations(rule, uni):
     try:
         for annot in rule.main.annotations.annotation:
             uni.main.annotations.extend(_extract_annotations(annot))
-            logging.info('Extracting annotations from main in rule: {}'.format(rule.attrib['id']))
+            logging.info('Extracting annotations from main in rule: {}'.format(
+                rule.attrib['id']))
     except AttributeError:
-        logging.warn('Rule appears to have no annotations in main: {}'.format(rule.attrib['id']))
+        logging.warn('Rule appears to have no annotations in main: {}'.format(
+            rule.attrib['id']))
 
 
 def extract_case_annotations(case, uni):
@@ -427,15 +427,17 @@ def extract_case_annotations(case, uni):
         for annot in case.annotations.annotation:
             annotation_list.extend(_extract_annotations(annot))
     except AttributeError:
-        logging.warning('Case appears to have no annotations: {}'.format(rule.attrib['id']))
+        logging.warning('Case appears to have no annotations: {}'.format(
+            rule.attrib['id']))
     uni.cases[-1].annotations.extend(annotation_list)
 
 
 def _extract_annotations(annotation_element):
     annotation_list = []
-    class_element = annotation_element.getchildren()[0] # Only one toplevel element
+    class_element = annotation_element.getchildren()[
+        0]  # Only one toplevel element
     class_ = NS.sub('', class_element.tag)
-#    class_ = class_element.tag.replace(NS, '')
+    #    class_ = class_element.tag.replace(NS, '')
     logging.info('Parsing class: {}'.format(class_))
     if class_ == 'comment':
         attribs = class_element.attrib
@@ -487,7 +489,7 @@ def _extract_annotations(annotation_element):
     elif class_ == 'protein':
         for typ in class_element.getchildren():
             typ_ = NS.sub('', typ.tag)
-#            typ_ = typ.tag.replace(NS, '')
+            #            typ_ = typ.tag.replace(NS, '')
             if typ_ == 'alternativeName':
                 attribs = {}
                 attribs['type'] = typ_
@@ -495,7 +497,7 @@ def _extract_annotations(annotation_element):
                 attribs['class_'] = class_
                 attribs['value'] = typ.fullName.text
                 annotation_list.append(_create_annotation(attribs))
-            elif typ_ =='flag':
+            elif typ_ == 'flag':
                 attribs = {}
                 attribs['type'] = typ_
                 attribs['value'] = typ.value.text
@@ -506,7 +508,7 @@ def _extract_annotations(annotation_element):
                     attribs = {}
                     attribs['type'] = typ_
                     attribs['subtype'] = NS.sub('', subtyp.tag)
-#                    attribs['subtype'] = subtyp.tag.replace(NS, '')
+                    #                    attribs['subtype'] = subtyp.tag.replace(NS, '')
                     attribs['value'] = subtyp.text
                     attribs['class_'] = class_
                     annotation_list.append(_create_annotation(attribs))

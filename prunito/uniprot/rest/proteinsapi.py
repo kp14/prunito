@@ -1,12 +1,9 @@
 import requests
-from ...utils import (PROTEINS_API_TAXONOMY,
-                      NoDataError,
-                      WSResponse,
-                      WSResponseTax
-                      )
-
+from ...utils import (PROTEINS_API_TAXONOMY, NoDataError, WSResponse,
+                      WSResponseTax)
 
 session = requests.Session()
+
 
 def get_info_on_taxID(taxID):
     """Get details about one taxonomic node as identified by a taxID.
@@ -26,7 +23,10 @@ def get_info_on_taxID(taxID):
         NoDataError: If no valid data at all are returned.
     """
     headers = {'Accept': 'application/json'}
-    r = WSResponse(session.get('/'.join([PROTEINS_API_TAXONOMY, 'id', str(taxID)]), headers=headers))
+    r = WSResponse(
+        session.get('/'.join([PROTEINS_API_TAXONOMY, 'id',
+                              str(taxID)]),
+                    headers=headers))
     if r.status_code == 400 or r.status_code == 404 or r.status_code == 500:
         raise NoDataError(r.json()['errorMessage'])
     else:
@@ -52,11 +52,15 @@ def get_info_on_taxIDs(taxIDs):
         NoDataError: If no valid data at all are returned.
     """
     if isinstance(taxIDs, str):
-        raise ValueError('TaxIDs have to be provided as lists or tuples, not strings.')
+        raise ValueError(
+            'TaxIDs have to be provided as lists or tuples, not strings.')
     else:
         ids_stringified = ','.join([str(item) for item in taxIDs])
         headers = {'Accept': 'application/json'}
-        r = WSResponseTax(session.get('/'.join([PROTEINS_API_TAXONOMY, 'ids', ids_stringified]), headers=headers))
+        r = WSResponseTax(
+            session.get('/'.join(
+                [PROTEINS_API_TAXONOMY, 'ids', ids_stringified]),
+                        headers=headers))
         try:
             _ = r.json()['taxonomies']
         except KeyError:
@@ -83,7 +87,10 @@ def get_lineage_for_taxID(taxID):
         NoDataError: If the taxID is invalid or nonexistent.
     """
     headers = {'Accept': 'application/json'}
-    r = WSResponseTax(session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage', str(taxID)]), headers=headers))
+    r = WSResponseTax(
+        session.get('/'.join([PROTEINS_API_TAXONOMY, 'lineage',
+                              str(taxID)]),
+                    headers=headers))
     try:
         _ = r.json()['taxonomies']
     except KeyError:

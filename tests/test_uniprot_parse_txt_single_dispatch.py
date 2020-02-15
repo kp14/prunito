@@ -5,12 +5,10 @@ from io import StringIO
 from prunito import uniprot as up
 from prunito.utils import WSResponse
 
-
 # Import paths for data files
 base_dir = os.path.dirname(__file__)
 filename = 'one_sp_entry.txl'
 TEST_DATA_LOCATION = os.path.join(base_dir, 'SwissProt', filename)
-
 
 EXPECTED_ACC = 'Q6E804'
 

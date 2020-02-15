@@ -4,21 +4,22 @@ import warnings
 from collections import defaultdict
 import requests
 from ..parsers.parser_knowledgebase_txt import parse_txt
-from ...utils import (UNIPROT_KNOWLEDGEBASE,
-                      UNIPROT_BATCH,
-                      UNIPROT_CONVERT,
-                      UNIPROT_MAP,
-                      GFF_COLUMNS,
-                      VALID_ID_MAPPINGS,
-                      NoDataError,
-                      WSResponse,
-                      _convert_date_string,
-                      )
+from ...utils import (
+    UNIPROT_KNOWLEDGEBASE,
+    UNIPROT_BATCH,
+    UNIPROT_CONVERT,
+    UNIPROT_MAP,
+    GFF_COLUMNS,
+    VALID_ID_MAPPINGS,
+    NoDataError,
+    WSResponse,
+    _convert_date_string,
+)
 try:
     import pandas as pd
 except ImportError:
-    warnings.warn('Pandas not available. Exporting to dataframes will not be possible.')
-
+    warnings.warn(
+        'Pandas not available. Exporting to dataframes will not be possible.')
 
 session = requests.Session()
 
@@ -87,7 +88,8 @@ class WSResponseUniprot(WSResponse):
             temp.seek(0)
             return pd.read_csv(temp, sep='\t', header=None, names=GFF_COLUMNS)
         else:
-            msg = 'Dataframes not supported for non-tabular data: {}'.format(self._iter_type)
+            msg = 'Dataframes not supported for non-tabular data: {}'.format(
+                self._iter_type)
             raise NotImplementedError(msg)
 
     def __len__(self):
@@ -101,7 +103,8 @@ class WSResponseUniprot(WSResponse):
             for line in self.as_file_object():
                 yield line.strip()
         else:
-            msg = 'Iteration not implemented for format: '.format(self._iter_type)
+            msg = 'Iteration not implemented for format: '.format(
+                self._iter_type)
             raise NotImplementedError(msg)
 
 
@@ -239,7 +242,7 @@ def search(query, frmt='txt', limit=2000, **kwargs):
         '''
     fmt = frmt.lower()
     _check_format(fmt)
-    payload = {'query':query, 'format':fmt, 'limit':limit}
+    payload = {'query': query, 'format': fmt, 'limit': limit}
     payload.update(**kwargs)
     with session.get(UNIPROT_KNOWLEDGEBASE, params=payload, stream=True) as r:
         result = WSResponseUniprot(r)
@@ -247,7 +250,7 @@ def search(query, frmt='txt', limit=2000, **kwargs):
         if result.ok:
             if result.size() > limit:
                 msg = ('Partial dataset retrieved. Size: {0}. Retrieved: {1}.\n'
-                      'Consider increasing the limit and/or using offset.')
+                       'Consider increasing the limit and/or using offset.')
                 print(msg.format(result.size(), limit))
             _ = result.content
             return result
@@ -270,11 +273,12 @@ def retrieve_batch(ac_list, frmt='txt'):
         NoDataError
     '''
     id_list = ' '.join(ac_list)
-    payload = {'from': 'ACC',
-               'to': 'ACC',
-               'format': frmt,
-               'query': id_list,
-               }
+    payload = {
+        'from': 'ACC',
+        'to': 'ACC',
+        'format': frmt,
+        'query': id_list,
+    }
     result = WSResponseUniprot(session.get(UNIPROT_BATCH, params=payload))
     result._iter_type = frmt
     if result.ok:
@@ -299,15 +303,14 @@ def convert(path, source_fmt='txt', target_fmt='xml', encoding='ascii'):
     Returns:
         WSResponseUniprot
     '''
-    payload = {'type': 'uniprot',
-               'from': source_fmt,
-               'to': target_fmt,
-               }
+    payload = {
+        'type': 'uniprot',
+        'from': source_fmt,
+        'to': target_fmt,
+    }
     files = {'data': open(path, 'r', encoding=encoding)}
-    response = WSResponseUniprot(session.post(UNIPROT_CONVERT,
-                                              data=payload,
-                                              files=files
-                                             ))
+    response = WSResponseUniprot(
+        session.post(UNIPROT_CONVERT, data=payload, files=files))
     if response.ok:
         return response
     else:
@@ -403,12 +406,14 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
     '''
     _validate_mapping_partners(source_fmt, target_fmt)
     id_list = ' '.join(id_list)
-    payload = {'from': source_fmt.upper(),
-               'to': target_fmt.upper(),
-               'format': 'tab',
-               'query': id_list,
-               }
-    response = WSResponseUniprotMapping(session.get(UNIPROT_MAP, params=payload))
+    payload = {
+        'from': source_fmt.upper(),
+        'to': target_fmt.upper(),
+        'format': 'tab',
+        'query': id_list,
+    }
+    response = WSResponseUniprotMapping(session.get(UNIPROT_MAP,
+                                                    params=payload))
     response._iter_type = 'tab'
     if response.ok:
         return response
@@ -417,24 +422,30 @@ def map_to_or_from_uniprot(id_list, source_fmt, target_fmt):
 
 
 def _validate_mapping_partners(source, target):
-    if source.upper() not in VALID_ID_MAPPINGS or target.upper() not in VALID_ID_MAPPINGS:
+    if source.upper() not in VALID_ID_MAPPINGS or target.upper(
+    ) not in VALID_ID_MAPPINGS:
         msg = 'Invalid mapping source(s): {0}, {1}. Use one of:\n{2}'
-        raise ValueError(msg.format(source.upper(), target.upper(), ', '.join(VALID_ID_MAPPINGS)))
-    if source.upper() not in ('ACC', 'ID') and target.upper() not in ('ACC', 'ID'):
-        raise ValueError('One of source or target format has to be UniProt ACC or ID.')
+        raise ValueError(
+            msg.format(source.upper(), target.upper(),
+                       ', '.join(VALID_ID_MAPPINGS)))
+    if source.upper() not in ('ACC', 'ID') and target.upper() not in ('ACC',
+                                                                      'ID'):
+        raise ValueError(
+            'One of source or target format has to be UniProt ACC or ID.')
 
 
 def _check_format(fmt):
-    allowed_formats = ('html',
-                      'tab',
-                      'xls',
-                      'fasta',
-                      'gff',
-                      'txt',
-                      'xml',
-                      'rdf',
-                      'list',
-                      )
+    allowed_formats = (
+        'html',
+        'tab',
+        'xls',
+        'fasta',
+        'gff',
+        'txt',
+        'xml',
+        'rdf',
+        'list',
+    )
     if fmt not in allowed_formats:
         msg = 'Allowed: {0}\nReceived: {1}'
         raise ValueError(msg.format(allowed_formats, fmt))

@@ -11,9 +11,7 @@ from pathlib import Path
 from .atomic import APile
 from ...utils import EC_REGEX, WSResponse
 
-
 logging.basicConfig(level=logging.WARN)
-
 
 Feature = namedtuple('Feature', ['type', 'start', 'end', 'description', 'ftid'])
 
@@ -89,7 +87,7 @@ class Record(object):
     @property
     def created(self):
         date, _ = self._bag['DT'][0].strip('.').split(', ')
-        return (date, 0) # Version is always zero here
+        return (date, 0)  # Version is always zero here
 
     @property
     def sequence_update(self):
@@ -119,7 +117,7 @@ class Record(object):
         DE   RecName: Full= ...;
         Evidence tags are stripped out.
         """
-        rec_line =  self._bag['DE'][0].strip(' ;')
+        rec_line = self._bag['DE'][0].strip(' ;')
         assert rec_line.startswith('RecName')
         name_part = rec_line.split(' {')[0]
         rec_name = name_part[14:]
@@ -294,22 +292,17 @@ class Record(object):
         return '\n'.join(lines)
 
     def _provide_fasta_header(self, isoform_name=''):
-        data_class_mapper = {'Reviewed': 'sp',
-                             'Unreviewed': 'tr'}
+        data_class_mapper = {'Reviewed': 'sp', 'Unreviewed': 'tr'}
         header_template = '>{0}|{1}|{2} {3} OS={4} OX={5}'
         if not isoform_name:
             acc = self.primary_accession
             name = self.recommended_full_name
         else:
-            acc = '{0}-{1}'.format(self.primary_accession,
-                                   isoform_name)
+            acc = '{0}-{1}'.format(self.primary_accession, isoform_name)
             name = 'Isoform {0} of {1}'.format(isoform_name,
                                                self.recommended_full_name)
-        header = header_template.format(data_class_mapper[self.data_class],
-                                        acc,
-                                        self.entry_name,
-                                        name,
-                                        self.organism,
+        header = header_template.format(data_class_mapper[self.data_class], acc,
+                                        self.entry_name, name, self.organism,
                                         self.taxonomy_id)
         return header
 
@@ -349,10 +342,13 @@ class Record(object):
                         iso[name]['blocks'].append((ft[1] - 1, ft[2], '-'))
                     else:
                         _, change = ft[3].split(' -> ')
-                        change_no_iso = re.sub(' [(]in isoform .+[])]\.', '', change)
-                        change_no_tags = re.sub(' [{].+[}]\.', '', change_no_iso)
+                        change_no_iso = re.sub(' [(]in isoform .+[])]\.', '',
+                                               change)
+                        change_no_tags = re.sub(' [{].+[}]\.', '',
+                                                change_no_iso)
                         aa_changes = change_no_tags.replace(' ', '')
-                        iso[name]['blocks'].append((ft[1] - 1, ft[2], aa_changes))
+                        iso[name]['blocks'].append(
+                            (ft[1] - 1, ft[2], aa_changes))
         for isoform, data in iso.items():
             seq = [0]
             for block in data['blocks']:
@@ -570,7 +566,7 @@ def _parse(handle):
             if line_type in ['id', 'dt', 'ac']:
                 ignore = True
             stripped_line = line.rstrip()
-    #        stripped_line = line
+            #        stripped_line = line
             try:
                 if line_type.startswith('R'):
                     if line_type == 'RN':
@@ -707,22 +703,24 @@ def _try_parsing_as_int(token):
         return token.strip()
 
 
-PARSER_MAP = {"ID": _parse_id,
-              "AC": _parse_accessions,
-              "DT": _parse_generic,
-              "DE": _parse_cc,
-              "GN": _parse_generic,
-              "OS": _parse_generic,
-              "OG": _parse_generic,
-              "OC": _parse_taxonomy,
-              "OH": _parse_generic,
-              "OX": _parse_taxid,
-              "RF": _parse_generic,
-              "CC": _parse_cc,
-              "DR": _parse_dr,
-              "KW": _parse_kw,
-              "PE": _parse_generic,
-              "FT": _parse_ft,
-              "**": _parse_generic,
-              "SQ": _parse_generic,
-              "  ": _parse_generic}
+PARSER_MAP = {
+    "ID": _parse_id,
+    "AC": _parse_accessions,
+    "DT": _parse_generic,
+    "DE": _parse_cc,
+    "GN": _parse_generic,
+    "OS": _parse_generic,
+    "OG": _parse_generic,
+    "OC": _parse_taxonomy,
+    "OH": _parse_generic,
+    "OX": _parse_taxid,
+    "RF": _parse_generic,
+    "CC": _parse_cc,
+    "DR": _parse_dr,
+    "KW": _parse_kw,
+    "PE": _parse_generic,
+    "FT": _parse_ft,
+    "**": _parse_generic,
+    "SQ": _parse_generic,
+    "  ": _parse_generic
+}

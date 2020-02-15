@@ -17,7 +17,12 @@ except ImportError:
 
 interpro_session = requests.Session()
 
-def search_phmmer(seq, database='swissprot', fmt='json', hits=10, alignments=False):
+
+def search_phmmer(seq,
+                  database='swissprot',
+                  fmt='json',
+                  hits=10,
+                  alignments=False):
     '''Run a protein sequence against a sequence DB using phmmer.
 
     The input sequence can either be provided in FASTA format or alternatively
@@ -41,9 +46,10 @@ def search_phmmer(seq, database='swissprot', fmt='json', hits=10, alignments=Fal
     Returns:
         data in selected format (default JSON)
     '''
-    payload = {'seqdb': database,
-               'seq': seq,
-              }
+    payload = {
+        'seqdb': database,
+        'seq': seq,
+    }
     url = '/'.join([EBI_HMMER, 'phmmer'])
     posted = interpro_session.post(url, data=payload, allow_redirects=False)
     if posted.ok:
@@ -51,11 +57,13 @@ def search_phmmer(seq, database='swissprot', fmt='json', hits=10, alignments=Fal
             url4results = posted.headers['location']
         except KeyError:
             raise
-        output_values = {'output': fmt,
-                         'range': '1,{}'.format(str(hits)),
-                         'ali': alignments,
-                         }
-        return WSResponseHmmer(interpro_session.get(url4results, params=output_values))
+        output_values = {
+            'output': fmt,
+            'range': '1,{}'.format(str(hits)),
+            'ali': alignments,
+        }
+        return WSResponseHmmer(
+            interpro_session.get(url4results, params=output_values))
     else:
         posted.raise_for_status()
 

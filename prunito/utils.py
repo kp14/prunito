@@ -9,7 +9,8 @@ from enum import Enum
 try:
     import pandas as pd
 except ImportError:
-    warnings.warn('Pandas not available. Exporting to dataframes will not be possible.')
+    warnings.warn(
+        'Pandas not available. Exporting to dataframes will not be possible.')
 
 ##############################################################
 # Base URLs for various resources
@@ -61,9 +62,11 @@ EPMC_SEARCH = '/'.join([EBI_BASE, 'europepmc/webservices/rest/search/'])
 # General purpose functions
 ##############################################################
 
+
 def is_value_in_iterable(val, iterable):
     '''Test whther values is contained in iterable like list or set'''
     return val in iterable
+
 
 ##############################################################
 # General purpose regular expressions
@@ -73,18 +76,23 @@ def is_value_in_iterable(val, iterable):
 # This was slightly modified based on test on regex101.com
 # Original: [O,P,Q][0-9][A-Z, 0-9]{3}[0-9] | [A-N,R-Z]([0-9][A-Z][A-Z, 0-9]{2}){1,2}[0-9]
 
-UNIPROT_ACCESSION = re.compile(r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]')
+UNIPROT_ACCESSION = re.compile(
+    r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]'
+)
 UNIPROT_ACCESSION_REGEX = UNIPROT_ACCESSION
 UNIPROT_ACCESSION_REGEX_STRING = r'[O-Q][0-9][A-Z,0-9]{3}[0-9]|[A-N,R-Z](?:[0-9][A-Z][A-Z,0-9]{2}){1,2}[0-9]'
-UNIPROT_EVIDENCE_REGEX = re.compile(r'ECO:[0-9]{7}(?:\|[A-Za-z-]*:[A-Za-z0-9]*)?')
+UNIPROT_EVIDENCE_REGEX = re.compile(
+    r'ECO:[0-9]{7}(?:\|[A-Za-z-]*:[A-Za-z0-9]*)?')
 PUBMED_REGEX = re.compile(r'PubMed:[0-9]*')
 EC_REGEX = re.compile(r'[1-6]\.[0-9-]*\.[0-9-]*\.[0-9-]*')
 EC_INCOMPLETE_REGEX = re.compile(r'[1-6]\.[0-9-]*\.[0-9-]*\.-')
-ENA_IDENTIFIER_REGEX = re.compile(r'[A-Z][0-9]{5}|[A-Z]{2}[0-9]{6}|[A-Z]{3}[0-9]{5}')
+ENA_IDENTIFIER_REGEX = re.compile(
+    r'[A-Z][0-9]{5}|[A-Z]{2}[0-9]{6}|[A-Z]{3}[0-9]{5}')
 
 ##############################################################
 # General purpose classes
 ##############################################################
+
 
 class Borg(object):
     """The Borg design pattern
@@ -95,7 +103,7 @@ class Borg(object):
     """
     _shared = {}
 
-    def __new__(cls,*args,**kwargs):
+    def __new__(cls, *args, **kwargs):
         self = object.__new__(cls)
         self.__dict__ = cls._shared
         return self
@@ -104,6 +112,7 @@ class Borg(object):
 ##############################################################
 # Enums
 ##############################################################
+
 
 class UniProtComments(Enum):
     """Enumeration of comment types used in UniProtKB.
@@ -194,7 +203,7 @@ class InterProXrefs(Enum):
     Gene3D = '[0-9]\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
     HAMAP = 'MF_[0-9]{5}_[A,B]{1}|MF_[0-9]{5}'
     InterPro = 'IP[0-9]{9}'
-    PANTHER = 'PTHR[0-9]{5}:SF[0-9]{1,5}|PTHR[0-9]{5}' # 'PTHR[0-9]{5}(?::SF[0-9]{1,5})?'
+    PANTHER = 'PTHR[0-9]{5}:SF[0-9]{1,5}|PTHR[0-9]{5}'  # 'PTHR[0-9]{5}(?::SF[0-9]{1,5})?'
     PIRSF = 'PIRSF[0-9]{6}'
     PRINTS = 'PR[0-9]{5}'
     PROSITE = 'PS[0-9]{5}'
@@ -213,118 +222,119 @@ class InterProXrefs(Enum):
         self.regex = re.compile(pattern)
 
 
-GFF_COLUMNS = ('acc',
-               'source',
-               'type',
-               'start',
-               'end',
-               'score',
-               'strand',
-               'phase',
-               'attributes',
-               )
+GFF_COLUMNS = (
+    'acc',
+    'source',
+    'type',
+    'start',
+    'end',
+    'score',
+    'strand',
+    'phase',
+    'attributes',
+)
 
-
-VALID_ID_MAPPINGS = {'ACC',
-                    'ID',
-                    'UPARC',
-                    'NF50',
-                    'NF90',
-                    'NF100',
-                    'GENENAME',
-                    'EMBL_ID',
-                    'EMBL',
-                    'P_ENTREZGENEID',
-                    'P_GI',
-                    'PIR',
-                    'REFSEQ_NT_ID',
-                    'P_REFSEQ_AC',
-                    'UNIGENE_ID',
-                    'PDB_ID',
-                    'DISPROT_ID',
-                    'BIOGRID_ID',
-                    'DIP_ID',
-                    'MINT_ID',
-                    'STRING_ID',
-                    'CHEMBL_ID',
-                    'DRUGBANK_ID',
-                    'GUIDETOPHARMACOLOGY_ID',
-                    'SWISSLIPIDS_ID',
-                    'ALLERGOME_ID',
-                    'ESTHER_ID',
-                    'MEROPS_ID',
-                    'MYCOCLAP_ID',
-                    'PEROXIBASE_ID',
-                    'REBASE_ID',
-                    'TCDB_ID',
-                    'BIOMUTA_ID',
-                    'DMDM_ID',
-                    'WORLD_2DPAGE_ID',
-                    'DNASU_ID',
-                    'ENSEMBL_ID',
-                    'ENSEMBL_PRO_ID',
-                    'ENSEMBL_TRS_ID',
-                    'ENSEMBLGENOME_ID',
-                    'ENSEMBLGENOME_PRO_ID',
-                    'ENSEMBLGENOME_TRS_ID',
-                    'GENEDB_ID',
-                    'P_ENTREZGENEID',
-                    'KEGG_ID',
-                    'PATRIC_ID',
-                    'UCSC_ID',
-                    'VECTORBASE_ID',
-                    'WBPARASITE_ID',
-                    'ARACHNOSERVER_ID',
-                    'CCDS_ID',
-                    'CGD',
-                    'CONOSERVER_ID',
-                    'DICTYBASE_ID',
-                    'ECHOBASE_ID',
-                    'ECOGENE_ID',
-                    'EUHCVDB_ID',
-                    'EUPATHDB_ID',
-                    'FLYBASE_ID',
-                    'GENECARDS_ID',
-                    'GENEREVIEWS_ID',
-                    'H_INVDB_ID',
-                    'HGNC_ID',
-                    'HPA_ID',
-                    'LEGIOLIST_ID',
-                    'LEPROMA_ID',
-                    'MAIZEGDB_ID',
-                    'MGI_ID',
-                    'MIM_ID',
-                    'NEXTPROT_ID',
-                    'ORPHANET_ID',
-                    'PHARMGKB_ID',
-                    'POMBASE_ID',
-                    'PSEUDOCAP_ID',
-                    'RGD_ID',
-                    'SGD_ID',
-                    'TAIR_ID',
-                    'TUBERCULIST_ID',
-                    'WORMBASE_ID',
-                    'WORMBASE_PRO_ID',
-                    'WORMBASE_TRS_ID',
-                    'XENBASE_ID',
-                    'ZFIN_ID',
-                    'EGGNOG_ID',
-                    'GENETREE_ID',
-                    'HOGENOM_ID',
-                    'HOVERGEN_ID',
-                    'KO_ID',
-                    'OMA_ID',
-                    'ORTHODB_ID',
-                    'TREEFAM_ID',
-                    'BIOCYC_ID',
-                    'REACTOME_ID',
-                    'UNIPATHWAY_ID',
-                    'CLEANEX_ID',
-                    'COLLECTF_ID',
-                    'CHITARS_ID',
-                    'GENEWIKI_ID',
-                    'GENOMERNAI_ID',
-                    }
+VALID_ID_MAPPINGS = {
+    'ACC',
+    'ID',
+    'UPARC',
+    'NF50',
+    'NF90',
+    'NF100',
+    'GENENAME',
+    'EMBL_ID',
+    'EMBL',
+    'P_ENTREZGENEID',
+    'P_GI',
+    'PIR',
+    'REFSEQ_NT_ID',
+    'P_REFSEQ_AC',
+    'UNIGENE_ID',
+    'PDB_ID',
+    'DISPROT_ID',
+    'BIOGRID_ID',
+    'DIP_ID',
+    'MINT_ID',
+    'STRING_ID',
+    'CHEMBL_ID',
+    'DRUGBANK_ID',
+    'GUIDETOPHARMACOLOGY_ID',
+    'SWISSLIPIDS_ID',
+    'ALLERGOME_ID',
+    'ESTHER_ID',
+    'MEROPS_ID',
+    'MYCOCLAP_ID',
+    'PEROXIBASE_ID',
+    'REBASE_ID',
+    'TCDB_ID',
+    'BIOMUTA_ID',
+    'DMDM_ID',
+    'WORLD_2DPAGE_ID',
+    'DNASU_ID',
+    'ENSEMBL_ID',
+    'ENSEMBL_PRO_ID',
+    'ENSEMBL_TRS_ID',
+    'ENSEMBLGENOME_ID',
+    'ENSEMBLGENOME_PRO_ID',
+    'ENSEMBLGENOME_TRS_ID',
+    'GENEDB_ID',
+    'P_ENTREZGENEID',
+    'KEGG_ID',
+    'PATRIC_ID',
+    'UCSC_ID',
+    'VECTORBASE_ID',
+    'WBPARASITE_ID',
+    'ARACHNOSERVER_ID',
+    'CCDS_ID',
+    'CGD',
+    'CONOSERVER_ID',
+    'DICTYBASE_ID',
+    'ECHOBASE_ID',
+    'ECOGENE_ID',
+    'EUHCVDB_ID',
+    'EUPATHDB_ID',
+    'FLYBASE_ID',
+    'GENECARDS_ID',
+    'GENEREVIEWS_ID',
+    'H_INVDB_ID',
+    'HGNC_ID',
+    'HPA_ID',
+    'LEGIOLIST_ID',
+    'LEPROMA_ID',
+    'MAIZEGDB_ID',
+    'MGI_ID',
+    'MIM_ID',
+    'NEXTPROT_ID',
+    'ORPHANET_ID',
+    'PHARMGKB_ID',
+    'POMBASE_ID',
+    'PSEUDOCAP_ID',
+    'RGD_ID',
+    'SGD_ID',
+    'TAIR_ID',
+    'TUBERCULIST_ID',
+    'WORMBASE_ID',
+    'WORMBASE_PRO_ID',
+    'WORMBASE_TRS_ID',
+    'XENBASE_ID',
+    'ZFIN_ID',
+    'EGGNOG_ID',
+    'GENETREE_ID',
+    'HOGENOM_ID',
+    'HOVERGEN_ID',
+    'KO_ID',
+    'OMA_ID',
+    'ORTHODB_ID',
+    'TREEFAM_ID',
+    'BIOCYC_ID',
+    'REACTOME_ID',
+    'UNIPATHWAY_ID',
+    'CLEANEX_ID',
+    'COLLECTF_ID',
+    'CHITARS_ID',
+    'GENEWIKI_ID',
+    'GENOMERNAI_ID',
+}
 
 
 class WSResponse():
@@ -357,8 +367,8 @@ class WSResponse():
                                                 self.response.url)
 
     def __str__(self):
-        return '{0} instance based on request\n{1}'.format(self.__class__.__qualname__,
-                                                           self.response.url)
+        return '{0} instance based on request\n{1}'.format(
+            self.__class__.__qualname__, self.response.url)
 
 
 class WSResponseEPMC(WSResponse):
@@ -455,7 +465,6 @@ class WSResponseHmmer(WSResponse):
     def __str__(self):
         summary = self._collate_summary()
         return summary.getvalue()
-
 
     def __len__(self):
         return len(self.response.json()['results']['hits'])

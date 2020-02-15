@@ -4,7 +4,6 @@ import re
 import requests
 from .utils import WSResponse
 
-
 from .utils import ENA_DATA, NoDataError, ENA_IDENTIFIER_REGEX
 
 session = requests.Session()
@@ -29,7 +28,8 @@ def retrieve(identifier, fmt='fasta'):
     '''
     match = re.match(ENA_IDENTIFIER_REGEX, identifier)
     if not match or len(match.group()) is not len(identifier):
-        raise ValueError('Identifier seems to have wrong format. Provide only 1 identifier.')
+        raise ValueError(
+            'Identifier seems to have wrong format. Provide only 1 identifier.')
     error_msg = 'display type is either not supported or entry is not found'
     data = identifier + '&display=' + fmt
     result = WSResponse(session.get('/'.join([ENA_DATA, data])))

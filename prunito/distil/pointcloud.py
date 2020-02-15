@@ -19,6 +19,7 @@ def scalar_vector_product(first, second):
         product.append(a + b)
     return product
 
+
 def logistic_sigmoid(x, a):
     """Computes so-called logistic curve, a sigmoidal function used in modelling
     population growth etc. In this implementation, the parameter a regulates the slope
@@ -38,12 +39,12 @@ def logistic_sigmoid(x, a):
     min_param_a = 0.0 + epsilon
     max_param_a = 1.0 - epsilon
     a = max(min_param_a, min(max_param_a, a))
-    a = (1/(1-a) - 1)
+    a = (1 / (1 - a) - 1)
 
-    A = 1.0 / (1.0 + exp(0 -((x-0.5)*a*2.0)))
+    A = 1.0 / (1.0 + exp(0 - ((x - 0.5) * a * 2.0)))
     B = 1.0 / (1.0 + exp(a))
-    C = 1.0 / (1.0 + exp(0-a))
-    y = (A-B)/(C-B)
+    C = 1.0 / (1.0 + exp(0 - a))
+    y = (A - B) / (C - B)
     return y
 
 
@@ -98,6 +99,7 @@ def cartesian_to_spherical(vector):
     # Return the spherical coordinate vector.
     return array([r, theta, phi], float64)
 
+
 def spherical_to_cartesian(spherical_vect):
     """Convert the spherical coordinate vector [r, theta, phi] to the Cartesian vector [x, y, z].
 
@@ -114,9 +116,9 @@ def spherical_to_cartesian(spherical_vect):
 
     # The vector.
     cart_vect = []
-    cart_vect.append(spherical_vect[0] * cos(spherical_vect[2]) * sin_theta) #x
-    cart_vect.append(spherical_vect[0] * sin(spherical_vect[2]) * sin_theta) #y
-    cart_vect.append(spherical_vect[0] * cos(spherical_vect[1])) #z
+    cart_vect.append(spherical_vect[0] * cos(spherical_vect[2]) * sin_theta)  #x
+    cart_vect.append(spherical_vect[0] * sin(spherical_vect[2]) * sin_theta)  #y
+    cart_vect.append(spherical_vect[0] * cos(spherical_vect[1]))  #z
 
     return cart_vect
 
@@ -127,16 +129,16 @@ def get_points_equiangularly_distanced_on_sphere(numberOfPoints=10):
         ------------
         converted from:  http://web.archive.org/web/20120421191837/http://www.cgafaq.info/wiki/Evenly_distributed_points_on_sphere )
     """
-    dlong = pi*(3.0-sqrt(5.0))  # ~2.39996323
-    dz   =  2.0/numberOfPoints
-    long =  0.0
-    z    =  1.0 - dz/2.0
-    ptsOnSphere =[]
-    for k in range( 0, numberOfPoints):
-        r    = sqrt(1.0-z*z)
-        ptNew = (cos(long)*r, sin(long)*r, z)
-        ptsOnSphere.append( ptNew )
-        z    = z - dz
+    dlong = pi * (3.0 - sqrt(5.0))  # ~2.39996323
+    dz = 2.0 / numberOfPoints
+    long = 0.0
+    z = 1.0 - dz / 2.0
+    ptsOnSphere = []
+    for k in range(0, numberOfPoints):
+        r = sqrt(1.0 - z * z)
+        ptNew = (cos(long) * r, sin(long) * r, z)
+        ptsOnSphere.append(ptNew)
+        z = z - dz
         long = long + dlong
     return ptsOnSphere
 
@@ -159,8 +161,9 @@ def get_points_equiangularly_distanced_on_circle(number_of_points=0):
     else:
         angle = float(degrees / number_of_points)
 
-
     # if __name__ == '__main__':
+
+
 #     ptsOnSphere = GetPointsEquiAngularlyDistancedOnSphere( 80)
 #
 #     #toggle True/False to print them

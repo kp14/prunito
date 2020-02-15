@@ -10,7 +10,6 @@ import pytest
 from Bio import SwissProt
 from prunito.uniprot import parse_txt, parse_txt_atomic
 
-
 #####################################################################
 # Test stuff for parse_txt
 #####################################################################
@@ -22,34 +21,34 @@ filename = 'many_sp_entries.txl'
 #datafile = os.path.join('SwissProt', filename)
 datafile = os.path.join(base_dir, 'SwissProt', filename)
 
-PROPS = ['entry_name',
-         'data_class',
-         'molecule_type',
-         'sequence_length',
-         'accessions',
-         'created',
-         #'sequence_update',
-         #'annotation_update',
-         'description',
-         'gene_name',
-         'organism',
-         'taxonomy_id',
-         'host_organism',
-         'host_taxonomy_id',
-         'organelle',
-         'organism_classification',
-         #'references',
-         'comments',
-         'cross_references',
-         'keywords',
-         'seqinfo',
-         'features',
-         'sequence',
-         ]
+PROPS = [
+    'entry_name',
+    'data_class',
+    'molecule_type',
+    'sequence_length',
+    'accessions',
+    'created',
+    #'sequence_update',
+    #'annotation_update',
+    'description',
+    'gene_name',
+    'organism',
+    'taxonomy_id',
+    'host_organism',
+    'host_taxonomy_id',
+    'organelle',
+    'organism_classification',
+    #'references',
+    'comments',
+    'cross_references',
+    'keywords',
+    'seqinfo',
+    'features',
+    'sequence',
+]
 
 with open(datafile, "r", encoding="ascii") as data:
     my_records = list(parse_txt(data))
-
 
 with open(datafile, "r", encoding="ascii") as data:
     biopython_records = list(SwissProt.parse(data))
@@ -122,7 +121,6 @@ EXPECTED_ANNOTATIONS = [
     'P62140: CONFLICT-CONFLICT L -> P (in Ref. 5; AAV38549) - ECO:0000305-None',
 ]
 
-
 #filename = 'one_sp_entry.txl'
 filename_atomic = 'atomic.txl'
 #datafile = os.path.join('SwissProt', filename)
@@ -159,14 +157,14 @@ def pytest_generate_tests(metafunc):
             for prop in PROPS:
                 if prop == 'comments':
                     comments = []
-                    for my_comment, biopy_comment in zip(getattr(my_record, prop),
-                                                         getattr(record, prop)):
-                        if my_comment[:8] in ('COFACTOR',
-                                              'ALTERNAT',
+                    for my_comment, biopy_comment in zip(
+                            getattr(my_record, prop), getattr(record, prop)):
+                        if my_comment[:8] in ('COFACTOR', 'ALTERNAT',
                                               'BIOPHYSI'):
                             # There is less white space here vs. the biopython
                             # parser, so we expect these comparisons to fail.
-                            tple = pytest.mark.xfail((my_comment, biopy_comment))
+                            tple = pytest.mark.xfail(
+                                (my_comment, biopy_comment))
                             # Add this to the list right away
                             comments.append(tple)
                             # Then go on to construct new tuples with the white
@@ -181,13 +179,13 @@ def pytest_generate_tests(metafunc):
                 elif prop == 'cross_references':
                     xrefs = []
                     for my_xref, biopy_xref in zip(getattr(my_record, prop),
-                                                         getattr(record, prop)):
+                                                   getattr(record, prop)):
                         tple = (my_xref, biopy_xref)
                         xrefs.append(tple)
                     argvalues.extend(xrefs)
                 else:
-                    argvalues.append((getattr(my_record, prop),
-                                      getattr(record, prop)))
+                    argvalues.append((getattr(my_record,
+                                              prop), getattr(record, prop)))
         metafunc.parametrize(['my_annotation', 'biopy_annotation'], argvalues)
     elif 'actual' and 'expected_list' in metafunc.fixturenames:
         argvalues = []

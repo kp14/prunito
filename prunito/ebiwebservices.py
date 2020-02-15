@@ -14,6 +14,7 @@ from .utils import NoDataError, WSResponse
 
 session = requests.Session()
 
+
 def set_email(email):
     """Provide an email address for EBI webservices."""
     EBIWebService.email = email
@@ -90,7 +91,9 @@ class EBIWebService():
             HTTPError: Passed on from request.
         """
         self._reset()
-        data_all = {'email': EBIWebService.email,}
+        data_all = {
+            'email': EBIWebService.email,
+        }
         data_all.update(data)
         job = session.post(self._run_url, data=data_all)
         if job.ok:
@@ -111,7 +114,7 @@ class EBIWebService():
         r = session.get(status_url)
         status = r.text
         if status == 'FINISHED':
-            self._finished =  True
+            self._finished = True
         elif status == 'RUNNING':
             self._finished = False
         elif status in ('ERROR', 'FAILURE', 'NOT_FOUND'):
@@ -175,10 +178,11 @@ class EmbossTranseq(EBIWebService):
         Raises:
             NoDataError: If translation fails or any errors using webservice.
         """
-        data = {'sequence': seq,
-                'frame': frame,
-                'trim': trim,
-                }
+        data = {
+            'sequence': seq,
+            'frame': frame,
+            'trim': trim,
+        }
         for k, v in kwargs.items():
             data[k] = v
         return self._run(data)
@@ -222,7 +226,12 @@ class FASTASimilaritySearch(EBIWebService):
     def __init__(self):
         super().__init__('fasta')
 
-    def __call__(self, seq, program='fasta', database='uniprotkb_swissprot', stype='protein', **kwargs):
+    def __call__(self,
+                 seq,
+                 program='fasta',
+                 database='uniprotkb_swissprot',
+                 stype='protein',
+                 **kwargs):
         """Run a sequence similarity search using FASTA suite tools.
 
         The FASTA tools take many more arguments than listed below which are only the
@@ -240,11 +249,12 @@ class FASTASimilaritySearch(EBIWebService):
         Returns:
             WSResponse
         """
-        data = {'sequence': seq,
-                'program': program,
-                'database': database,
-                'stype': stype,
-                }
+        data = {
+            'sequence': seq,
+            'program': program,
+            'database': database,
+            'stype': stype,
+        }
         for k, v in kwargs.items():
             data[k] = v
         return self._run(data)
@@ -272,13 +282,13 @@ class SeqChecksum(EBIWebService):
         Returns:
             WSResponse
         """
-        data = {'sequence': seq,
-                'cksmethod': cksmethod,
-                'stype': stype,
-                }
+        data = {
+            'sequence': seq,
+            'cksmethod': cksmethod,
+            'stype': stype,
+        }
         data.update(kwargs)
         return self._run(data)
-
 
 
 fasta_search = FASTASimilaritySearch()

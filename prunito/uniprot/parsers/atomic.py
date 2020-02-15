@@ -12,8 +12,8 @@ import re
 from collections import defaultdict
 from ...utils import UNIPROT_EVIDENCE_REGEX, PUBMED_REGEX
 
-
 ECO_PTRN = re.compile('ECO:[0-9]{7}')
+
 
 class Evidence(object):
     """Evidence as defined by Evidence Code Ontology.
@@ -26,7 +26,7 @@ class Evidence(object):
 
     def __init__(self, code='ECO:0000000', source=None):
         if not re.match(ECO_PTRN, code):
-            self.code='ECO:0000000'
+            self.code = 'ECO:0000000'
             raise ValueError('Invalid ECO code: {}'.format(code))
         else:
             self.code = code
@@ -134,10 +134,11 @@ class Annotation(object):
             return None
 
     def __str__(self):
-        return '{en}: {st} - {ev}'.format(en=self.entity,
-                                          st=self._statement.__str__(),
-                                          ev=self.evidence.__str__(),
-                                          )
+        return '{en}: {st} - {ev}'.format(
+            en=self.entity,
+            st=self._statement.__str__(),
+            ev=self.evidence.__str__(),
+        )
 
     def __eq__(self, other):
         return self._statement.id == other._statement.id
@@ -272,17 +273,19 @@ class AtomicParser():
 
     def __init__(self, entry):
         self.entry = entry
-        self._mapper = {'intera': self._parse_interaction,
-                       'subcel': self._parse_subcellular_location,
-                       'cofact': self._parse_cofactor,
-                       'domain': self._parse_freetext,
-                       'ptm': self._parse_freetext,
-                       }
+        self._mapper = {
+            'intera': self._parse_interaction,
+            'subcel': self._parse_subcellular_location,
+            'cofact': self._parse_cofactor,
+            'domain': self._parse_freetext,
+            'ptm': self._parse_freetext,
+        }
 
     def parse(self):
         for comment in self.entry.comments:
             typ, value = comment.split(': ', maxsplit=1)
-            parser_func = self._mapper.get(typ[:6].lower(), self._parse_freetext)
+            parser_func = self._mapper.get(typ[:6].lower(),
+                                           self._parse_freetext)
             try:
                 for annotation in parser_func(typ, value):
                     yield annotation
@@ -341,21 +344,21 @@ class AtomicParser():
         from_sim = []
         from_unclear = []
         for statement in statements:
-                if 'PubMed:' in statement:
-                    from_pubmed.append(statement)
-                elif '(By similarity)' in statement:
-                    from_sim.append(statement)
-                elif '(Probable)' in statement:
-                    from_pubmed.append(statement)
-                else:
-                    from_unclear.append(statement)
+            if 'PubMed:' in statement:
+                from_pubmed.append(statement)
+            elif '(By similarity)' in statement:
+                from_sim.append(statement)
+            elif '(Probable)' in statement:
+                from_pubmed.append(statement)
+            else:
+                from_unclear.append(statement)
         for s in from_pubmed:
             text = s.split(' (PubMed:')[0]
             for ev in evidences:
                 if ev.source in s:
                     yield Annotation(self.entry.primary_accession,
-                                      Statement(text, typ),
-                                      evidence=ev)
+                                     Statement(text, typ),
+                                     evidence=ev)
         for s in from_sim:
             text = s.split(' (By sim')[0]
             sim_tags = [tag for tag in evidences if tag.is_sim()]
@@ -369,25 +372,30 @@ class AtomicParser():
                                  evidence=Evidence(code='ECO:0000250'))
         for s in from_unclear:
             text = s.rstrip('. ')
-            if not from_sim and not from_pubmed and len(evidences) == 1:# 1 tag applicable to all
+            if not from_sim and not from_pubmed and len(
+                    evidences) == 1:  # 1 tag applicable to all
                 yield Annotation(self.entry.primary_accession,
                                  Statement(text, typ),
                                  evidence=evidences[0])
-            elif len(evidences) > 1 and len(set([e.code for e in evidences])) == 1:# 1 type of tag applicable to all but unclear source
+            elif len(evidences) > 1 and len(set([
+                    e.code for e in evidences
+            ])) == 1:  # 1 type of tag applicable to all but unclear source
                 this_code = evidences[0].code
                 yield Annotation(self.entry.primary_accession,
                                  Statement(text, typ),
                                  evidence=Evidence(code=this_code))
-            elif len(evidences) > 1 and len(set([e.code for e in evidences])) > 1 and from_sim:
-                code = list(set([e.code for e in evidences if not e.code == 'ECO:0000250']))[0]# a hack
+            elif len(evidences) > 1 and len(set([e.code for e in evidences
+                                                ])) > 1 and from_sim:
+                code = list(
+                    set([
+                        e.code for e in evidences if not e.code == 'ECO:0000250'
+                    ]))[0]  # a hack
                 yield Annotation(self.entry.primary_accession,
                                  Statement(text, typ),
                                  evidence=Evidence(code=code))
             else:
                 yield Annotation(self.entry.primary_accession,
                                  Statement(text, typ))
-
-
 
     def _extract_evidences(self, blob):
         evidences = []
@@ -412,7 +420,7 @@ class AtomicParser():
         exp_only = [tag for tag in list_of_evidences if tag.is_exp()]
         return len(exp_only)
 
-    def _find_tag_for_pubmed(self, pubmed, list_of_evidences ):
+    def _find_tag_for_pubmed(self, pubmed, list_of_evidences):
         for tag in list_of_evidences:
             if tag.source == pubmed:
                 return tag
@@ -449,7 +457,6 @@ class AtomicParser():
         #                                       evidence=ev)
         #                     yield anno
 
-
     def _parse_subcellular_location(self, typ, value):
         """Extract Annotations from subcellular location comments.
 
@@ -460,10 +467,10 @@ class AtomicParser():
         Return:
               Annotation instances
         """
-        note = '' #TODO: Handle the Note
+        note = ''  #TODO: Handle the Note
         try:
             locations_all, note = value.split('. Note=')
-        except ValueError: # there is no Note
+        except ValueError:  # there is no Note
             locations = value.split('. ')
         else:
             locations = locations_all.split('. ')
@@ -491,7 +498,6 @@ class AtomicParser():
                 yield Annotation(self.entry.primary_accession,
                                  Statement(loc, typ))
 
-
     def _parse_cofactor(self, typ, value):
         """Extract Annotations from cofactor comments.
 
@@ -503,7 +509,6 @@ class AtomicParser():
               Annotation instances
         """
         pass
-
 
     def _parse_interaction(self, typ, value):
         """Extract Annotations from interaction comments.
