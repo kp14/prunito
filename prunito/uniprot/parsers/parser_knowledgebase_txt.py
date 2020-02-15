@@ -22,7 +22,7 @@ class Record(object):
     All fields that biopython.SwissProt.Record provides are provided, too.
     Additional ones also, for convenience.
 
-    Attributes:
+    Properties:
         entry_name (str): Entry mnemonic taken from ID line.
         data_class (str): Which UniProtKb dataset, either Reviewed or Unreviewed.
         molecule_type: None.
